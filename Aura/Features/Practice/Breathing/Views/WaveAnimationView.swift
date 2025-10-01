@@ -13,6 +13,7 @@ struct WaveAnimationView: View {
     @State private var verticalOffset: CGFloat = 0
     @State private var isInhaling = true
     
+    //temps 4-4-4-4
     let durationInhale = 4.0
     let durationExhale = 4.0
     
@@ -42,15 +43,7 @@ struct WaveAnimationView: View {
                     .scaledToFill()
                     .offset(x: horizontalOffset / 3, y: verticalOffset)
                     .animation(.linear(duration: 8).repeatForever(autoreverses: false), value: horizontalOffset)
-                
-                VStack{
-                    Text("00:00")
-                        .foregroundColor(.white)
-                        .font(.custom("Lexend-Medium", size: 60))
-                    Text(isInhaling ? "Inspirez" : "Expirez")
-                        .foregroundColor(.white)
-                        .font(.custom("Lexend-Medium", size: 32))
-                }
+            
             }
             .onAppear {
                 // Animation horizontale
@@ -59,17 +52,11 @@ struct WaveAnimationView: View {
                 // Animation verticale synchronisée avec respiration
                 Timer.scheduledTimer(withTimeInterval: durationInhale + durationExhale, repeats: true) { _ in
                     withAnimation(.easeInOut(duration: durationInhale)) {
-                        verticalOffset = -80 // mer descend (inhaler)
+                        verticalOffset = -10 // mer descend (inhaler)
                         isInhaling = true
                     }
                 }
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + durationInhale) {
-                    withAnimation(.easeInOut(duration: durationExhale)) {
-                        verticalOffset = 10 // mer monte (expirer)
-                        isInhaling = false
-                    }
-                }
             }
         }
         .background(.violetClair)

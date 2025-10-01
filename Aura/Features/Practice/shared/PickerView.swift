@@ -13,29 +13,28 @@ struct PickerView: View {
     
     var body: some View {
         VStack (alignment: .leading){
+
             Text("Prêt(e) à commencer ?")
                 .font(.custom("Lexend-Medium", size: 27))
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 20)
+                .padding(.top, 10)
             
             Picker("", selection: $viewModel.selectedPratice) {
-                ForEach(0..<viewModel.practices.count, id: \.self) { index in
-                    Text(viewModel.practices[index]).tag(index)
-                }
+                Text("Méditation").tag(0)
+                Text("Respiration").tag(1)
             }
             .pickerStyle(.segmented)
+            .padding(.bottom,15)
             
+                if viewModel.selectedPratice == 0 {
+                       MeditationView()
+                   } else {
+                       BreathingView()
+                   }
         }
-        .padding(17)
-        
-        switch viewModel.selectedPratice {
-        case 0:
-            MeditationView()
-        case 1:
-            BreathingView()
-        default:
-            MeditationView()
-        }
+        .padding(.horizontal, 17)
+
     }
 }
 

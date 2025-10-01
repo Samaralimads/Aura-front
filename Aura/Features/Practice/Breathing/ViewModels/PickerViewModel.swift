@@ -9,7 +9,5 @@ import SwiftUI
 
 @Observable
 final class PickerViewModel {
-    
     var selectedPratice: Int = 0
-    var practices = ["Méditation", "Respiration"]
 }
