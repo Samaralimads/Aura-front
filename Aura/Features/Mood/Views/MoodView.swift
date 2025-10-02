@@ -43,11 +43,13 @@ struct MoodView: View {
                 //MARK: - Skip button
                 HStack {
                     Spacer()
-                    Button("skip >") {
-                        //TODO: - add action
+                    NavigationLink {
+                        DayView()
+                    } label: {
+                        Text("skip >")
+                            .font(.system(size: 17, weight: .medium))
+                            .foregroundStyle(.black)
                     }
-                    .font(.system(size: 17, weight: .medium))
-                    .foregroundStyle(.black)
                 }
                 .padding(.bottom, 50)
                 
@@ -76,7 +78,8 @@ struct MoodView: View {
                 //MARK: - Slider
                 
                 Spacer()
-                Text(labels[Int(index)])                        .font(.custom("Lexend-medium", size: 28))
+                Text(labels[Int(index)])
+                    .font(.custom("Lexend-medium", size: 28))
                     .padding(.bottom, 30)
                 
                 Slider(value: $index, in: 0...4, step: 0.5)
@@ -85,17 +88,17 @@ struct MoodView: View {
                 
                 
                 //MARK: - Button
-                Button(action: {
-                    //TODO: - add logic
-                }){
+                NavigationLink {
+                    DayConfigView(moodID: currentMood?.id, moodColorName: currentMood?.color)
+                } label: {
                     Text("Valider")
                         .font(.custom("Lexend-medium", size: 17))
                         .foregroundStyle(.black)
                         .frame(width: 349, height: 48)
                         .background(.white.opacity(0.5))
                         .cornerRadius(25)
-                        .padding(.top, 60)
                 }
+                .padding(.top, 60)
                 
             }
             .padding(24)
