@@ -9,7 +9,11 @@ import SwiftUI
 
 struct MontainAnimationView: View {
     var body: some View {
-        Text("MontainAnimationView")
+        ZStack{
+            Color.violetF
+                .ignoresSafeArea()
+            Image("montain")
+        }
     }
 }
 

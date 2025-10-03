@@ -9,7 +9,15 @@ import SwiftUI
 
 struct MoonAnimationView: View {
     var body: some View {
-        Text("Moon animation")
+        ZStack {
+           
+            LinearGradient(
+                colors: [Color.nuitF, Color.nuitC],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+        }
     }
 }
 

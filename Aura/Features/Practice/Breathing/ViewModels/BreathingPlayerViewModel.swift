@@ -11,6 +11,7 @@ import SwiftUI
 class BreathingPlayerViewModel {
     
     private var timer: Timer?
+    private let soundPlayer = MusicManager()
     
     var inhaleD: Int
     var holdD: Int
@@ -18,26 +19,26 @@ class BreathingPlayerViewModel {
     var nbOfCycles: Int
     var timeRemaining: Int
     var indexCycle: Int = 0
+    var indexOrder: Int
     
-    //Ajouter une phase d'intro au lieu de lancer directement l'exercice ??
     var cycles: [String] = ["Inspirez","Bloquez","Expirez"]
     
-    
-    init(inhaleD: Int, holdD: Int, exhaleD: Int, nbOfCycles: Int = 6) {
+    init(inhaleD: Int, holdD: Int, exhaleD: Int, nbOfCycles: Int, indexOrder: Int) {
         self.inhaleD = inhaleD
         self.holdD = holdD
         self.exhaleD = exhaleD
         self.nbOfCycles = nbOfCycles
         self.timeRemaining = (inhaleD + holdD + exhaleD) * nbOfCycles
+        self.nbOfCycles = nbOfCycles
+        self.indexOrder = indexOrder
+    }
+     
+    var Totalduration: Int {
+        (inhaleD + holdD + exhaleD) * nbOfCycles
     }
     
-    //Fonction pour gerer le cycle
-    func startCycle() -> Void {
-        
-    }
-    
-    //Fonction pour lancer le timer + cycle (apparition du texte)
-    func start() -> Void {
+    //Fonction pour lancer le timer + cycle (apparition du texte + alerte sonore)
+    func startBreathing() -> Void {
         
         var current = 0
         timer?.invalidate()
@@ -48,23 +49,32 @@ class BreathingPlayerViewModel {
                 
                 let cycleDuration = self.inhaleD + self.holdD + self.exhaleD
                 let position = current % cycleDuration
-                
-                if position < self.inhaleD {
+                print("\(position)")
+
+                switch position {
+                case 1: // début inhale
                     self.indexCycle = 0
-                }
-                else if position < self.inhaleD + self.holdD {
+                    self.soundPlayer.playSound(named: "ting")
+                case self.inhaleD: // début hold
                     self.indexCycle = 1
-                }
-                else {
+                    self.soundPlayer.playSound(named: "ting")
+                case self.inhaleD + self.holdD: // début exhale
                     self.indexCycle = 2
+                    self.soundPlayer.playSound(named: "ting")
+                default:
+                    break
                 }
+                
             } else {
                 self.timer?.invalidate()
+                self.soundPlayer.pauseSound()
             }
         }
     }
+    
     //Fonction pour stopper le timer
-    func stop() -> Void {
+    func stopBreathing() -> Void {
         self.timer?.invalidate()
+        self.soundPlayer.stopSound()
     }
 }
