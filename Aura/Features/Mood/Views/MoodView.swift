@@ -36,15 +36,28 @@ struct MoodView: View {
     
     var body: some View {
         ZStack {
-            backgroundColor
-                .ignoresSafeArea()
+            
+            LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: backgroundColor.opacity(0.95), location: 0.0),
+                            .init(color: backgroundColor.opacity(0.75), location: 0.4),
+                            .init(color: backgroundColor.opacity(0.55), location: 1.0),
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ).ignoresSafeArea()
+            
+            FloatingDots(base: .white.opacity(0.55), count: 20)
+            AuraRings(base: .white)
+                
             
             VStack{
                 //MARK: - Skip button
                 HStack {
                     Spacer()
+                    //TODO: - temporary, using it to test my protected route
                     NavigationLink {
-                        DayView()
+                        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzU5NTA0NDc5LjU4NTk2LCJpZCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.8KiOHg7IShtj-Db0QTsODPZXFSeCWGV4AbTdGbvfihc")
                     } label: {
                         Text("skip >")
                             .font(.system(size: 17, weight: .medium))
@@ -89,7 +102,11 @@ struct MoodView: View {
                 
                 //MARK: - Button
                 NavigationLink {
-                    DayConfigView(moodID: currentMood?.id, moodColorName: currentMood?.color)
+                    DayConfigView(moodID: currentMood?.id,
+                                  moodColorName: currentMood?.color,
+                                  //MARK: - temporary, using it to test my protected route
+                                  token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzU5NTA0NDc5LjU4NTk2LCJpZCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.8KiOHg7IShtj-Db0QTsODPZXFSeCWGV4AbTdGbvfihc"
+                    )
                 } label: {
                     Text("Valider")
                         .font(.custom("Lexend-medium", size: 17))

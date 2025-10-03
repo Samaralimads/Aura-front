@@ -9,36 +9,34 @@ import SwiftUI
 
 struct DayConfigView: View {
     @State private var viewModel = DayConfigViewModel()
-
+    
     @State private var selectedEmotionID: UUID?
     @State private var selectedReasonID: UUID?
     @State private var selectedSleepID: UUID?
     @State private var noteText: String = ""
-
-
-    // Coming from previous screen (MoodView)
+    
+    @State private var goToDay = false
+    
     let moodID: UUID?
     let moodColorName: String?
-
-    init(moodID: UUID? = nil, moodColorName: String? = nil) {
+    let token: String?
+    
+    init(moodID: UUID? = nil, moodColorName: String? = nil, token: String? = nil) {
         self.moodID = moodID
         self.moodColorName = moodColorName
+        self.token = token
     }
-
+    
     private var backgroundColor: Color {
-        if let name = moodColorName {
-            return Color(name)
-        } else {
-            return Color.gray
-        }
+        if let name = moodColorName { return Color(name) } else { return Color.gray }
     }
-
+    
     var body: some View {
         ZStack {
             backgroundColor
                 .opacity(0.60)
                 .ignoresSafeArea()
-
+            
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
@@ -48,9 +46,22 @@ struct DayConfigView: View {
                         
                         Spacer()
                         
-                        NavigationLink {
-                            DayView()
-//TODO: This should go to day view but also create a day with current.mood and everything else nil
+                        Button {
+                            Task {
+                                do {
+                                    _ = try await viewModel.createDay(
+                                        date: Date(),
+                                        moodID: moodID,
+                                        emotionID: nil,
+                                        sleepID: nil,
+                                        reasonID: nil,
+                                        noteText: ""
+                                    )
+                                    goToDay = true
+                                } catch {
+                                    print("Skip-create failed:", error.localizedDescription)
+                                }
+                            }
                         } label: {
                             Text("skip >")
                                 .font(.system(size: 17, weight: .medium))
@@ -59,11 +70,10 @@ struct DayConfigView: View {
                     }
                     .padding(.bottom, 25)
                     
-
                     // MARK: - Émotions
                     Text("Émotions")
                         .font(.custom("Lexend-medium", size: 20))
-
+                    
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100), spacing: 1)], spacing: 10) {
                         ForEach(viewModel.emotions(for: moodID), id: \.id) { emotion in
                             let isSelected = selectedEmotionID == emotion.id
@@ -78,21 +88,21 @@ struct DayConfigView: View {
                                 .animation(.easeInOut, value: isSelected)
                         }
                     }
-
+                    
                     // MARK: - Raisons
                     Text("Raisons")
                         .font(.custom("Lexend-medium", size: 20))
-
+                    
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 10)], spacing: 20) {
                         ForEach(viewModel.displayReasons, id: \.id) { reason in
                             let isSelected = selectedReasonID == reason.id
-
+                            
                             VStack(spacing: 8) {
                                 ZStack {
                                     Circle()
                                         .fill(isSelected ? backgroundColor : Color.white)
                                         .frame(width: 63, height: 63)
-
+                                    
                                     Image(reason.image)
                                         .resizable()
                                         .scaledToFit()
@@ -108,11 +118,11 @@ struct DayConfigView: View {
                             .animation(.easeInOut, value: isSelected)
                         }
                     }
-
+                    
                     // MARK: - Sommeil
                     Text("Sommeil")
                         .font(.custom("Lexend-medium", size: 20))
-
+                    
                     HStack(spacing: 16) {
                         ForEach(viewModel.displaySleeps, id: \.id) { sleep in
                             let isSelected = selectedSleepID == sleep.id
@@ -121,7 +131,7 @@ struct DayConfigView: View {
                                     Circle()
                                         .fill(isSelected ? backgroundColor: Color.white)
                                         .frame(width: 63, height: 63)
-
+                                    
                                     Image(sleep.image)
                                         .resizable()
                                         .scaledToFit()
@@ -136,31 +146,31 @@ struct DayConfigView: View {
                             .animation(.easeInOut, value: isSelected)
                         }
                     }
-
+                    
                     // MARK: - Note
                     Text("Note")
                         .font(.headline)
-
+                    
                     TextField("Ajouter une note", text: $noteText)
                         .padding(14)
                         .background(Color.white)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
-
+                    
                     // MARK: - Valider
                     Button {
                         Task {
                             do {
-                                let response = try await viewModel.createDay(
+                                _ = try await viewModel.createDay(
                                     date: Date(),
-                                    moodID:moodID,
+                                    moodID: moodID,
                                     emotionID: selectedEmotionID,
                                     sleepID: selectedSleepID,
                                     reasonID: selectedReasonID,
                                     noteText: noteText
                                 )
-                                print("Created day:", response)
+                                goToDay = true
                             } catch {
-                                print("Create day failed:", error)
+                                print("Create day failed:", error.localizedDescription)
                             }
                         }
                     } label: {
@@ -171,13 +181,16 @@ struct DayConfigView: View {
                             .background(backgroundColor)
                             .clipShape(RoundedRectangle(cornerRadius: 24))
                     }
-
                     .padding(.top, 8)
                 }
                 .padding(16)
             }
         }
+        .navigationDestination(isPresented: $goToDay) {
+            DayView(token: token)
+        }
         .task {
+            viewModel.authToken = token   
             await viewModel.fetchAll()
         }
     }

@@ -14,9 +14,7 @@ import SwiftUI
 final class DayConfigViewModel {
     
     private let baseURL = "http://127.0.0.1:8080"
-    
-    /// Set this after login so POST /days (protected) works.
-    var authToken: String? = nil
+    var authToken: String?
     
     
     // MARK: - Decoded data from my db goes here
