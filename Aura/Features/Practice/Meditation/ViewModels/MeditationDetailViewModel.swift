@@ -6,25 +6,29 @@
 //
 
 import Foundation
+import SwiftUI
 import Combine
 
-class MeditationDetailViewModel: ObservableObject {
+final class MeditationDetailViewModel: ObservableObject {
+
     @Published var remainingTime: Int
     @Published var isPlaying: Bool = false
 
     private var timer: Timer?
     let meditation: Meditation
 
+    // Init
     init(meditation: Meditation) {
         self.meditation = meditation
         self.remainingTime = meditation.duration * 60
     }
 
+    // Timer
     func togglePlay() {
         isPlaying.toggle()
         if isPlaying {
             startTimer()
-            // TODO: Intégrer AVAudioPlayer pour la lecture audio
+            // 🎵 TODO: Intégrer AVAudioPlayer ici si nécessaire
         } else {
             stopTimer()
         }
@@ -50,5 +54,43 @@ class MeditationDetailViewModel: ObservableObject {
         let minutes = remainingTime / 60
         let seconds = remainingTime % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+
+    // Background color
+    func backgroundColor() -> Color {
+        let name = meditation.image.lowercased()
+
+        if name.contains("jaune") {
+            return Color("jaune-clair")
+        } else if name.contains("rose") {
+            return Color("rose-clair")
+        } else if name.contains("vert") {
+            return Color("vert-clair")
+        } else if name.contains("orange") {
+            return Color("orange-clair")
+        } else if name.contains("violet") {
+            return Color("violet-clair")
+        } else {
+            return Color("jaune-clair")
+        }
+    }
+
+   // Background button
+    func buttonColor() -> Color {
+        let name = meditation.image.lowercased()
+
+        if name.contains("jaune") {
+            return Color("jaune")
+        } else if name.contains("rose") {
+            return Color("rose")
+        } else if name.contains("vert") {
+            return Color("vert")
+        } else if name.contains("orange") {
+            return Color("orange")
+        } else if name.contains("violet") {
+            return Color("violet")
+        } else {
+            return Color("jaune")
+        }
     }
 }
