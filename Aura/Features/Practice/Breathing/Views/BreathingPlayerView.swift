@@ -22,7 +22,8 @@ struct BreathingPlayerView: View {
                     inhaleD: viewModel.inhaleD,
                     holdD: viewModel.holdD,
                     exhaleD: viewModel.exhaleD,
-                    nbOfCycles: viewModel.nbOfCycles
+                    nbOfCycles: viewModel.nbOfCycles,
+                   // scale: 
                 )
                     .ignoresSafeArea()
             }
@@ -35,7 +36,8 @@ struct BreathingPlayerView: View {
                     .ignoresSafeArea()
             }
             else {
-                MoonAnimationView()
+                MoonAnimationView(viewModel: viewModel)
+                
                     .ignoresSafeArea()
             }
             

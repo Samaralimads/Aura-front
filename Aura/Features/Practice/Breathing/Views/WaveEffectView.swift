@@ -26,21 +26,25 @@ struct WaveEffectView: View {
                   Spacer()
                   
                   ZStack {
+                      //Wave 1 (loin)
                       Wave(amplitude: 4, frequency: 1, phase: phase, variationAmplitude: true)
                           .fill(Color.wave1)
                           .opacity(0.5)
                           .frame(height: 700)
-
+                      
+                      //Wave 2
                       Wave(amplitude: 5, frequency: 2, phase: phase, variationAmplitude: true)
                           .fill(Color.wave1)
                           .frame(height: 700)
                           .offset(y: 50)
-
+                      
+                      //Wave 3
                       Wave(amplitude: 7, frequency: 3, phase: phase, variationAmplitude: true)
                           .fill(Color.wave2)
                           .frame(height: 700)
                           .offset(y: 160)
-
+                      
+                      //Wave 4 (plus proche)
                       Wave(amplitude: 25, frequency: 2, phase: phase, variationAmplitude: true)
                           .fill(Color.wave3)
                           .frame(height: 700)
@@ -50,7 +54,7 @@ struct WaveEffectView: View {
                   .offset(y: waveLift)
               }
               
-              // Lune par-dessus
+              //LUNE
               Image("lune")
                   .resizable()
                   .scaledToFit()

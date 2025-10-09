@@ -1,0 +1,34 @@
+//
+//  starsModel.swift
+//  Aura
+//
+//  Created by alize suchon on 09/10/2025.
+//
+
+import SwiftUI
+
+struct Star: Identifiable  {
+    let id = UUID()
+    var scale: CGFloat
+    var x: CGFloat
+    var y: CGFloat
+    var opacity: Double
+}
+
+struct ShootingStar: Identifiable {
+    let id = UUID()
+    var x: CGFloat
+    var y: CGFloat
+    var length: CGFloat
+}
+
+
+//struct ShootingStar: Shape {
+//    func path(in rect: CGRect) -> Path {
+//            var path = Path()
+//            path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+//            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+//            return path
+//        }
+//}
+

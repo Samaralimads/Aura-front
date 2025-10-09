@@ -5,7 +5,7 @@
 //  Created by alize suchon on 02/10/2025.
 //
 
-import AVFoundation //Pour player music
+import AVFoundation
 
 class MusicManager {
     

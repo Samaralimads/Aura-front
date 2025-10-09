@@ -13,6 +13,9 @@ struct MontainAnimationView: View {
             Color.violetF
                 .ignoresSafeArea()
             Image("montain")
+                .resizable()
+                .frame(maxWidth: .infinity)
+                .ignoresSafeArea(edges: .bottom)
         }
     }
 }
