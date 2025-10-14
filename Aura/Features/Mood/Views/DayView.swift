@@ -8,46 +8,63 @@
 import SwiftUI
 
 struct DayView: View {
-    @State private var viewModel = DayViewModel()
-    
-    let token: String? 
-    
+    @State private var vm = DayViewModel()
+    @State private var moodVM = MoodViewModel()
+    @State private var month = Date()
+    @State private var selectedDate: Date?
+    @State private var showDetail = false
+    @State private var goToMood = false
+
+    var token: String? = nil
+    var moods: [MoodModel]? = nil
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Votre calendrier")
-                .font(.title2)
-                .padding(.bottom, 8)
-            
-            if viewModel.days.isEmpty {
-                Text("Aucun enregistrement")
-                    .foregroundStyle(.secondary)
-            } else {
-                List(viewModel.days) { day in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(day.date.formatted(date: .abbreviated, time: .omitted))
-                            .font(.headline)
-                        Text("\(day.mood) · \(day.emotion) · \(day.sleep) · \(day.reason)")
-                            .font(.subheadline)
-                        if !day.journal.isEmpty && day.journal.lowercased() != "void" {
-                            Text(day.journal)
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Suivi d’humeur")
+                    .font(.custom("Lexend-medium", size: 28))
+
+                CalendarMonth(
+                    month: $month,
+                    dayFor: { date in vm.day(for: date) },
+                    moodIconURL: { day in vm.moodIconURL(for: day) },
+                    onSelect: { date in
+                        selectedDate = date
+                        showDetail = true
+                    },
+                    onAddTodayMood: { goToMood = true }
+                )
+
+                Spacer(minLength: 0)
+            }
+            .padding()
+            .task(id: token) {
+                        vm.authToken = token
+                        if let provided = moods {
+                            vm.useMoods(provided)
+                        } else {
+                            await moodVM.fetchMoods()
+                            vm.useMoods(moodVM.moods)
+                        }
+                        if token != nil {
+                            await vm.fetchDays()
                         }
                     }
+            .sheet(isPresented: $showDetail) {
+                if let date = selectedDate, let day = vm.day(for: date) {
+                    DayDetailSheet(day: day, iconURL: vm.moodIconURL(for: day))
+                        .presentationDetents([.fraction(0.35), .medium])
                 }
-                .listStyle(.plain)
             }
-        }
-        .padding()
-        .task {
-            viewModel.authToken = token
-            await viewModel.fetchDays()
+            .navigationDestination(isPresented: $goToMood) {
+                MoodView()
+            }
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzU5NTA0NDc5LjU4NTk2LCJpZCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.8KiOHg7IShtj-Db0QTsODPZXFSeCWGV4AbTdGbvfihc")
+        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzYwMzgwNzI3LjAzMDc5Niwic3ViamVjdCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiIsInVzZXJJRCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.7jILYmQkFTd7n1mIJu-fM8fjbKVzJDBSMPNRJeYmKwM")
     }
 }

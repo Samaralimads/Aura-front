@@ -109,7 +109,7 @@ struct DayConfigView: View {
                                         .frame(width: 28, height: 28)
                                 }
                                 Text(reason.name)
-                                    .font(.caption)
+                                    .font(.system(size: 14))
                                     .multilineTextAlignment(.center)
                                     .foregroundStyle(.black)
                                     .frame(maxWidth: .infinity)
@@ -138,8 +138,7 @@ struct DayConfigView: View {
                                         .frame(width: 28, height: 28)
                                 }
                                 Text(sleep.name)
-                                    .font(.caption)
-                                    .foregroundStyle(.black)
+                                    .font(.system(size: 14))
                             }
                             .frame(maxWidth: .infinity)
                             .onTapGesture { selectedSleepID = isSelected ? nil : sleep.id }
@@ -148,10 +147,11 @@ struct DayConfigView: View {
                     }
                     
                     // MARK: - Note
-                    Text("Note")
-                        .font(.headline)
-                    
-                    TextField("Ajouter une note", text: $noteText)
+                    Text("Journal")
+                        .font(.custom("Lexend-medium", size: 20))
+
+                    TextField("Ajouter une note", text: $noteText, axis: .vertical)
+                        .lineLimit(20)
                         .padding(14)
                         .background(Color.white)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -175,7 +175,7 @@ struct DayConfigView: View {
                         }
                     } label: {
                         Text("Valider")
-                            .font(.system(size: 17, weight: .medium))
+                            .font(.custom("Lexend", size: 17))
                             .foregroundStyle(.black)
                             .frame(maxWidth: .infinity, minHeight: 52)
                             .background(backgroundColor)

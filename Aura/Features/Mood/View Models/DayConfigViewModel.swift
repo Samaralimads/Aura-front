@@ -23,8 +23,9 @@ final class DayConfigViewModel {
     var sleeps: [SleepModel] = []
     var reasons: [ReasonModel] = []
     var journals: [JournalModel] = []
+
     
-    // MARK: - UI Helpers (hide "void")
+    // MARK: - Hide "Void"
     
     var displayEmotions: [EmotionModel] { emotions.filter { $0.name != "Void" } }
     var displayReasons:  [ReasonModel]  { reasons.filter  { $0.name != "Void" } }
@@ -32,7 +33,7 @@ final class DayConfigViewModel {
     var displayMoods:    [MoodModel]    { moods.filter    { $0.name != "Void" } }
 
     func emotions(for moodID: UUID?) -> [EmotionModel] {
-        let nonVoid = emotions.filter { $0.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() != "Void" }
+        let nonVoid = emotions.filter { $0.name.trimmingCharacters(in: .whitespacesAndNewlines) != "Void" }
         guard let moodID else { return nonVoid }
         return nonVoid.filter { $0.moodID == moodID }
     }
@@ -100,7 +101,7 @@ final class DayConfigViewModel {
 }
 
 
-// MARK: - DTOs used for create flows
+// MARK: - DTOs for client → server
 struct DayCreateDTO: Encodable {
     let date: Date
     let moodID: UUID?

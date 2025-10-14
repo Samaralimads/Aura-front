@@ -23,7 +23,7 @@ struct FloatingDots: View {
             ZStack {
                 ForEach(0..<count, id: \.self) { i in
                     let size = CGFloat(Int.random(in: 5...10))
-                    let x = CGFloat.random(in: 0...geo.size.width)
+                    let x = CGFloat.random(in: 0...500)
                     let y = CGFloat.random(in: 300...600)
 
                     Circle()
@@ -53,5 +53,5 @@ struct FloatingDots: View {
 }
 
 #Preview {
-    FloatingDots(base: .green, count: 20)
+    FloatingDots(base: .black, count: 20)
 }
