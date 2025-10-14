@@ -12,6 +12,7 @@ struct Breathing : Codable, Identifiable {
     var image: String
     var title: String
     var description: String
+    var indexOrder: Int
     var inhaleD: Int
     var holdD: Int
     var exhaleD: Int
