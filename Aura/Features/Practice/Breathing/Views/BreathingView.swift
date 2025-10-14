@@ -26,7 +26,7 @@ struct BreathingView: View {
                             holdD: breathing.holdD,
                             exhaleD: breathing.exhaleD,
                             nbOfCycles: breathing.nbOfCycles,
-                            indexOrder: breathing.indexOrder
+                            indexOrder: breathing.indexOrder,
                         ))
                     } label: {
                         ZStack(alignment: .bottomLeading) {

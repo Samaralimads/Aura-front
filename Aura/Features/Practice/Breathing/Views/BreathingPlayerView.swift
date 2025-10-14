@@ -23,7 +23,6 @@ struct BreathingPlayerView: View {
                     holdD: viewModel.holdD,
                     exhaleD: viewModel.exhaleD,
                     nbOfCycles: viewModel.nbOfCycles,
-                   // scale: 
                 )
                     .ignoresSafeArea()
             }
@@ -32,12 +31,11 @@ struct BreathingPlayerView: View {
                     .ignoresSafeArea()
             }
             else if viewModel.indexOrder == 3{
-                SunAnimationView()
+                SunAnimationView(viewModel: viewModel)
                     .ignoresSafeArea()
             }
             else {
                 MoonAnimationView(viewModel: viewModel)
-                
                     .ignoresSafeArea()
             }
             
@@ -104,7 +102,7 @@ struct BreathingPlayerView: View {
             holdD: 1,
             exhaleD: 4,
             nbOfCycles: 6,
-            indexOrder : 3
+            indexOrder : 3,            
         )
     )
 }

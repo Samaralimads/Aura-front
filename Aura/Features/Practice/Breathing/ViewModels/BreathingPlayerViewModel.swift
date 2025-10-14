@@ -16,7 +16,10 @@ class BreathingPlayerViewModel {
     var scale: CGFloat = 0.9
     
     private var moonTask: Task<Void, Never>?
+    private var cloundsTask: Task<Void, Never>?
     
+    var phase: Phase = .inhale
+        
     var inhaleD: Int
     var holdD: Int
     var exhaleD: Int
@@ -29,6 +32,10 @@ class BreathingPlayerViewModel {
     
     var cycles: [String] = ["Inspirez","Bloquez","Expirez"]
     
+    enum Phase {
+        case inhale, hold, exhale
+    }
+    
     init(inhaleD: Int, holdD: Int, exhaleD: Int, nbOfCycles: Int, indexOrder: Int) {
         self.inhaleD = inhaleD
         self.holdD = holdD
@@ -37,10 +44,17 @@ class BreathingPlayerViewModel {
         self.timeRemaining = (inhaleD + holdD + exhaleD) * nbOfCycles
         self.nbOfCycles = nbOfCycles
         self.indexOrder = indexOrder
+        //self.cloudViewModel = cloudViewModel
     }
      
     var Totalduration: Int {
         (inhaleD + holdD + exhaleD) * nbOfCycles
+    }
+    
+    //Ajout vibration à chaque phases
+    func lightBreathingVibration() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred() //declenche la vibration
     }
     
     //Fonction pour lancer le timer + cycle (apparition du texte)
@@ -61,12 +75,18 @@ class BreathingPlayerViewModel {
                 switch position {
                 case 1: // début inhale
                     self.indexCycle = 0
+                    self.lightBreathingVibration()
+                   // self.phase = .inhale
                    // self.soundPlayer.playSound(named: "ting")
                 case self.inhaleD: // début hold
                     self.indexCycle = 1
+                    self.lightBreathingVibration()
+                    //self.phase = .hold
                   //  self.soundPlayer.playSound(named: "ting")
                 case self.inhaleD + self.holdD: // début exhale
                     self.indexCycle = 2
+                    self.lightBreathingVibration()
+                    //self.phase = .exhale
                    // self.soundPlayer.playSound(named: "ting")
                 default:
                     break
@@ -78,7 +98,6 @@ class BreathingPlayerViewModel {
             }
         }
     }
-    
     
     //Animate moon view
     func MoonAnimStart() -> Void {
@@ -100,18 +119,40 @@ class BreathingPlayerViewModel {
         }
     }
     
-    //Kill anim moon view
-//    func MoonAnimEnd() -> Void {
-//        task?.cancel()
-//        task = nil
+    //Animate clounds for SunAnimationView
+//    func CloudAnimStart() -> Void {
+//        let screen = UIScreen.main.bounds.width
+//        cloundsTask = Task {
+//            while isPlaying {
+//                withAnimation(Animation.easeInOut(duration: Double(2))) {
+//                    // Inhale
+//                    for cloud in cloudViewModel.cloudsArray {
+//                        cloud.moveToX(x:-cloud.width)
+//                    }
+//                }
+//                try? await Task.sleep(for: .seconds(inhaleD))
+//                //Hold
+//                try? await Task.sleep(for: .seconds(holdD))
+//                
+//                //Exhale
+//                withAnimation(Animation.easeInOut(duration:Double(2))) {
+//                    for cloud in cloudViewModel.cloudsArray {
+//                        cloud.moveToX(x:screen/2)
+//                    }
+//                }
+//                try? await Task.sleep(for: .seconds(exhaleD))
+//            }
+//        }
 //    }
-//    
+    
     //Fonction pour stopper le timer
     func stopBreathing() -> Void {
         self.timer?.invalidate()
         isPlaying = false
         moonTask?.cancel()
         moonTask = nil
+        //cloundsTask?.cancel()
+        //cloundsTask = nil
         //self.soundPlayer.stopSound()
     }
 }
