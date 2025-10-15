@@ -28,7 +28,7 @@ final class MeditationDetailViewModel: ObservableObject {
         isPlaying.toggle()
         if isPlaying {
             startTimer()
-            // 🎵 TODO: Intégrer AVAudioPlayer ici si nécessaire
+            // TODO: Intégrer AVAudioPlayer ici si nécessaire
         } else {
             stopTimer()
         }
@@ -56,7 +56,7 @@ final class MeditationDetailViewModel: ObservableObject {
         return String(format: "%02d:%02d", minutes, seconds)
     }
 
-    // Background color
+    // Couleur du Background
     func backgroundColor() -> Color {
         let name = meditation.image.lowercased()
 
@@ -66,7 +66,7 @@ final class MeditationDetailViewModel: ObservableObject {
             return Color("rose-clair")
         } else if name.contains("vert") {
             return Color("vert-clair")
-        } else if name.contains("orange") {
+        } else if name.contains("naranja") {
             return Color("orange-clair")
         } else if name.contains("violet") {
             return Color("violet-clair")
@@ -75,7 +75,7 @@ final class MeditationDetailViewModel: ObservableObject {
         }
     }
 
-   // Background button
+   // Couleur du button
     func buttonColor() -> Color {
         let name = meditation.image.lowercased()
 
@@ -86,7 +86,7 @@ final class MeditationDetailViewModel: ObservableObject {
         } else if name.contains("vert") {
             return Color("vert")
         } else if name.contains("orange") {
-            return Color("orange")
+            return Color("naranja")
         } else if name.contains("violet") {
             return Color("violet")
         } else {

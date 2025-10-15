@@ -12,19 +12,21 @@ struct CategorySliderView: View {
     let meditations: [Meditation]
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 12) {
+            // En-tête
             HStack {
                 Text(title)
-                .font(.custom("Lexend-Medium", size: 22, relativeTo: .headline))
+                    .font(.custom("Lexend-Medium", size: 22, relativeTo: .headline))
                 Spacer()
                 NavigationLink("Voir tout") {
                     MeditationListView(title: title, meditations: meditations)
                 }
                 .foregroundStyle(Color.black)
                 .underline()
-
             }
+            .padding(.horizontal)
 
+            // Slider horizontal
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     ForEach(meditations) { meditation in
@@ -32,9 +34,12 @@ struct CategorySliderView: View {
                             MeditationDetailView(meditation: meditation)
                         } label: {
                             MeditationCardView(meditation: meditation)
+                                .frame(width: 200)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
+                .padding(.horizontal)
             }
         }
     }
@@ -51,4 +56,3 @@ struct CategorySliderView: View {
         )
     }
 }
-

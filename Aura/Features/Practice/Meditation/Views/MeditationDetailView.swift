@@ -18,8 +18,14 @@ struct MeditationDetailView: View {
 
   var body: some View {
     ZStack {
+
+      // Background dynamique + shapes statiques
       viewModel.backgroundColor()
         .ignoresSafeArea()
+      Image("shape1")
+          .position(x: 320, y: 150)
+      Image("shape2")
+          .position(x: 70, y: 500)
 
       VStack(spacing: 32) {
         Spacer()
@@ -59,7 +65,6 @@ struct MeditationDetailView: View {
               }
             }
           }
-
         Spacer()
         
         // Ombre animée
