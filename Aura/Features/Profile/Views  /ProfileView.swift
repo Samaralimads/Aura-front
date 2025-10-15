@@ -7,11 +7,24 @@
 
 import SwiftUI
 
+
 struct ProfileView: View {
+    @Environment(AuthState.self) private var authState
+    
     var body: some View {
-        Text("Profile View")
+        Button("Se déconnecter") {
+            Task {
+                do {
+                    try await AuthService.shared.logout()
+                    authState.logout()
+                } catch {
+                    authState.logout()
+                }
+            }
+        }
     }
 }
+
 
 #Preview {
     ProfileView()

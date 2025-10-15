@@ -4,3 +4,4 @@
 # Xcode
 *.xcuserstate
 *.xcuserdata/
+**/xcuserdata/

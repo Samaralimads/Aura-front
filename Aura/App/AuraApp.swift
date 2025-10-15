@@ -6,13 +6,35 @@
 //
 
 import SwiftUI
+import Observation
 
-@main
-struct AuraApp: App {
-    var body: some Scene {
-        WindowGroup {
-            TabBar()
-        }
+@Observable
+final class AuthState {
+    var isLoggedIn: Bool
+    
+    init() {
+        self.isLoggedIn = UserDefaults.standard.string(forKey: "userToken") != nil
+    }
+    
+    func logout() {
+        UserDefaults.standard.removeObject(forKey: "userToken")
+        isLoggedIn = false
     }
 }
 
+@main
+struct AuraApp: App {
+    @State private var authState = AuthState()
+    
+    var body: some Scene {
+        WindowGroup {
+            if authState.isLoggedIn {
+                TabBar()
+                    .environment(authState)
+            } else {
+                LoginView()
+                    .environment(authState)
+            }
+        }
+    }
+}
