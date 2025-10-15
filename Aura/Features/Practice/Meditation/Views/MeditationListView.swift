@@ -11,24 +11,26 @@ struct MeditationListView: View {
     let title: String
     let meditations: [Meditation]
 
+    // Deux colonnes flexibles
+    private let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+
     var body: some View {
-        List(meditations) { meditation in
-            NavigationLink {
-                MeditationDetailView(meditation: meditation)
-            } label: {
-                HStack {
-                    Image(meditation.image)
-                        .resizable()
-                        .frame(width: 60, height: 60)
-                        .cornerRadius(8)
-                    VStack(alignment: .leading) {
-                        Text(meditation.title)
-                        Text("\(meditation.duration) min")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(meditations) { meditation in
+                    NavigationLink {
+                        MeditationDetailView(meditation: meditation)
+                    } label: {
+                        MeditationCardView(meditation: meditation)
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.plain)
                 }
             }
+            .padding()
         }
         .navigationTitle(title)
     }
@@ -39,8 +41,10 @@ struct MeditationListView: View {
         MeditationListView(
             title: "Nouveau",
             meditations: [
-                Meditation(id: UUID(), title: "Méditation 1", duration: 30, theme: .nouveau, image: "med1", audio: "audio1"),
-                Meditation(id: UUID(), title: "Méditation 2", duration: 20, theme: .nouveau, image: "med2", audio: "audio2")
+                Meditation(id: UUID(), title: "Méditation 1", duration: 3, theme: .nouveau, image: "med1", audio: "audio1"),
+                Meditation(id: UUID(), title: "Méditation 2", duration: 1, theme: .nouveau, image: "med2", audio: "audio2"),
+                Meditation(id: UUID(), title: "Méditation 3", duration: 4, theme: .nouveau, image: "med1", audio: "audio3"),
+                Meditation(id: UUID(), title: "Méditation 4", duration: 6, theme: .nouveau, image: "med2", audio: "audio4")
             ]
         )
     }

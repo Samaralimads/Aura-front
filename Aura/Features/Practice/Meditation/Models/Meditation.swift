@@ -7,13 +7,13 @@
 
 import Foundation
 
-enum MeditationTheme: String, CaseIterable {
+enum MeditationTheme: String, CaseIterable, Codable {
     case nouveau = "Nouveau"
     case coupDeCoeur = "Coup de cœur"
     case debutant = "Débutants"
 }
 
-struct Meditation: Identifiable {
+struct Meditation: Identifiable, Codable {
     let id: UUID
     let title: String
     let duration: Int // en minutes
