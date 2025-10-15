@@ -58,6 +58,8 @@ struct SunAnimationView: View {
         .onChange(of: viewModel.isPlaying) { oldStatus, newStatus in
             if viewModel.isPlaying {
                 startCloudAnim()
+            } else {
+                //ajout stop threads
             }
         }
     }
@@ -78,9 +80,8 @@ struct SunAnimationView: View {
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(viewModel.exhaleD)) {
                 if viewModel.isPlaying {
-                    guard self.viewModel.isPlaying else { return }
                     startCloudAnim()
-                }
+                } else { return }
             }
         }
     }
@@ -89,10 +90,10 @@ struct SunAnimationView: View {
 #Preview {
     SunAnimationView(
         viewModel:BreathingPlayerViewModel(
-            inhaleD: 4,
-            holdD: 1,
-            exhaleD: 4,
-            nbOfCycles: 6,
-            indexOrder : 3)
+        inhaleD: 4,
+        holdD: 1,
+        exhaleD: 4,
+        nbOfCycles: 6,
+        indexOrder : 3)
     )
 }

@@ -18,16 +18,11 @@ struct BreathingPlayerView: View {
         //Intégration animation
         ZStack{
             if viewModel.indexOrder == 1{
-                WaveEffectView(
-                    inhaleD: viewModel.inhaleD,
-                    holdD: viewModel.holdD,
-                    exhaleD: viewModel.exhaleD,
-                    nbOfCycles: viewModel.nbOfCycles,
-                )
+                WaveEffectView(viewModel: viewModel)
                     .ignoresSafeArea()
             }
             else if viewModel.indexOrder == 2{
-                MontainAnimationView()
+                MontainAnimationView(viewModel: viewModel)
                     .ignoresSafeArea()
             }
             else if viewModel.indexOrder == 3{
@@ -41,7 +36,6 @@ struct BreathingPlayerView: View {
             
             //MARK: FIXED TIMER + PLAYER
             VStack{
-               // Spacer()
                 //conversion en minutes / secondes
                 let minutes : Int = viewModel.timeRemaining / 60
                 let seconds : Int = viewModel.timeRemaining % 60
@@ -102,7 +96,7 @@ struct BreathingPlayerView: View {
             holdD: 1,
             exhaleD: 4,
             nbOfCycles: 6,
-            indexOrder : 3,            
+            indexOrder : 3
         )
     )
 }

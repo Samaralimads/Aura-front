@@ -56,6 +56,7 @@ struct StarsAnimView: View {
                     .position(x: star.x, y: star.y)
                     .opacity(star.opacity)
             }
+            //Animation continue etoiles scintillantes
             .onAppear {
                 for i in 0..<stars.count {
                    
@@ -69,7 +70,6 @@ struct StarsAnimView: View {
             }
         }
     
-    
     // Animation de l’étoile filante
        func animateShootingStar() {
            let screen = UIScreen.main.bounds
@@ -77,7 +77,7 @@ struct StarsAnimView: View {
            // Position de départ aléatoire (en haut à gauche de l’écran)
            let startX = CGFloat.random(in: -10...screen.width / 2)
            let startY = CGFloat.random(in: -100...screen.height / 2)
-           // Position d’arrivée (plus bas et plus à droite)
+           // Position arrivée (plus bas et plus à droite)
            let endX = startX + 400
            let endY = startY + 400
            
