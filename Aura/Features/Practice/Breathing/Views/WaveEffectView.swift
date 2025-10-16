@@ -64,7 +64,13 @@ struct WaveEffectView: View {
             if viewModel.isPlaying{
                 startWaveAnim()
             } else {
-                stopWaveAnimation()
+                waveTask?.cancel()
+                waveTask = nil
+                if viewModel.isFinished {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        wavePosition = waveStartPosition
+                    }
+                }
             }
         }
     }
@@ -85,11 +91,6 @@ struct WaveEffectView: View {
         }
     }
     
-    //MARK: - STOP ANIM WAVES
-    func stopWaveAnimation() {
-        waveTask?.cancel()
-        waveTask = nil
-    }
     
     func animateWave(to position: CGFloat, duration: Int) async {
         await MainActor.run {
@@ -109,6 +110,7 @@ struct WaveEffectView: View {
             holdD: 1,
             exhaleD: 4,
             nbOfCycles: 6,
-            indexOrder : 3)
+            indexOrder : 3,
+            audio: "night")
     )
 }

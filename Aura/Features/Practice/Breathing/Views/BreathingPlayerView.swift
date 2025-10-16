@@ -22,7 +22,8 @@ struct BreathingPlayerView: View {
                     .ignoresSafeArea()
             }
             else if viewModel.indexOrder == 2{
-                MontainAnimationView(viewModel: viewModel)
+                SunsetEffectView(viewModel: viewModel)
+               // MontainAnimationView(viewModel: viewModel)
                     .ignoresSafeArea()
             }
             else if viewModel.indexOrder == 3{
@@ -96,7 +97,8 @@ struct BreathingPlayerView: View {
             holdD: 1,
             exhaleD: 4,
             nbOfCycles: 6,
-            indexOrder : 3
+            indexOrder : 3,
+            audio: "night"
         )
     )
 }

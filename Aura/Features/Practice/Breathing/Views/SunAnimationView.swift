@@ -94,6 +94,7 @@ struct SunAnimationView: View {
         holdD: 1,
         exhaleD: 4,
         nbOfCycles: 6,
-        indexOrder : 3)
+        indexOrder : 3,
+        audio: "night")
     )
 }

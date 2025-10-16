@@ -53,6 +53,11 @@ struct MoonAnimationView: View {
                 } else {
                     moonTask?.cancel()
                     moonTask = nil
+                    if viewModel.isFinished{
+                        moonScale = 0.8
+                        rayonsScale = moonScale
+                    }
+                    
                 }
             }
         }
@@ -90,6 +95,7 @@ struct MoonAnimationView: View {
             holdD: 1,
             exhaleD: 4,
             nbOfCycles: 6,
-            indexOrder : 3)
+            indexOrder : 3,
+            audio: "night")
     )
 }
