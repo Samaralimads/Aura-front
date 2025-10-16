@@ -1,14 +1,15 @@
 //
-//  LoginView.swift
+//  RegisterView.swift
 //  Aura
 //
-//  Created by Mehdi Legoullon on 10/10/2025.
+//  Created by Mehdi Legoullon on 16/10/2025.
 //
 
 import SwiftUI
 
-struct LoginView: View {
-    @State private var viewModel = LoginViewModel()
+struct RegisterView: View {
+    @Environment(AuthState.self) private var authState
+    @State private var viewModel = RegisterViewModel()
     
     var body: some View {
         NavigationStack {
@@ -17,19 +18,29 @@ struct LoginView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
-                    .padding(.top, 60)
                     .padding(.bottom, 20)
                 
                 VStack(spacing: 8) {
-                    Text("Bon retour !")
+                    Text("C'est parti !")
                         .font(.custom("Lexend-Bold", size: 36))
                         .bold()
-                    Text("Connectez-vous")
-                        .font(.custom("Lexend-Bold", size: 36))
                 }
                 .foregroundColor(.primary)
                 
                 VStack(spacing: 16) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 25)
+                            .fill(Color(.white))
+                            .frame(height: 56)
+                        
+                        TextField("Prénom", text: $viewModel.firstName)
+                            .textFieldStyle(DefaultTextFieldStyle())
+                            .bold()
+                            .autocapitalization(.none)
+                            .padding(.horizontal, 16)
+                    }
+                    .frame(width: 360, height: 56)
+                    
                     ZStack {
                         RoundedRectangle(cornerRadius: 25)
                             .fill(Color(.white))
@@ -57,29 +68,18 @@ struct LoginView: View {
                     }
                     .frame(width: 360, height: 56)
                 }
-                .padding(.top, 40)
-                
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        print("Mot de passe oublié ?")
-                    }) {
-                        Text("Mot de passe oublié ?")
-                            .font(.caption)
-                            .foregroundColor(.black)
-                    }
-                    Spacer()
-                }
-                .padding(.top, 8)
+                .padding(.top, 20)
                 
                 Button(action: {
-                    Task { await viewModel.login() }
+                    Task {
+                        await viewModel.register()
+                    }
                 }) {
                     if viewModel.isLoading {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .white))
                     } else {
-                        Text("Se connecter")
+                        Text("Créer un compte")
                             .font(.custom("Lexend-Bold", size: 22))
                             .foregroundColor(.white)
                     }
@@ -88,25 +88,52 @@ struct LoginView: View {
                 .background(Color.black)
                 .cornerRadius(25)
                 .disabled(viewModel.isLoading)
-                .padding(.top, 20)
+                .padding(.top, 30)
+                .padding(.bottom, 20)
                 
-                Spacer()
-                
-                VStack(spacing: 8) {
-                    Text("Vous n’avez pas de compte ?")
+                HStack(spacing: 8) {
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(width: 75, height: 1)
+                    
+                    Text("Créer un compte avec ")
                         .font(.custom("Lexend-Medium", size: 17))
                         .foregroundColor(.primary)
                     
-                    NavigationLink(destination: RegisterView()) {
-                        Text("Créer un compte")
-                            .font(.custom("Lexend-Bold", size: 17))
-                            .foregroundColor(.black)
+                    Rectangle()
+                        .fill(Color.black)
+                        .frame(width: 75, height: 1)
+                }
+                .padding(.bottom, 5)
+                
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image("ButtonFacebook")
+                            .frame(width: 105, height: 50)
+                        
+                        Image("ButtonGoogle")
+                            .frame(width: 105, height: 50)
+                        
+                        Image("ButtonApple")
+                            .frame(width: 105, height: 50)
+                    }
+                    .padding(.bottom, 30)
+                    
+                    NavigationLink(destination: LoginView()) {
+                        VStack(spacing: 4) {
+                            Text("Avez-vous un compte ?")
+                                .font(.custom("Lexend-Medium", size: 17))
+                                .foregroundColor(.primary)
+                            Text("Se connecter")
+                                .font(.custom("Lexend-Bold", size: 17))
+                                .foregroundColor(.black)
+                        }
                     }
                 }
-                .padding(.bottom, 30)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("jaune-clair"))
+            .navigationBarBackButtonHidden(true)
             .alert("Erreur", isPresented: Binding(
                 get: { viewModel.errorMessage != nil },
                 set: { _ in viewModel.errorMessage = nil }
@@ -115,16 +142,23 @@ struct LoginView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
-            .navigationDestination(isPresented: $viewModel.isLoggedIn) {
+            .navigationDestination(isPresented: Binding(
+                get: { viewModel.isLoggedIn },
+                set: { _ in }
+            )) {
                 TabBar()
                     .navigationBarBackButtonHidden(true)
             }
-            .navigationBarBackButtonHidden(true)
+            .onChange(of: viewModel.isLoggedIn) { oldValue, newValue in
+                if newValue {
+                    authState.isLoggedIn = true
+                }
+            }
         }
     }
 }
 
 
 #Preview {
-    LoginView()
+    RegisterView()
 }
