@@ -11,24 +11,33 @@ struct MeditationCardView: View {
     let meditation: Meditation
 
     var body: some View {
-      VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 6) {
+            // Image en haut
             Image(meditation.image)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 204, height: 137)
+                .frame(maxWidth: .infinity)
+                .frame(height: 130)
                 .background(Color(.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 13))
+
+            // Titre
             Text(meditation.title)
                 .font(.custom("Lexend-Medium", size: 14, relativeTo: .subheadline))
                 .foregroundStyle(Color.black)
                 .lineLimit(1)
-          HStack {
-                 Image(systemName: "clock")
-                     .foregroundColor(.gray)
-                 Text("\(meditation.duration) min")
-                     .font(.caption)
-                     .foregroundColor(.gray)
-             }
+
+            // Durée
+            HStack(spacing: 4) {
+                Image(systemName: "clock")
+                    .foregroundColor(.gray)
+                Text("\(meditation.duration) min")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
         }
+        .padding(6)
+        .cornerRadius(13)
     }
 }
 
@@ -43,4 +52,6 @@ struct MeditationCardView: View {
             audio: "audio1"
         )
     )
+    .frame(width: 180)
+    .padding()
 }
