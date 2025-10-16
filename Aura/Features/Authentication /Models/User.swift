@@ -7,19 +7,33 @@
 
 import Foundation
 
-// UserLoginRequest.swift
+
 struct UserLoginRequest: Codable {
     let email: String
     let password: String
 }
 
-// UserLoginResponse.swift
+
 struct UserLoginResponse: Codable {
     let token: String
     let firstName: String
 }
 
+
 struct LogoutResponseDTO: Codable {
     let success: Bool
     let message: String
+}
+
+
+struct UserRegisterRequest: Codable {
+    let firstName: String
+    let email: String
+    let password: String
+}
+
+
+struct UserRegisterResponse: Codable {
+    let firstName: String
+    let token: String
 }
