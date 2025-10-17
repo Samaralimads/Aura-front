@@ -43,7 +43,7 @@ struct ProfileView: View {
                 .padding(.top)
                 
                 HStack(spacing: 12) {
-                    ForEach(0..<3, id: \.self) { _ in
+                    ForEach(0..<4, id: \.self) { _ in
                         Image("med3")
                             .resizable()
                             .scaledToFit()
@@ -98,13 +98,6 @@ struct ProfileView: View {
             .cornerRadius(20)
             .frame(width: 360, height: 250)
             
-            
-            
-            
-            
-            
-            Spacer()
-            
             if viewModel.isLoading {
                 ProgressView()
             } else {
@@ -124,6 +117,7 @@ struct ProfileView: View {
                         .bold()
                 }
                 .padding()
+                Spacer()
             }
         }
         .navigationDestination(isPresented: $navigateToLogin) {
