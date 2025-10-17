@@ -12,6 +12,7 @@ struct ProfileView: View {
     @State private var viewModel = ProfileViewModel()
     @State private var navigateToLogin = false
     @State private var isDarkModeOn = false
+    @State private var isNotification = false
 
     
     var body: some View {
@@ -63,13 +64,15 @@ struct ProfileView: View {
                 HStack {
                     Text("Notification")
                     Spacer()
-                    Toggle("", isOn: $isDarkModeOn)
+                    Toggle("", isOn: $isNotification)
+                        .tint(.violet)
                 }
             
                 HStack {
                     Text("Dark mode")
                     Spacer()
                     Toggle("", isOn: $isDarkModeOn)
+                        .tint(.violet)
                 }
             
                 HStack {
