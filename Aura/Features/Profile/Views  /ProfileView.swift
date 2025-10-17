@@ -9,18 +9,14 @@ import SwiftUI
 
 
 struct ProfileView: View {
-    @Environment(AuthState.self) private var authState
+    @State private var viewModel = ProfileViewModel()
     
     var body: some View {
-        Button("Se déconnecter") {
-            Task {
-                do {
-                    try await AuthService.shared.logout()
-                    authState.logout()
-                } catch {
-                    authState.logout()
-                }
-            }
+        VStack(alignment: .leading) {
+            Text("\(viewModel.userName)")
+                .font(.custom("Lexend-Bold", size: 36))
+                .padding()
+            Spacer()
         }
     }
 }
