@@ -8,14 +8,17 @@
 import Foundation
 import Observation
 
+
 @Observable
 final class ProfileViewModel {
-    private let authService = AuthService.shared
     var userName: String = ""
     var userEmail: String = ""
     var userAvatar: String = ""
     var lockedBadges: [UserProfileResponse.Badge] = []
     var unlockedBadges: [UserProfileResponse.Badge] = []
+    var isLoading: Bool = false
+    
+    private let authService = AuthService.shared
     
     init() {
         Task { await loadUserProfile() }
@@ -24,15 +27,26 @@ final class ProfileViewModel {
     private func loadUserProfile() async {
         do {
             let profile = try await authService.getUserProfile()
-            DispatchQueue.main.async {
-                self.userName = profile.firstName
-                self.userEmail = profile.email
-                self.userAvatar = profile.avatar
-                self.lockedBadges = profile.lockedBadges
-                self.unlockedBadges = profile.unlockedBadges
+            await MainActor.run {
+                userName = profile.firstName
+                userEmail = profile.email
+                userAvatar = profile.avatar
+                lockedBadges = profile.lockedBadges
+                unlockedBadges = profile.unlockedBadges
             }
         } catch {
             print("Erreur lors de la récupération du profil : \(error)")
         }
+    }
+    
+    func logout() async {
+        isLoading = true
+        do {
+            try await authService.logout()
+            UserDefaults.standard.removeObject(forKey: "userToken")
+        } catch {
+            print("Erreur lors de la déconnexion : \(error)")
+        }
+        isLoading = false
     }
 }
