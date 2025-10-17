@@ -11,6 +11,8 @@ import SwiftUI
 struct ProfileView: View {
     @State private var viewModel = ProfileViewModel()
     @State private var navigateToLogin = false
+    @State private var isDarkModeOn = false
+
     
     var body: some View {
         NavigationStack {
@@ -23,7 +25,7 @@ struct ProfileView: View {
                 Image("perso-violet")
                     .scaledToFit()
                     .frame(width: 112, height: 112)
-
+                
                 HStack {
                     Text("Mes badges")
                         .font(.custom("Lexend-Bold", size: 22))
@@ -39,34 +41,93 @@ struct ProfileView: View {
                 }
                 .padding(.horizontal)
                 .padding(.top)
-
                 
-                Spacer()
-                
-                if viewModel.isLoading {
-                    ProgressView()
-                } else {
-                    Button(action: {
-                        Task {
-                            await viewModel.logout()
-                            navigateToLogin = true
-                        }
-                    }) {
-                        Text("Se déconnecter")
-                            .font(.custom("Lexend-Regular", size: 17))
-                            .frame(width: 350, height: 30)
-                            .padding()
-                            .background(Color.violet)
-                            .foregroundColor(.white)
-                            .cornerRadius(25)
-                            .bold()
+                HStack(spacing: 12) {
+                    ForEach(0..<3, id: \.self) { _ in
+                        Image("med3")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 60, height: 60)
+                            .padding(8)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(12)
+                            .frame(width: 80, height: 110)
                     }
-                    .padding()
+                }
+                .frame(height: 110)
+                .padding(.horizontal)
+            }
+            
+            VStack(spacing: 16) {
+
+                HStack {
+                    Text("Notification")
+                    Spacer()
+                    Toggle("", isOn: $isDarkModeOn)
+                }
+            
+                HStack {
+                    Text("Dark mode")
+                    Spacer()
+                    Toggle("", isOn: $isDarkModeOn)
+                }
+            
+                HStack {
+                    Text("FAQs")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+            
+                HStack {
+                    Text("Réglages")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+            
+                HStack {
+                    Text("Support technique")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
                 }
             }
-            .navigationDestination(isPresented: $navigateToLogin) {
-                LoginView()
+            .padding()
+            .background(Color.grisClair)
+            .cornerRadius(20)
+            .frame(width: 360, height: 250)
+            
+            
+            
+            
+            
+            
+            Spacer()
+            
+            if viewModel.isLoading {
+                ProgressView()
+            } else {
+                Button(action: {
+                    Task {
+                        await viewModel.logout()
+                        navigateToLogin = true
+                    }
+                }) {
+                    Text("Se déconnecter")
+                        .font(.custom("Lexend-Regular", size: 17))
+                        .frame(width: 360, height: 30)
+                        .padding()
+                        .background(Color.violet)
+                        .foregroundColor(.white)
+                        .cornerRadius(25)
+                        .bold()
+                }
+                .padding()
             }
+        }
+        .navigationDestination(isPresented: $navigateToLogin) {
+            LoginView()
         }
     }
 }
