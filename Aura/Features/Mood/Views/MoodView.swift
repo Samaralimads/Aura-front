@@ -20,11 +20,7 @@ struct MoodView: View {
     }
     
     private var backgroundColor: Color {
-        if let colorName = currentMood?.color {
-            return Color(colorName)
-        } else {
-            return Color.gray.opacity(0.15)
-        }
+        MoodColors.fromAsset(name: currentMood?.color)
     }
     
     private var imageURL: URL? {
@@ -73,7 +69,7 @@ struct MoodView: View {
                     Spacer()
                     NavigationLink {
                         //TODO: - temporary, using it to test my protected route
-                        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzYwMzgwNzI3LjAzMDc5Niwic3ViamVjdCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiIsInVzZXJJRCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.7jILYmQkFTd7n1mIJu-fM8fjbKVzJDBSMPNRJeYmKwM")
+                        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySUQiOiI2QTIyQjEyRC05MTE2LTQ3OEYtQTU1Ni1FQzNCRUJCQjgxMkIiLCJzdWJqZWN0IjoiNkEyMkIxMkQtOTExNi00NzhGLUE1NTYtRUMzQkVCQkI4MTJCIiwiZXhwaXJhdGlvbiI6MTc2MTI5NTkwMS45NDcxNX0.jQhxy7my2Q3sSkR8qrAXCmyhMOeZ3NjjWFzOlFFD-vQ")
                     } label: {
                         Text("skip >")
                             .font(.system(size: 17, weight: .medium))
@@ -120,7 +116,7 @@ struct MoodView: View {
                     DayConfigView(moodID: currentMood?.id,
                                   moodColorName: currentMood?.color,
                                   //MARK: - temporary, using it to test my protected route
-                                  token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzYwMzgwNzI3LjAzMDc5Niwic3ViamVjdCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiIsInVzZXJJRCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.7jILYmQkFTd7n1mIJu-fM8fjbKVzJDBSMPNRJeYmKwM"
+                                  token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySUQiOiI2QTIyQjEyRC05MTE2LTQ3OEYtQTU1Ni1FQzNCRUJCQjgxMkIiLCJzdWJqZWN0IjoiNkEyMkIxMkQtOTExNi00NzhGLUE1NTYtRUMzQkVCQkI4MTJCIiwiZXhwaXJhdGlvbiI6MTc2MTI5NTkwMS45NDcxNX0.jQhxy7my2Q3sSkR8qrAXCmyhMOeZ3NjjWFzOlFFD-vQ"
                     )
                 } label: {
                     Text("Valider")

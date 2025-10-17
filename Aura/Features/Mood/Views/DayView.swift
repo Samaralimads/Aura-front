@@ -14,6 +14,7 @@ struct DayView: View {
     @State private var selectedDate: Date?
     @State private var showDetail = false
     @State private var goToMood = false
+    @State private var detailDay: DayModel?
 
     var token: String? = nil
     var moods: [MoodModel]? = nil
@@ -30,8 +31,19 @@ struct DayView: View {
                     moodIconURL: { day in vm.moodIconURL(for: day) },
                     onSelect: { date in
                         selectedDate = date
-                        showDetail = true
-                    },
+                        let cal = Calendar.current
+                        let today = cal.startOfDay(for: Date())
+                        let dayStart = cal.startOfDay(for: date)
+
+                        if let d = vm.day(for: date),
+                           dayStart <= today,
+                           !d.mood.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                           d.mood != "Void" {
+                            detailDay = d
+                                } else {
+                                    detailDay = nil
+                                }
+                            },
                     onAddTodayMood: { goToMood = true }
                 )
 
@@ -50,11 +62,13 @@ struct DayView: View {
                             await vm.fetchDays()
                         }
                     }
-            .sheet(isPresented: $showDetail) {
-                if let date = selectedDate, let day = vm.day(for: date) {
-                    DayDetailSheet(day: day, iconURL: vm.moodIconURL(for: day))
-                        .presentationDetents([.fraction(0.35), .medium])
-                }
+            .sheet(item: $detailDay) { day in
+                DayDetailSheet(
+                    day: day,
+                    iconURL: vm.moodIconURL(for: day),
+                    moods: vm.moods  
+                )
+                .presentationDetents([.fraction(0.35), .medium])
             }
             .navigationDestination(isPresented: $goToMood) {
                 MoodView()
@@ -65,6 +79,6 @@ struct DayView: View {
 
 #Preview {
     NavigationStack {
-        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzYwMzgwNzI3LjAzMDc5Niwic3ViamVjdCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiIsInVzZXJJRCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.7jILYmQkFTd7n1mIJu-fM8fjbKVzJDBSMPNRJeYmKwM")
+        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySUQiOiI2QTIyQjEyRC05MTE2LTQ3OEYtQTU1Ni1FQzNCRUJCQjgxMkIiLCJzdWJqZWN0IjoiNkEyMkIxMkQtOTExNi00NzhGLUE1NTYtRUMzQkVCQkI4MTJCIiwiZXhwaXJhdGlvbiI6MTc2MTI5NTkwMS45NDcxNX0.jQhxy7my2Q3sSkR8qrAXCmyhMOeZ3NjjWFzOlFFD-vQ")
     }
 }

@@ -10,10 +10,14 @@ import SwiftUI
 struct DayDetailSheet: View {
     let day: DayModel
     let iconURL: URL?
+    let moods: [MoodModel]          
+
+    private var moodColor: Color {
+        MoodColors.color(forName: day.mood, in: moods)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            
             HStack(alignment: .center, spacing: 12) {
                 if let url = iconURL {
                     AsyncImage(url: url) { img in
@@ -25,14 +29,15 @@ struct DayDetailSheet: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(formattedLongDate(day.date))
+                    Text(day.date.formatted(.dateTime.weekday(.wide).day().month(.wide)))
                         .font(.system(size: 17, weight: .bold))
-                    if day.emotion != "Void" {
+                        .padding(.bottom, 8)
+
+                    if day.emotion.lowercased() != "void" {
                         Text(day.emotion)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.yellow)
+                            .font(.system(size: 17, weight: .bold))
+                            .foregroundStyle(moodColor)
                     }
-                    
                 }
                 Spacer()
             }
@@ -46,39 +51,34 @@ struct DayDetailSheet: View {
                 }
             }
             .font(.subheadline)
-            .foregroundStyle(.primary)
+            .foregroundStyle(moodColor)
 
-            if day.journal != "Void" {
+            if day.journal.lowercased() != "void" && !day.journal.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 Text(day.journal)
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .padding(.top, 4)
             } else {
-               Text("Vous n’avez rien ajouté pour cette journée.")
+                Text("Vous n’avez rien ajouté pour cette journée.")
             }
 
             Button {
-                // TODO: navigate to edit screen and only for the current day
+                // TODO: navigate to edit screen
             } label: {
                 Text("Modifier")
                     .font(.headline)
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity, minHeight: 44)
-                    .background(.yellow.opacity(0.9))
+                    .background(moodColor)
                     .clipShape(RoundedRectangle(cornerRadius: 22))
             }
             .padding(.top, 4)
 
             Spacer(minLength: 0)
         }
-        .padding(16)
-    }
-
-    private func formattedLongDate(_ date: Date) -> String {
-        let f = DateFormatter()
-        f.locale = Locale(identifier: "fr_FR")
-        f.dateFormat = "EEEE, d MMMM"
-        return f.string(from: date)
+        .padding(30)
     }
 }
+
+
 
