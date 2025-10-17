@@ -23,10 +23,22 @@ struct ProfileView: View {
                 Image("perso-violet")
                     .scaledToFit()
                     .frame(width: 112, height: 112)
-                
-                Text("Modifier mon avatar")
-                    .font(.custom("Lexend-Bold", size: 17))
-                    .padding()
+
+                HStack {
+                    Text("Mes badges")
+                        .font(.custom("Lexend-Bold", size: 22))
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: BadgeView()) {
+                        Text("Tout voir")
+                            .font(.custom("Lexend-Regular", size: 16))
+                            .underline()
+                            .foregroundStyle(.black)
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.top)
 
                 
                 Spacer()
