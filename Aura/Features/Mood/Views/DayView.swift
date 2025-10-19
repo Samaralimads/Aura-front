@@ -59,6 +59,8 @@ struct DayView: View {
                             vm.useMoods(moodVM.moods)
                         }
                         if token != nil {
+                            await vm.fetchReasons()
+                            await vm.fetchSleeps()
                             await vm.fetchDays()
                         }
                     }
@@ -66,7 +68,10 @@ struct DayView: View {
                 DayDetailSheet(
                     day: day,
                     iconURL: vm.moodIconURL(for: day),
-                    moods: vm.moods  
+                    moods: vm.moods,
+                    reasons: vm.reasons,  
+                    sleeps: vm.sleeps
+                    
                 )
                 .presentationDetents([.fraction(0.35), .medium])
             }

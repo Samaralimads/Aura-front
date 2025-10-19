@@ -5,12 +5,21 @@
 //  Created by Samara Lima da Silva on 11/10/2025.
 //
 
+//
+//  DayDetailSheet.swift
+//  Aura
+//
+//  Created by Samara Lima da Silva on 11/10/2025.
+//
+
 import SwiftUI
 
 struct DayDetailSheet: View {
     let day: DayModel
     let iconURL: URL?
-    let moods: [MoodModel]          
+    let moods: [MoodModel]
+    let reasons: [ReasonModel]   // added
+    let sleeps: [SleepModel]     // added
 
     private var moodColor: Color {
         MoodColors.color(forName: day.mood, in: moods)
@@ -18,12 +27,16 @@ struct DayDetailSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
+            // MARK: - Header
             HStack(alignment: .center, spacing: 12) {
                 if let url = iconURL {
                     AsyncImage(url: url) { img in
-                        img.resizable().scaledToFit().frame(height: 67)
+                        img.resizable()
+                            .scaledToFit()
+                            .frame(height: 67)
                     } placeholder: {
-                        Circle().stroke(style: StrokeStyle(lineWidth: 2, dash: [4]))
+                        Circle()
+                            .stroke(style: StrokeStyle(lineWidth: 2, dash: [4]))
                             .frame(height: 67)
                     }
                 }
@@ -39,29 +52,61 @@ struct DayDetailSheet: View {
                             .foregroundStyle(moodColor)
                     }
                 }
+
                 Spacer()
             }
 
+            // MARK: - Reason & Sleep
             HStack(spacing: 16) {
-                if day.reason.lowercased() != "void" {
-                    Label(day.reason, systemImage: "location.circle")
+                if day.reason != "Void" {
+                    if let reason = reasons.first(where: {
+                        $0.name == day.reason
+                    }) {
+                        Label {
+                            Text(day.reason)
+                        } icon: {
+                            Image("\(reason.image)-fill")
+                                .renderingMode(.template)
+                                .foregroundStyle(moodColor)
+                        }
+                        
+                    } else {
+                        Label(day.reason, systemImage: "questionmark.circle")
+                    }
                 }
-                if day.sleep.lowercased() != "void" {
-                    Label(day.sleep, systemImage: "moon.zzz")
+
+                if day.sleep != "Void" {
+                    if let sleep = sleeps.first(where: {
+                        $0.name == day.sleep
+                    }) {
+                        Label {
+                            Text(day.sleep)
+                        } icon: {
+                            Image("\(sleep.image)-fill")
+                                .renderingMode(.template)
+                                .foregroundStyle(moodColor)
+                        }
+                    } else {
+                        Label(day.sleep, systemImage: "moon.zzz")
+                    }
                 }
             }
             .font(.subheadline)
-            .foregroundStyle(moodColor)
+            
 
-            if day.journal.lowercased() != "void" && !day.journal.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            // MARK: - Journal
+            if day.journal.lowercased() != "void" &&
+                !day.journal.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 Text(day.journal)
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .padding(.top, 4)
             } else {
                 Text("Vous n’avez rien ajouté pour cette journée.")
+                    .foregroundStyle(.secondary)
             }
 
+            // MARK: - Edit Button
             Button {
                 // TODO: navigate to edit screen
             } label: {
@@ -79,6 +124,7 @@ struct DayDetailSheet: View {
         .padding(30)
     }
 }
+
 
 
 
