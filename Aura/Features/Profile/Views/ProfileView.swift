@@ -13,15 +13,13 @@ struct ProfileView: View {
     @State private var navigateToLogin = false
     @State private var isDarkModeOn = false
     @State private var isNotification = false
-
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
-                
                 Text("\(viewModel.userName)")
                     .font(.custom("Lexend-Bold", size: 36))
-                    .padding()
+                    .padding(.top, 25)
                 
                 Image("perso-violet")
                     .scaledToFit()
@@ -57,74 +55,73 @@ struct ProfileView: View {
                 }
                 .frame(height: 110)
                 .padding(.horizontal)
-            }
-            
-            VStack(spacing: 16) {
-
-                HStack {
-                    Text("Notification")
-                    Spacer()
-                    Toggle("", isOn: $isNotification)
-                        .tint(.violet)
-                }
-            
-                HStack {
-                    Text("Dark mode")
-                    Spacer()
-                    Toggle("", isOn: $isDarkModeOn)
-                        .tint(.violet)
-                }
-            
-                HStack {
-                    Text("FAQs")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                }
-            
-                HStack {
-                    Text("Réglages")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                }
-            
-                HStack {
-                    Text("Support technique")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                }
-            }
-            .padding()
-            .background(Color.grisClair)
-            .cornerRadius(20)
-            .frame(width: 360, height: 250)
-            
-            if viewModel.isLoading {
-                ProgressView()
-            } else {
-                Button(action: {
-                    Task {
-                        await viewModel.logout()
-                        navigateToLogin = true
+                
+                VStack(spacing: 16) {
+                    HStack {
+                        Text("Notification")
+                        Spacer()
+                        Toggle("", isOn: $isNotification)
+                            .tint(.violet)
                     }
-                }) {
-                    Text("Se déconnecter")
-                        .font(.custom("Lexend-Regular", size: 17))
-                        .frame(width: 360, height: 30)
-                        .padding()
-                        .background(Color.violet)
-                        .foregroundColor(.white)
-                        .cornerRadius(25)
-                        .bold()
+                    
+                    HStack {
+                        Text("Dark mode")
+                        Spacer()
+                        Toggle("", isOn: $isDarkModeOn)
+                            .tint(.violet)
+                    }
+                    
+                    HStack {
+                        Text("FAQs")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                    }
+                    
+                    HStack {
+                        Text("Réglages")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                    }
+                    
+                    HStack {
+                        Text("Support technique")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                    }
                 }
                 .padding()
-                Spacer()
+                .background(Color.grisClair)
+                .cornerRadius(20)
+                .frame(width: 360, height: 250)
+                
+                if viewModel.isLoading {
+                    ProgressView()
+                } else {
+                    Button(action: {
+                        Task {
+                            await viewModel.logout()
+                            navigateToLogin = true
+                        }
+                    }) {
+                        Text("Se déconnecter")
+                            .font(.custom("Lexend-Regular", size: 17))
+                            .frame(width: 360, height: 30)
+                            .padding()
+                            .background(Color.violet)
+                            .foregroundColor(.white)
+                            .cornerRadius(25)
+                            .bold()
+                    }
+                    .padding()
+                    Spacer()
+                }
             }
-        }
-        .navigationDestination(isPresented: $navigateToLogin) {
-            LoginView()
+            .navigationDestination(isPresented: $navigateToLogin) {
+                LoginView()
+            }
         }
     }
 }
