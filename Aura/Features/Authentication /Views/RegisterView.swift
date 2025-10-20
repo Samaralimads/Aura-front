@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct RegisterView: View {
-    @Environment(AuthState.self) private var authState
     @State private var viewModel = RegisterViewModel()
     
     var body: some View {
@@ -148,11 +147,6 @@ struct RegisterView: View {
             )) {
                 TabBar()
                     .navigationBarBackButtonHidden(true)
-            }
-            .onChange(of: viewModel.isLoggedIn) { oldValue, newValue in
-                if newValue {
-                    authState.isLoggedIn = true
-                }
             }
         }
     }

@@ -8,23 +8,9 @@
 import SwiftUI
 import Observation
 
-@Observable
-final class AuthState {
-    var isLoggedIn: Bool
-    
-    init() {
-        self.isLoggedIn = UserDefaults.standard.string(forKey: "userToken") != nil
-    }
-    
-    func logout() {
-        UserDefaults.standard.removeObject(forKey: "userToken")
-        isLoggedIn = false
-    }
-}
-
 @main
 struct AuraApp: App {
-    @State private var authState = AuthState()
+    @State private var authState = AppState()
     
     var body: some Scene {
         WindowGroup {
