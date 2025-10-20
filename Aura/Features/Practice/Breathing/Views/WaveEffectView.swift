@@ -76,32 +76,27 @@ struct WaveEffectView: View {
     }
     
     //MARK: - ANIM WAVES
-    func startWaveAnim() {
+    func startWaveAnim(){
         waveTask = Task {
             while viewModel.isPlaying {
                 //INHALE
-                await animateWave(to: waveStartPosition - 150, duration: viewModel.inhaleD)
+                withAnimation(.easeInOut(duration: Double(viewModel.inhaleD))) {
+                    wavePosition = waveStartPosition - 150
+                }
+                try? await Task.sleep(for: .seconds(viewModel.inhaleD))
                 
                 //HOLD
                 try? await Task.sleep(for: .seconds(viewModel.holdD))
                 
                 //EXHALE
-                await animateWave(to: waveStartPosition, duration: viewModel.exhaleD)
+                withAnimation(.easeInOut(duration: Double(viewModel.exhaleD))) {
+                    wavePosition = waveStartPosition
+                }
+                try? await Task.sleep(for: .seconds(viewModel.exhaleD))
             }
         }
     }
-    
-    
-    func animateWave(to position: CGFloat, duration: Int) async {
-        await MainActor.run {
-            withAnimation(.easeInOut(duration: Double(duration))) {
-                wavePosition = position
-            }
-        }
-        try? await Task.sleep(for: .seconds(duration))
-    }
-    
-}//end view
+}
 
 #Preview {
     WaveEffectView(

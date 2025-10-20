@@ -9,21 +9,18 @@ import AVFoundation
 
 class MusicManager {
     
-    private var player: AVAudioPlayer?
+    //private var player: AVAudioPlayer?
+    private var player: AVPlayer?
     
     //MARK: FONCTION PLAY MUSIC
-    func playSound(named name: String) {
-        if let url = Bundle.main.url(forResource: name, withExtension: "mp3") {
-            do {
-                player = try AVAudioPlayer(contentsOf: url)
-                player?.prepareToPlay() // Précharge le son
-                player?.play()
-            } catch {
-                print("Erreur : \(error)")
-            }
-        } else {
-            print("Fichier audio \(name).mp3 non trouvé")
+    func playSound(named url: String) {
+        guard let url = URL(string: url) else {
+            print("ERROR: URL invalid.")
+            return
         }
+        player?.pause()
+        player = AVPlayer(url: url)
+        player?.play()
     }
     
     func pauseSound() {
@@ -32,7 +29,7 @@ class MusicManager {
     
     //MARK: FONCTION STOP MUSIC
     func stopSound() {
-        player?.stop()
+        player?.pause()
         player = nil  //vide le player
     }
 }

@@ -13,6 +13,7 @@ class BreathingPlayerViewModel {
     private var timer: Timer?
     var isPlaying: Bool = false
     var isFinished: Bool = false
+    
     private var cloundsTask: Task<Void, Never>?
     
     var inhaleD: Int
@@ -24,7 +25,7 @@ class BreathingPlayerViewModel {
     var indexOrder: Int
     var audio: String
     
-    var cycles: [String] = ["Inspirez","Bloquez","Expirez","Séance terminée"]
+    var cycles: [String] = ["Inspirez","Bloquez","Expirez"]
     
     init(inhaleD: Int, holdD: Int, exhaleD: Int, nbOfCycles: Int, indexOrder: Int, audio: String) {
         self.inhaleD = inhaleD
@@ -36,7 +37,7 @@ class BreathingPlayerViewModel {
         self.indexOrder = indexOrder
         self.audio = audio
     }
-     
+    
     var Totalduration: Int {
         (inhaleD + holdD + exhaleD) * nbOfCycles
     }
@@ -59,7 +60,7 @@ class BreathingPlayerViewModel {
                 
                 let cycleDuration = self.inhaleD + self.holdD + self.exhaleD
                 let position = current % cycleDuration
-
+                
                 switch position {
                 case 1: // DÉBUT INHALE
                     self.indexCycle = 0
@@ -75,16 +76,19 @@ class BreathingPlayerViewModel {
                 }
                 
             } else {
-                self.timer?.invalidate()
-                self.isPlaying = false
-                self.isFinished = true
-                self.indexCycle = 3
+                self.stopBreathing()
             }
         }
     }
     
+    //Fonction pour mettre en pause le timer
+    func pauseBreathing() {
+        self.timer?.invalidate()
+        isPlaying = false
+    }
+    
     //Fonction pour stopper le timer
-    func stopBreathing() -> Void {
+    func stopBreathing() {
         self.timer?.invalidate()
         self.isFinished = true
         isPlaying = false

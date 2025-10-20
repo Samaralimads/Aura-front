@@ -34,7 +34,6 @@ struct PickerView: View {
                    }
         }
         .padding(.horizontal, 17)
-
     }
 }
 

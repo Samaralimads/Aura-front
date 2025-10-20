@@ -11,13 +11,13 @@ struct MoonAnimationView: View {
     
     @State var viewModel : BreathingPlayerViewModel
     @State private var waveScale: CGFloat = 0.9
-    @State private var waveOpacity: Double = 0.6
+    @State private var waveOpacity: Double = 0.5
     @State private var moonScale: CGFloat = 0.8
     @State private var rayonsScale: CGFloat = 0.8
     
     @State var moonTask: Task<Void, Never>?
 
-    let baseSizes: [CGFloat] = [150, 205, 255]
+    let baseSizes: [CGFloat] = [170, 225, 275]
 
     var body: some View {
         ZStack {
@@ -71,10 +71,11 @@ struct MoonAnimationView: View {
             while viewModel.isPlaying {
                 withAnimation(.easeInOut(duration: Double(2))) {
                     //INHALE
-                    moonScale = 1
+                    moonScale = 1.2
                     rayonsScale = moonScale
                 }
                 try? await Task.sleep(for: .seconds(viewModel.inhaleD))
+
                 //HOLD
                 try? await Task.sleep(for: .seconds(viewModel.holdD))
                 //EXHALE
