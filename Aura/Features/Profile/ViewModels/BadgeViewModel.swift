@@ -14,6 +14,8 @@ class BadgeViewModel {
     var lockedBadges: [UserProfileResponse.Badge] = []
     var isLoading = false
     var error: Error?
+    let lockURL = "http://127.0.0.1:8080/Badges/lock.png"
+
     
     private let baseURL = "http://127.0.0.1:8080"
     private let authService = AuthService()

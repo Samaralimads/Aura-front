@@ -13,7 +13,7 @@ struct BadgeView: View {
     var body: some View {
         ScrollView {
             
-            // Badges unlocked by the user section here
+            // Unlocked Badges Section
             VStack(alignment: .leading, spacing: 20) {
                 Text("Débloqués")
                     .font(.custom("Lexend-Bold", size: 22))
@@ -62,8 +62,8 @@ struct BadgeView: View {
                 .padding(.horizontal)
             }
             
-            // LockBadges section here
-            VStack(alignment: .leading, spacing: 20) {
+            // Locked Badges Section
+            VStack(alignment: .leading) {
                 Text("À Débloquer")
                     .font(.custom("Lexend-Bold", size: 22))
                     .bold()
@@ -75,10 +75,10 @@ struct BadgeView: View {
                 ) {
                     ForEach(viewModel.lockedBadges) { badge in
                         VStack {
-                            if let url = viewModel.getBadgeImageURL(
-                                badge.image
+                            if let lockURL = URL(
+                                string: "\(viewModel.lockURL)"
                             ) {
-                                AsyncImage(url: url) { phase in
+                                AsyncImage(url: lockURL) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
@@ -88,8 +88,9 @@ struct BadgeView: View {
                                             .resizable()
                                             .scaledToFit()
                                             .frame(width: 80, height: 80)
+                                            .opacity(0.7)
                                     case .failure:
-                                        Image(systemName: "photo")
+                                        Image(systemName: "lock.fill")
                                             .resizable()
                                             .scaledToFit()
                                             .frame(width: 40, height: 40)
@@ -110,8 +111,6 @@ struct BadgeView: View {
                 }
                 .padding(.horizontal)
             }
-
-            
             .padding(.vertical)
             .navigationTitle("Mes Badges")
             .task {
