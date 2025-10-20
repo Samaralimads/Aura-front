@@ -37,20 +37,3 @@ struct UserRegisterResponse: Codable {
     let firstName: String
     let token: String
 }
-
-
-struct UserProfileResponse: Codable {
-    let id: String
-    let email: String
-    let firstName: String
-    let avatar: String
-    let lockedBadges: [Badge]
-    let unlockedBadges: [Badge]
-    
-    struct Badge: Codable {
-        let id: String
-        let name: String
-        let description: String
-        let image: String
-    }
-}
