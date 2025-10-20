@@ -73,7 +73,7 @@ struct MoodView: View {
                     Spacer()
                     NavigationLink {
                         //TODO: - temporary, using it to test my protected route
-                        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzYwMzgwNzI3LjAzMDc5Niwic3ViamVjdCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiIsInVzZXJJRCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.7jILYmQkFTd7n1mIJu-fM8fjbKVzJDBSMPNRJeYmKwM")
+                        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWJqZWN0IjoiQ0NGNEY0QjMtRTZFNi00QThGLUEzODItM0QzNTA3NUUzODU3IiwiZXhwaXJhdGlvbiI6MTc2MTI5MzAwMy4yNTAyMzksInVzZXJJRCI6IkNDRjRGNEIzLUU2RTYtNEE4Ri1BMzgyLTNEMzUwNzVFMzg1NyJ9.KjVr-ePRAeouTiZQDgNr9aESQQHtghjqychxqOm9vjI")
                     } label: {
                         Text("skip >")
                             .font(.system(size: 17, weight: .medium))
@@ -120,7 +120,7 @@ struct MoodView: View {
                     DayConfigView(moodID: currentMood?.id,
                                   moodColorName: currentMood?.color,
                                   //MARK: - temporary, using it to test my protected route
-                                  token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzYwMzgwNzI3LjAzMDc5Niwic3ViamVjdCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiIsInVzZXJJRCI6IjZBMjJCMTJELTkxMTYtNDc4Ri1BNTU2LUVDM0JFQkJCODEyQiJ9.7jILYmQkFTd7n1mIJu-fM8fjbKVzJDBSMPNRJeYmKwM"
+                                  token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWJqZWN0IjoiQ0NGNEY0QjMtRTZFNi00QThGLUEzODItM0QzNTA3NUUzODU3IiwiZXhwaXJhdGlvbiI6MTc2MTI5MzAwMy4yNTAyMzksInVzZXJJRCI6IkNDRjRGNEIzLUU2RTYtNEE4Ri1BMzgyLTNEMzUwNzVFMzg1NyJ9.KjVr-ePRAeouTiZQDgNr9aESQQHtghjqychxqOm9vjI"
                     )
                 } label: {
                     Text("Valider")
