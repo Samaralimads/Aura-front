@@ -10,16 +10,16 @@ import SwiftUI
 
 struct ProfileView: View {
     @State private var viewModel = ProfileViewModel()
+    @State private var badgeViewModel = BadgeViewModel()
     @State private var navigateToLogin = false
     @State private var isDarkModeOn = false
     @State private var isNotification = false
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .center, spacing: 20) {
+            VStack(alignment: .center) {
                 Text("\(viewModel.userName)")
                     .font(.custom("Lexend-Bold", size: 36))
-                    .padding(.top, 25)
                 
                 Image("perso-violet")
                     .scaledToFit()
@@ -41,20 +41,40 @@ struct ProfileView: View {
                 .padding(.horizontal)
                 .padding(.top)
                 
-                HStack(spacing: 12) {
-                    ForEach(0..<4, id: \.self) { _ in
-                        Image("med3")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
-                            .frame(width: 80, height: 110)
+                HStack(spacing: 15) {
+                    ForEach(
+                        badgeViewModel.unlockedBadges.prefix(3),
+                        id: \.id
+                    ) { badge in
+                        VStack {
+                            if let url = badgeViewModel.getBadgeImageURL(
+                                badge.image
+                            ) {
+                                AsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                            .frame(width: 60, height: 60)
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 110, height: 110)
+                                    case .failure:
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 30, height: 30)
+                                            .foregroundColor(.gray)
+                                    @unknown default:
+                                        EmptyView()
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 .frame(height: 110)
-                .padding(.horizontal)
                 
                 VStack(spacing: 16) {
                     HStack {
@@ -118,6 +138,9 @@ struct ProfileView: View {
                     .padding()
                     Spacer()
                 }
+            }
+            .task {
+                await badgeViewModel.fetchUserBadges()
             }
             .navigationDestination(isPresented: $navigateToLogin) {
                 LoginView()
