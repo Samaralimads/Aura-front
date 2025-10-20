@@ -11,6 +11,7 @@ import Observation
 @Observable
 class BadgeViewModel {
     var unlockedBadges: [UserProfileResponse.Badge] = []
+    var lockedBadges: [UserProfileResponse.Badge] = []
     var isLoading = false
     var error: Error?
     
@@ -24,6 +25,7 @@ class BadgeViewModel {
         do {
             let profile = try await authService.getUserProfile()
             unlockedBadges = profile.unlockedBadges
+            lockedBadges = profile.lockedBadges
         } catch {
             self.error = error
         }
