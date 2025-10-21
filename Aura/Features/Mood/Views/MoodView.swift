@@ -70,7 +70,8 @@ struct MoodView: View {
                     NavigationLink {
                         //TODO: - temporary, using it to test my protected route
                         DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySUQiOiI2QTIyQjEyRC05MTE2LTQ3OEYtQTU1Ni1FQzNCRUJCQjgxMkIiLCJzdWJqZWN0IjoiNkEyMkIxMkQtOTExNi00NzhGLUE1NTYtRUMzQkVCQkI4MTJCIiwiZXhwaXJhdGlvbiI6MTc2MTI5NTkwMS45NDcxNX0.jQhxy7my2Q3sSkR8qrAXCmyhMOeZ3NjjWFzOlFFD-vQ")
-                    } label: {
+                    }
+                    label: {
                         Text("skip >")
                             .font(.system(size: 17, weight: .medium))
                             .foregroundStyle(.black)
@@ -123,7 +124,7 @@ struct MoodView: View {
                         .font(.custom("Lexend-medium", size: 17))
                         .foregroundStyle(.black)
                         .frame(width: 349, height: 48)
-                        .background(.white.opacity(0.5))
+                        .glassEffect(.regular.interactive())
                         .cornerRadius(25)
                 }
                 .padding(.top, 40)
@@ -131,7 +132,6 @@ struct MoodView: View {
             }
             .padding(24)
         }
-        .toolbar(.hidden, for: .tabBar)
         .task {
             await viewModel.fetchMoods()
         }
