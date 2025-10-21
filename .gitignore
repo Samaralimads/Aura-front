@@ -1,14 +1,7 @@
-.DS_Store
-<<<<<<< HEAD
-Aura.xcodeproj/project.xcworkspace/xcuserdata/chabane.xcuserdatad/UserInterfaceState.xcuserstate
-Aura.xcodeproj/xcuserdata/chabane.xcuserdatad/xcschemes/xcschememanagement.plist
-Aura.xcodeproj/project.xcworkspace/xcuserdata/chabane.xcuserdatad/UserInterfaceState.xcuserstate
-=======
-
 # macOS
 .DS_Store
 
 # Xcode
 *.xcuserstate
 *.xcuserdata/
->>>>>>> dev
+**/xcuserdata/

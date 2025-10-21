@@ -17,12 +17,19 @@ struct BreathingView: View {
     ]
     
     var body: some View {
-
         VStack{
             LazyVGrid(columns: columns, spacing: 14) {
                 ForEach(viewModel.breathings) { breathing in
                     NavigationLink {
-                        BreathingPlayerView(viewModel:BreathingPlayerViewModel(inhaleD: breathing.inhaleD, holdD: breathing.holdD, exhaleD: breathing.exhaleD))
+                        BreathingPlayerView(viewModel:BreathingPlayerViewModel(
+                            inhaleD: breathing.inhaleD,
+                            holdD: breathing.holdD,
+                            exhaleD: breathing.exhaleD,
+                            nbOfCycles: breathing.nbOfCycles,
+                            indexOrder: breathing.indexOrder,
+                            audio : breathing.audio ?? ""
+                            
+                        ))
                     } label: {
                         ZStack(alignment: .bottomLeading) {
                             AsyncImage(url: URL(string: "http://127.0.0.1:8080/\(breathing.image)")) { image in
@@ -43,7 +50,7 @@ struct BreathingView: View {
                                     .foregroundColor(.white)
                                 
                                 Text(breathing.description)
-                                    .font(.system(size: 12))
+                                    .font(.system(size: 15))
                                     .foregroundColor(.white)
                             }
                             .multilineTextAlignment(.leading)
@@ -57,9 +64,9 @@ struct BreathingView: View {
         .task {
             await viewModel.fetchBreathings() //charge les données du back
         }
-
     }
 }
-    #Preview {
-        BreathingView()
-    }
+
+#Preview {
+    BreathingView()
+}

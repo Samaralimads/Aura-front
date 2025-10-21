@@ -1,0 +1,36 @@
+//
+//  RegisterViewModel.swift
+//  Aura
+//
+//  Created by Mehdi Legoullon on 16/10/2025.
+//
+
+import Foundation
+import Observation
+
+@Observable
+final class RegisterViewModel {
+    var firstName: String = ""
+    var email: String = ""
+    var password: String = ""
+    var errorMessage: String?
+    var isLoading = false
+    var isLoggedIn = false
+    
+    private let authService = AuthService.shared
+    
+    func register() async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let response = try await authService.register(firstName: firstName, email: email, password: password)
+            UserDefaults.standard.set(response.token, forKey: "userToken")
+            isLoggedIn = true
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        
+        isLoading = false
+    }
+}

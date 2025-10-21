@@ -11,6 +11,10 @@ import SwiftUI
 class BreathingPlayerViewModel {
     
     private var timer: Timer?
+    var isPlaying: Bool = false
+    var isFinished: Bool = false
+    
+    private var cloundsTask: Task<Void, Never>?
     
     var inhaleD: Int
     var holdD: Int
@@ -18,29 +22,37 @@ class BreathingPlayerViewModel {
     var nbOfCycles: Int
     var timeRemaining: Int
     var indexCycle: Int = 0
+    var indexOrder: Int
+    var audio: String
     
-    //Ajouter une phase d'intro au lieu de lancer directement l'exercice ??
     var cycles: [String] = ["Inspirez","Bloquez","Expirez"]
     
-    
-    init(inhaleD: Int, holdD: Int, exhaleD: Int, nbOfCycles: Int = 6) {
+    init(inhaleD: Int, holdD: Int, exhaleD: Int, nbOfCycles: Int, indexOrder: Int, audio: String) {
         self.inhaleD = inhaleD
         self.holdD = holdD
         self.exhaleD = exhaleD
         self.nbOfCycles = nbOfCycles
         self.timeRemaining = (inhaleD + holdD + exhaleD) * nbOfCycles
+        self.nbOfCycles = nbOfCycles
+        self.indexOrder = indexOrder
+        self.audio = audio
     }
     
-    //Fonction pour gerer le cycle
-    func startCycle() -> Void {
-        
+    var Totalduration: Int {
+        (inhaleD + holdD + exhaleD) * nbOfCycles
+    }
+    
+    //Ajout vibrations
+    func lightBreathingVibration() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred() //declenche la vibration
     }
     
     //Fonction pour lancer le timer + cycle (apparition du texte)
-    func start() -> Void {
-        
+    func startBreathing() {
         var current = 0
         timer?.invalidate()
+        isPlaying = true
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ _ in
             if self.timeRemaining > 0 {
                 self.timeRemaining -= 1
@@ -49,22 +61,36 @@ class BreathingPlayerViewModel {
                 let cycleDuration = self.inhaleD + self.holdD + self.exhaleD
                 let position = current % cycleDuration
                 
-                if position < self.inhaleD {
+                switch position {
+                case 1: // DÉBUT INHALE
                     self.indexCycle = 0
-                }
-                else if position < self.inhaleD + self.holdD {
+                    self.lightBreathingVibration()
+                case self.inhaleD: // DÉBUT HOLD
                     self.indexCycle = 1
-                }
-                else {
+                    self.lightBreathingVibration()
+                case self.inhaleD + self.holdD: // DÉBUT EXHALE
                     self.indexCycle = 2
+                    self.lightBreathingVibration()
+                default:
+                    break
                 }
+                
             } else {
-                self.timer?.invalidate()
+                self.stopBreathing()
             }
         }
     }
-    //Fonction pour stopper le timer
-    func stop() -> Void {
+    
+    //Fonction pour mettre en pause le timer
+    func pauseBreathing() {
         self.timer?.invalidate()
+        isPlaying = false
+    }
+    
+    //Fonction pour stopper le timer
+    func stopBreathing() {
+        self.timer?.invalidate()
+        self.isFinished = true
+        isPlaying = false
     }
 }
