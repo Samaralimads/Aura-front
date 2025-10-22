@@ -2,7 +2,7 @@
 //  MeditationCardView.swift
 //  Aura
 //
-//  Created by Chabane on 01/10/2025.
+//  Created by Chabane on 20/10/2025.
 //
 
 import SwiftUI
@@ -11,36 +11,32 @@ struct MeditationCardView: View {
     let meditation: Meditation
 
     var body: some View {
-      VStack(alignment: .leading) {
-            Image(meditation.image)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 204, height: 137)
-                .background(Color(.systemGray6))
+        VStack(alignment: .leading, spacing: 8) {
+          // Miniature
+          AsyncImage(url: URL(string: "http://127.0.0.1:8080/meditation/thumbnail/\(meditation.thumbnail).png")) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                Color.gray
+            }
+            .frame(height: 140)
+            .frame(maxWidth: .infinity)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+          // Titre
             Text(meditation.title)
-                .font(.custom("Lexend-Medium", size: 14, relativeTo: .subheadline))
-                .foregroundStyle(Color.black)
+                .font(.custom("Lexend-Medium", size: 16))
                 .lineLimit(1)
-          HStack {
-                 Image(systemName: "clock")
-                     .foregroundColor(.gray)
-                 Text("\(meditation.duration) min")
-                     .font(.caption)
-                     .foregroundColor(.gray)
-             }
+                .foregroundStyle(.black)
+          // Durée
+            Text("\(meditation.duration) min")
+                .font(.footnote)
+                .foregroundStyle(.gray)
         }
-    }
-}
-
-#Preview {
-    MeditationCardView(
-        meditation: Meditation(
-            id: UUID(),
-            title: "Méditation Relax",
-            duration: 30,
-            theme: .coupDeCoeur,
-            image: "med1",
-            audio: "audio1"
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.white)
         )
-    )
+    }
 }

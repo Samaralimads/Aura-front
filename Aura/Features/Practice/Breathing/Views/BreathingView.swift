@@ -27,6 +27,8 @@ struct BreathingView: View {
                             exhaleD: breathing.exhaleD,
                             nbOfCycles: breathing.nbOfCycles,
                             indexOrder: breathing.indexOrder,
+                            audio : breathing.audio ?? ""
+                            
                         ))
                     } label: {
                         ZStack(alignment: .bottomLeading) {
@@ -48,7 +50,7 @@ struct BreathingView: View {
                                     .foregroundColor(.white)
                                 
                                 Text(breathing.description)
-                                    .font(.system(size: 12))
+                                    .font(.system(size: 15))
                                     .foregroundColor(.white)
                             }
                             .multilineTextAlignment(.leading)
@@ -62,9 +64,9 @@ struct BreathingView: View {
         .task {
             await viewModel.fetchBreathings() //charge les données du back
         }
-
     }
 }
-    #Preview {
-        BreathingView()
-    }
+
+#Preview {
+    BreathingView()
+}

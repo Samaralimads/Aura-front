@@ -30,9 +30,9 @@ struct Wave : Shape {
             let relativeX = CGFloat(x) / width
             let sine = sin((relativeX * frequency * 2 * .pi) + phase)
             
-            // applique une variation d’amplitude si activée
-            let newAmplitude = variationAmplitude ? amplitude * (1 + 0.3 * cos(relativeX * 4 * .pi)) : amplitude
-            let y = height + sine * newAmplitude
+            //Applique une variation d’amplitude
+            let variation = amplitude * (1 + 0.3 * cos(relativeX * 4 * .pi))
+            let y = height + sine * variation
             
             path.addLine(to: CGPoint(x: x, y: y))
         }
