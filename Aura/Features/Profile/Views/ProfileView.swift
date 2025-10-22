@@ -48,9 +48,14 @@ struct ProfileView: View {
                             .font(.custom("Lexend-Bold", size: 18))
                             .foregroundColor(.gray)
                     } else {
-                        ForEach(badgeViewModel.unlockedBadges.prefix(3), id: \.id) { badge in
+                        ForEach(
+                            badgeViewModel.unlockedBadges.prefix(3),
+                            id: \.id
+                        ) { badge in
                             VStack {
-                                if let url = badgeViewModel.getUnlockBadgeImageURL(badge.image) {
+                                if let url = badgeViewModel.getUnlockBadgeImageURL(
+                                    badge.image
+                                ) {
                                     AsyncImage(url: url) { phase in
                                         switch phase {
                                         case .empty:
@@ -101,11 +106,13 @@ struct ProfileView: View {
                             .foregroundColor(.gray)
                     }
                     
-                    HStack {
-                        Text("Réglages")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
+                    NavigationLink(destination: SettingView()) {
+                        HStack {
+                            Text("Réglages")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
                     }
                     
                     HStack {
@@ -150,8 +157,8 @@ struct ProfileView: View {
             }
         }
     }
+    
 }
-
-#Preview {
-    ProfileView()
-}
+    #Preview {
+        ProfileView()
+    }
