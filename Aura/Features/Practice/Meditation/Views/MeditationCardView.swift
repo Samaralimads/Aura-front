@@ -11,32 +11,30 @@ struct MeditationCardView: View {
     let meditation: Meditation
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-          // Miniature
-          AsyncImage(url: URL(string: "http://127.0.0.1:8080/meditation/thumbnail/\(meditation.thumbnail).png")) { image in
+        VStack(alignment: .leading, spacing: 6) {
+            // Miniature
+            AsyncImage(url: URL(string: "http://127.0.0.1:8080/meditation/thumbnail/\(meditation.thumbnail).png")) { image in
                 image
                     .resizable()
                     .scaledToFill()
             } placeholder: {
                 Color.gray
             }
-            .frame(height: 140)
+            .frame(height: 120)
             .frame(maxWidth: .infinity)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-          // Titre
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+
+            // Titre
             Text(meditation.title)
-                .font(.custom("Lexend-Medium", size: 16))
+                .font(.custom("Lexend-Medium", size: 14))
                 .lineLimit(1)
                 .foregroundStyle(.black)
-          // Durée
+
+            // Durée
             Text("\(meditation.duration) min")
-                .font(.footnote)
+                .font(.system(size: 12))
                 .foregroundStyle(.gray)
         }
-        .padding(8)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white)
-        )
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

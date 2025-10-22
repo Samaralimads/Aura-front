@@ -12,13 +12,13 @@ struct MeditationListByThemeView: View {
     let meditations: [Meditation]
 
     private let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
     ]
 
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 16) {
+            LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(meditations) { meditation in
                     NavigationLink {
                         MeditationDetailView(meditation: meditation)
@@ -28,9 +28,10 @@ struct MeditationListByThemeView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding()
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
         }
         .navigationTitle(theme)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
-
