@@ -12,5 +12,4 @@ struct EmotionModel: Codable, Identifiable {
     var id: UUID?
     var name: String
     var moodID: UUID
-
 }
