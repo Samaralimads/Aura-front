@@ -99,11 +99,13 @@ struct ProfileView: View {
                             .tint(.violet)
                     }
                     
-                    HStack {
-                        Text("FAQs")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
+                    NavigationLink(destination: FAQView()) {
+                        HStack {
+                            Text("FAQs")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
                     }
                     
                     NavigationLink(destination: SettingView()) {
