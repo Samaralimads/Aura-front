@@ -117,12 +117,15 @@ struct ProfileView: View {
                         }
                     }
                     
-                    HStack {
-                        Text("Support technique")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
+                    NavigationLink(destination: TechnicalSupportView()) {
+                        HStack {
+                            Text("Support technique")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
                     }
+
                 }
                 .padding()
                 .background(Color.grisClair)
