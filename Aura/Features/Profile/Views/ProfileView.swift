@@ -17,20 +17,21 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .center) {
-                Text("\(viewModel.userName)")
+            VStack(alignment: .center, spacing: 20) {
+                // Header
+                Text(viewModel.userName)
                     .font(.custom("Lexend-Bold", size: 36))
                 
                 Image("perso-violet")
+                    .resizable()
                     .scaledToFit()
                     .frame(width: 112, height: 112)
                 
+                // Badges section
                 HStack {
                     Text("Mes badges")
                         .font(.custom("Lexend-Bold", size: 22))
-                    
                     Spacer()
-                    
                     NavigationLink(destination: BadgeView()) {
                         Text("Tout voir")
                             .font(.custom("Lexend-Regular", size: 16))
@@ -39,35 +40,36 @@ struct ProfileView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top)
                 
+                // Badges preview
                 HStack(spacing: 15) {
-                    ForEach(
-                        badgeViewModel.unlockedBadges.prefix(3),
-                        id: \.id
-                    ) { badge in
-                        VStack {
-                            if let url = badgeViewModel.getBadgeImageURL(
-                                badge.image
-                            ) {
-                                AsyncImage(url: url) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        ProgressView()
-                                            .frame(width: 60, height: 60)
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 110, height: 110)
-                                    case .failure:
-                                        Image(systemName: "photo")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 30, height: 30)
-                                            .foregroundColor(.gray)
-                                    @unknown default:
-                                        EmptyView()
+                    if badgeViewModel.unlockedBadges.isEmpty {
+                        Text("Pas de badges")
+                            .font(.custom("Lexend-Bold", size: 18))
+                            .foregroundColor(.gray)
+                    } else {
+                        ForEach(badgeViewModel.unlockedBadges.prefix(3), id: \.id) { badge in
+                            VStack {
+                                if let url = badgeViewModel.getUnlockBadgeImageURL(badge.image) {
+                                    AsyncImage(url: url) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            ProgressView()
+                                                .frame(width: 60, height: 60)
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 110, height: 110)
+                                        case .failure:
+                                            Image(systemName: "photo")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 30, height: 30)
+                                                .foregroundColor(.gray)
+                                        @unknown default:
+                                            EmptyView()
+                                        }
                                     }
                                 }
                             }
@@ -76,6 +78,7 @@ struct ProfileView: View {
                 }
                 .frame(height: 110)
                 
+                // Settings section
                 VStack(spacing: 16) {
                     HStack {
                         Text("Notification")
@@ -115,8 +118,8 @@ struct ProfileView: View {
                 .padding()
                 .background(Color.grisClair)
                 .cornerRadius(20)
-                .frame(width: 360, height: 250)
                 
+                // Logout button
                 if viewModel.isLoading {
                     ProgressView()
                 } else {
@@ -128,17 +131,17 @@ struct ProfileView: View {
                     }) {
                         Text("Se déconnecter")
                             .font(.custom("Lexend-Regular", size: 17))
-                            .frame(width: 360, height: 30)
-                            .padding()
+                            .bold()
+                            .frame(width: 360, height: 50)
                             .background(Color.violet)
                             .foregroundColor(.white)
                             .cornerRadius(25)
-                            .bold()
                     }
-                    .padding()
-                    Spacer()
                 }
+                
+                Spacer()
             }
+            .padding(.horizontal)
             .task {
                 await badgeViewModel.fetchUserBadges()
             }
@@ -148,7 +151,6 @@ struct ProfileView: View {
         }
     }
 }
-
 
 #Preview {
     ProfileView()

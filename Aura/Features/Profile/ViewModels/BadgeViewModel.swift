@@ -10,7 +10,7 @@ import Observation
 
 
 @Observable
-class BadgeViewModel  {
+class BadgeViewModel {
     var unlockedBadges: [UserProfileResponse.Badge] = []
     var lockedBadges: [UserProfileResponse.Badge] = []
     var isLoading = false
@@ -35,7 +35,7 @@ class BadgeViewModel  {
         isLoading = false
     }
     
-    func getBadgeImageURL(_ imageName: String) -> URL? {
+    func getUnlockBadgeImageURL(_ imageName: String) -> URL? {
         let cleanedImageName = imageName.replacingOccurrences(
             of: "/Badges/",
             with: ""
@@ -43,17 +43,40 @@ class BadgeViewModel  {
         return URL(string: "\(baseURL)/Badges/\(cleanedImageName)")
     }
     
+    func getLockBadgeImageURL(_ imageName: String) -> URL? {
+        return URL(string: lockURL)
+    }
     
-    // For Preview
+    // MARK: - Preview Data
     static func preview() -> BadgeViewModel {
         let viewModel = BadgeViewModel()
         viewModel.unlockedBadges = [
-            UserProfileResponse.Badge(id: "1", name: "First Meditation", description: "Completed your first meditation session.", image: "/Badges/leaf.png"),
-            UserProfileResponse.Badge(id: "2", name: "First Challenge", description: "Completed your first challenge.", image: "/Badges/wind.png")
+            UserProfileResponse.Badge(
+                id: "1",
+                name: "First Meditation",
+                description: "Completed your first meditation session.",
+                image: "/Badges/leaf.png"
+            ),
+            UserProfileResponse.Badge(
+                id: "2",
+                name: "First Challenge",
+                description: "Completed your first challenge.",
+                image: "/Badges/wind.png"
+            )
         ]
         viewModel.lockedBadges = [
-            UserProfileResponse.Badge(id: "3", name: "Advanced Meditation", description: "Completed an advanced meditation session.", image: "/Badges/lotus.png"),
-            UserProfileResponse.Badge(id: "4", name: "Advanced Challenge", description: "Completed an advanced challenge.", image: "/Badges/mental.png")
+            UserProfileResponse.Badge(
+                id: "3",
+                name: "Advanced Meditation",
+                description: "Completed an advanced meditation session.",
+                image: "/Badges/lotus.png"
+            ),
+            UserProfileResponse.Badge(
+                id: "4",
+                name: "Advanced Challenge",
+                description: "Completed an advanced challenge.",
+                image: "/Badges/mental.png"
+            )
         ]
         return viewModel
     }

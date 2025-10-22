@@ -10,7 +10,20 @@ import SwiftUI
 
 struct BadgeDetailsView: View {
     let badge: UserProfileResponse.Badge
+    let isLocked: Bool
+    @State private var viewModel: BadgeDetailsViewModel
     @Environment(\.dismiss) private var dismiss
+    
+    init(badge: UserProfileResponse.Badge, isLocked: Bool) {
+        self.badge = badge
+        self.isLocked = isLocked
+        _viewModel = State(
+            initialValue: BadgeDetailsViewModel(
+                badge: badge,
+                isLocked: isLocked
+            )
+        )
+    }
     
     var body: some View {
         VStack(spacing: 20) {
@@ -20,14 +33,14 @@ struct BadgeDetailsView: View {
                     dismiss()
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.title)
+                        .font(.system(size: 30))
                         .foregroundColor(.gray)
                 }
-                .padding(.trailing, 16)
+                .padding(.trailing, 24)
                 .padding(.top, 16)
             }
             
-            if let url = URL(string: badge.image) {
+            if let url = viewModel.getBadgeFullPage(badge.image) {
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .empty:
@@ -67,15 +80,14 @@ struct BadgeDetailsView: View {
     }
 }
 
-
 #Preview {
     let testBadge = UserProfileResponse.Badge(
         id: "1",
         name: "Test Badge",
         description: "This is a test badge description",
-        image: "/badges/lotus.png"
+        image: "http://127.0.0.1:8080/badges/leaf.png"
     )
     return NavigationStack {
-        BadgeDetailsView(badge: testBadge)
+        BadgeDetailsView(badge: testBadge, isLocked: true)
     }
 }
