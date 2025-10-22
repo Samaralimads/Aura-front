@@ -23,26 +23,6 @@ final class AppState {
         }
     }
     
-    func login(email: String, password: String) async throws {
-        isLoading = true
-        defer { isLoading = false }
-        do {
-            let response = try await authService.login(email: email, password: password)
-            UserDefaults.standard.set(response.token, forKey: "userToken")
-            isLoggedIn = true
-            await loadUserProfile()
-        } catch {
-            self.error = error
-            throw error
-        }
-    }
-    
-    func logout() {
-        UserDefaults.standard.removeObject(forKey: "userToken")
-        isLoggedIn = false
-        userProfile = nil
-    }
-    
     func loadUserProfile() async {
         guard isLoggedIn else { return }
         isLoading = true
@@ -52,9 +32,5 @@ final class AppState {
         } catch {
             self.error = error
         }
-    }
-    
-    var token: String? {
-        UserDefaults.standard.string(forKey: "userToken")
     }
 }
