@@ -75,4 +75,11 @@ class AuthService {
         }
         return try JSONDecoder().decode(UserProfileResponse.self, from: data)
     }
+    
+    // MARK: - Get UserID
+    func getUserID() async throws -> String {
+        let profile = try await getUserProfile()
+        return profile.id
+    }
+    
 }
