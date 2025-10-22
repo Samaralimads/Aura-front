@@ -20,14 +20,16 @@ struct PickerView: View {
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 20)
                 .padding(.top, 10)
-            
+                .padding(.horizontal, 17)
+
             Picker("", selection: $viewModel.selectedPratice) {
                 Text("Méditation").tag(0)
                 Text("Respiration").tag(1)
             }
             .pickerStyle(.segmented)
             .padding(.bottom,15)
-            
+            .padding(.horizontal, 17)
+
                 if viewModel.selectedPratice == 0 {
                        MeditationView()
                    } else {

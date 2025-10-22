@@ -6,25 +6,64 @@
 //
 
 import Foundation
+import Observation
 
-class MeditationViewModel: ObservableObject {
-    @Published var meditations: [Meditation] = []
+@MainActor
+@Observable
+final class MeditationViewModel {
+    var meditations: [Meditation] = []
+    var isLoading: Bool = false
+    var errorMessage: String?
 
-    // Fake data pour avoir un aperçu avant d'utiliser notre back
+    // Ordre manuel des thèmes sur la vue MeditationView
+    let themeOrder: [String] = [
+        "Nouveau",
+        "Coup de Coeur",
+        "Débutants",
+        "Éveil doux",
+        "Énergie et equilibre",
+    ]
+
     init() {
-        loadMockData()
+        // Démarrer le chargement automatiquement
+        Task {
+            await fetchMeditations()
+        }
     }
 
-    func loadMockData() {
-        self.meditations = [
-            Meditation(id: UUID(), title: "Méditation 1", duration: 30, theme: .nouveau, image: "med1", audio: "audio1"),
-            Meditation(id: UUID(), title: "Méditation 2", duration: 30, theme: .nouveau, image: "med2", audio: "audio2"),
-            Meditation(id: UUID(), title: "Méditation Relax", duration: 30, theme: .coupDeCoeur, image: "med2", audio: "audio3"),
-            Meditation(id: UUID(), title: "Débutant Zen", duration: 30, theme: .debutant, image: "med4", audio: "audio4")
-        ]
+    // Appel de l'API
+    func fetchMeditations() async {
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
+
+        guard let url = URL(string: "http://127.0.0.1:8080/meditations") else {
+            errorMessage = "URL non valide"
+            print("Error: URL not valid.")
+            return
+        }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                errorMessage = "Erreur serveur"
+                throw URLError(.badServerResponse)
+            }
+
+            let decoder = JSONDecoder()
+            let decodedMeditations = try decoder.decode([Meditation].self, from: data)
+            self.meditations = decodedMeditations
+
+            print("\(decodedMeditations.count) méditations chargées depuis le backend.")
+        } catch {
+            errorMessage = "Erreur de chargement des méditations."
+            print("Erreur fetch/decode: \(error.localizedDescription)")
+        }
     }
 
-    func meditations(for theme: MeditationTheme) -> [Meditation] {
-        meditations.filter { $0.theme == theme }
+    func groupedByTheme() -> [String: [Meditation]] {
+        Dictionary(grouping: meditations, by: { $0.theme })
     }
 }
