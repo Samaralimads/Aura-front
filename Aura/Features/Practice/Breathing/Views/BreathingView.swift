@@ -11,7 +11,7 @@ struct BreathingView: View {
     
     @State var breathingviewModel = BreathingViewModel()
     @State var userBreathingModelView = UserBreathingViewModel()
-    private let authservice = AuthService.shared
+    let authService = AuthService.shared
     
     let columns: [GridItem] = [
         GridItem(.flexible(), spacing: 14),
@@ -33,8 +33,19 @@ struct BreathingView: View {
                         ))
                         .onAppear {
                             Task {
-                                await userBreathingModelView.sendUserBreathing(
-                                    userId: authservice.getUserId(), breathingId: breathing.id)
+                                do {
+                                    let userID = try await authService.getUserID()
+                                    if let uuid = UUID(uuidString: userID) {
+                                        await userBreathingModelView.sendUserBreathing(
+                                            userID: uuid,
+                                            breathingID: breathing.id
+                                        )
+                                    } else {
+                                        print("ID utilisateur invalide: (userID)")
+                                    }
+                                } catch {
+                                    print("Erreur lors de la récupération de l'ID utilisateur: (error)")
+                                }
                             }
                         }
                     } label: {
