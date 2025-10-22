@@ -10,6 +10,7 @@ import SwiftUI
 struct PickerView: View {
     
     @State var viewModel = PickerViewModel()
+    var currentSelection = 0
     
     var body: some View {
         VStack (alignment: .leading){
@@ -19,14 +20,16 @@ struct PickerView: View {
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 20)
                 .padding(.top, 10)
-            
+                .padding(.horizontal, 17)
+
             Picker("", selection: $viewModel.selectedPratice) {
                 Text("Méditation").tag(0)
                 Text("Respiration").tag(1)
             }
             .pickerStyle(.segmented)
             .padding(.bottom,15)
-            
+            .padding(.horizontal, 17)
+
                 if viewModel.selectedPratice == 0 {
                        MeditationView()
                    } else {
@@ -34,6 +37,9 @@ struct PickerView: View {
                    }
         }
         .padding(.horizontal, 17)
+        .onAppear {
+            viewModel.selectedPratice = currentSelection
+        }
     }
 }
 

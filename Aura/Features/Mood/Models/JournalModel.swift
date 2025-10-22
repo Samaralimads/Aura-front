@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct JournalModel: Codable, Identifiable {
     var id: UUID?

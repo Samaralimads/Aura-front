@@ -28,7 +28,7 @@ struct DayConfigView: View {
     }
     
     private var backgroundColor: Color {
-        if let name = moodColorName { return Color(name) } else { return Color.gray }
+        MoodColors.fromAsset(name: moodColorName)
     }
     
     var body: some View {

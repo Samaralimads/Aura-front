@@ -20,11 +20,7 @@ struct MoodView: View {
     }
     
     private var backgroundColor: Color {
-        if let colorName = currentMood?.color {
-            return Color(colorName)
-        } else {
-            return Color.gray.opacity(0.15)
-        }
+        MoodColors.fromAsset(name: currentMood?.color)
     }
     
     private var imageURL: URL? {
@@ -127,7 +123,7 @@ struct MoodView: View {
                         .font(.custom("Lexend-medium", size: 17))
                         .foregroundStyle(.black)
                         .frame(width: 349, height: 48)
-                        .background(.white.opacity(0.5))
+                        .glassEffect(.regular.interactive())
                         .cornerRadius(25)
                 }
                 .padding(.top, 40)
@@ -135,7 +131,6 @@ struct MoodView: View {
             }
             .padding(24)
         }
-        .toolbar(.hidden, for: .tabBar)
         .task {
             await viewModel.fetchMoods()
         }
