@@ -27,19 +27,6 @@ struct BadgeDetailsView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            HStack {
-                Spacer()
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 30))
-                        .foregroundColor(.gray)
-                }
-                .padding(.trailing, 24)
-                .padding(.top, 16)
-            }
-            
             if let url = viewModel.getBadgeFullPage(badge.image) {
                 AsyncImage(url: url) { phase in
                     switch phase {
@@ -50,12 +37,13 @@ struct BadgeDetailsView: View {
                         image
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 150, height: 150)
+                            .frame(width: 250, height: 250)
+                            .padding(.top, 30)
                     case .failure:
                         Image(systemName: "photo")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(width: 250, height: 250)
                             .foregroundColor(.gray)
                     @unknown default:
                         EmptyView()
@@ -66,6 +54,7 @@ struct BadgeDetailsView: View {
             Text(badge.name)
                 .font(.title2)
                 .bold()
+                .padding(.top, 30)
             
             Text(badge.description)
                 .font(.body)
@@ -75,10 +64,32 @@ struct BadgeDetailsView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle(badge.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Détails du badge")
+                    .font(.custom("Lexend-Bold", size: 22))
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.black)
+                        .background(
+                            Circle()
+                                .fill(Color.grisClair)
+                                .frame(width: 44, height: 44)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+
+        }
     }
 }
+
 
 #Preview {
     let testBadge = UserProfileResponse.Badge(

@@ -16,7 +16,7 @@ This repository contains the **SwiftUI-based frontend** for the Aura ecosystem, 
 - **Language**: Swift 5.7+
 - **State Management**: MVVM (Model-View-ViewModel)
 - **Networking**: URLSession + Combine
-- **Authentication**: JWT (via Keychain)
+- **Authentication**: JWT (via UserDefault)
 - **Dependency Management**: Swift Package Manager
 
 ---
