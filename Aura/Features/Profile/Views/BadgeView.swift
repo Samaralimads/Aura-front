@@ -43,7 +43,6 @@ struct BadgeView: View {
                 ) {
                     ForEach(viewModel.unlockedBadges) { badge in
                         Button {
-                            print("Badge sélectionné: \(badge.name)")
                             selectedBadge = badge
                             isShowingBadgeDetails = true
                         } label: {

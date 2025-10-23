@@ -18,16 +18,19 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
-                // Header
+
                 Text(viewModel.userName)
                     .font(.custom("Lexend-Bold", size: 36))
-                
-                Image("perso-violet")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 112, height: 112)
-                
-                // Badges section
+                                
+                AsyncImage(url: URL(string: viewModel.avatarURL)) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
+                }
+                .scaledToFit()
+                .frame(width: 112, height: 112)
+                .clipShape(Circle())
+
                 HStack {
                     Text("Mes badges")
                         .font(.custom("Lexend-Bold", size: 22))
@@ -40,6 +43,7 @@ struct ProfileView: View {
                     }
                 }
                 .padding(.horizontal)
+                .padding(.top, 20)
                 
                 // Badges preview
                 HStack(spacing: 15) {
@@ -108,7 +112,7 @@ struct ProfileView: View {
                         }
                     }
                     
-                    NavigationLink(destination: SettingView()) {
+                    NavigationLink(destination: SettingView(profileViewModel: viewModel)) {
                         HStack {
                             Text("Réglages")
                             Spacer()
@@ -116,6 +120,7 @@ struct ProfileView: View {
                                 .foregroundColor(.gray)
                         }
                     }
+
                     
                     NavigationLink(destination: TechnicalSupportView()) {
                         HStack {
@@ -130,6 +135,9 @@ struct ProfileView: View {
                 .padding()
                 .background(Color.grisClair)
                 .cornerRadius(20)
+                .padding(.top, 15)
+                
+                Spacer()
                 
                 // Logout button
                 if viewModel.isLoading {
@@ -150,8 +158,6 @@ struct ProfileView: View {
                             .cornerRadius(25)
                     }
                 }
-                
-                Spacer()
             }
             .padding(.horizontal)
             .task {
@@ -164,6 +170,8 @@ struct ProfileView: View {
     }
     
 }
-    #Preview {
-        ProfileView()
-    }
+
+
+#Preview {
+    ProfileView()
+}
