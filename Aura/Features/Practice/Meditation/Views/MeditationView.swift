@@ -32,13 +32,13 @@ struct MeditationView: View {
 
                                 // Slider horizontal
                                 ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 16) {
+                                    HStack(spacing: 30) {
                                         ForEach(meditations) { meditation in
                                             NavigationLink {
                                                 MeditationDetailView(meditation: meditation)
                                             } label: {
                                                 MeditationCardView(meditation: meditation)
-                                                    .frame(width: 200)
+                                                    .frame(width: 160)
                                             }
                                             .buttonStyle(.plain)
                                         }
