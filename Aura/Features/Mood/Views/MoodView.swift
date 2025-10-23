@@ -9,22 +9,18 @@ import SwiftUI
 
 struct MoodView: View {
     @State private var viewModel = MoodViewModel()
-    @State private var index: Double = 2
+    @State private var sliderIndex: Double = 2
     
     let labels = ["Très Mal", "Mal", "Moyen", "Bien", "Très Bien"]
     
     
     private var currentMood: MoodModel? {
-        let name = labels[Int(index)]
+        let name = labels[Int(sliderIndex)]
         return viewModel.moods.first { $0.name == name }
     }
     
     private var backgroundColor: Color {
-        if let colorName = currentMood?.color {
-            return Color(colorName)
-        } else {
-            return Color.gray.opacity(0.15)
-        }
+        MoodColors.fromAsset(name: currentMood?.color)
     }
     
     private var imageURL: URL? {
@@ -36,27 +32,58 @@ struct MoodView: View {
     
     var body: some View {
         ZStack {
-            backgroundColor
-                .ignoresSafeArea()
+            
+            LinearGradient(
+                        gradient: Gradient(stops: [
+                            .init(color: backgroundColor.opacity(0.95), location: 0.0),
+                            .init(color: backgroundColor.opacity(0.75), location: 0.4),
+                            .init(color: backgroundColor.opacity(0.55), location: 1.0),
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ).ignoresSafeArea()
+            
+            FloatingDots(base: .white.opacity(0.55), count: 20)
+            
+            Image("Vector24")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 314)
+                .padding(.bottom, 60)
+            Image("Vector25")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 340)
+                .padding(.bottom, 60)
+            Image("Vector26")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 270)
+                .padding(.bottom, 60)
+                .opacity(0.5)
+            
             
             VStack{
                 //MARK: - Skip button
                 HStack {
                     Spacer()
-                    Button("skip >") {
-                        //TODO: - add action
+                    NavigationLink {
+                        //TODO: - temporary, using it to test my protected route
+                        DayView(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwidXNlcklEIjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwiZXhwaXJhdGlvbiI6MTc2MTI5MzUwNi4zNDY5ODQ5fQ.ztk4M6w7mGe2XeOX-CbUCkBbTrLJOZ23LzERMTo_09g")
+                    } label: {
+                        Text("skip >")
+                            .font(.system(size: 17, weight: .medium))
+                            .foregroundStyle(.black)
                     }
-                    .font(.system(size: 17, weight: .medium))
-                    .foregroundStyle(.black)
                 }
-                .padding(.bottom, 50)
+                .padding(.bottom, 20)
                 
                 //MARK: - Title
                 Text("Comment allez-vous\naujourd’hui ?")
                     .font(.custom("Lexend-medium", size: 27))
                     .multilineTextAlignment(.center)
-                
-                Spacer()
+                    .padding(.bottom, 35)
+              
                 //MARK: - Mood Image
                 
                 Spacer()
@@ -66,36 +93,40 @@ struct MoodView: View {
                         image.resizable()
                             .scaledToFit()
                             .frame(width: 173, height: 170)
+
                     } placeholder: {
                         ProgressView()
                             .frame(height: 220)
                     }
-                    .padding(.bottom, 24)
                 }
                 
                 //MARK: - Slider
                 
                 Spacer()
-                Text(labels[Int(index)])                        .font(.custom("Lexend-medium", size: 28))
-                    .padding(.bottom, 30)
                 
-                Slider(value: $index, in: 0...4, step: 0.5)
+                Text(labels[Int(sliderIndex)])
+                    .font(.custom("Lexend-medium", size: 28))
+                Slider(value: $sliderIndex, in: 0...4)
                     .accentColor(Color(.white))
-                
-                
+                    .padding(.top, 10)
+
                 
                 //MARK: - Button
-                Button(action: {
-                    //TODO: - add logic
-                }){
+                NavigationLink {
+                    DayConfigView(moodID: currentMood?.id,
+                                  moodColorName: currentMood?.color,
+                                  //MARK: - temporary, using it to test my protected route
+                                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwidXNlcklEIjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwiZXhwaXJhdGlvbiI6MTc2MTI5MzUwNi4zNDY5ODQ5fQ.ztk4M6w7mGe2XeOX-CbUCkBbTrLJOZ23LzERMTo_09g"
+                    )
+                } label: {
                     Text("Valider")
                         .font(.custom("Lexend-medium", size: 17))
                         .foregroundStyle(.black)
                         .frame(width: 349, height: 48)
-                        .background(.white.opacity(0.5))
+                        .glassEffect(.regular.interactive())
                         .cornerRadius(25)
-                        .padding(.top, 60)
                 }
+                .padding(.top, 40)
                 
             }
             .padding(24)
@@ -105,6 +136,7 @@ struct MoodView: View {
         }
     }
 }
+
 
 #Preview {
     MoodView()

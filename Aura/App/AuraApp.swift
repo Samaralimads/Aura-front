@@ -6,13 +6,21 @@
 //
 
 import SwiftUI
+import Observation
 
 @main
 struct AuraApp: App {
+    @State private var authState = AppState()
+    
     var body: some Scene {
         WindowGroup {
-            TabBar()
+            if authState.isLoggedIn {
+                TabBar()
+                    .environment(authState)
+            } else {
+                LoginView()
+                    .environment(authState)
+            }
         }
     }
 }
-

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct MoodModel: Identifiable, Codable {
     var id: UUID?

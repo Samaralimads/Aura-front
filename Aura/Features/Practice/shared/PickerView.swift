@@ -10,6 +10,7 @@ import SwiftUI
 struct PickerView: View {
     
     @State var viewModel = PickerViewModel()
+    var currentSelection = 0
     
     var body: some View {
         VStack (alignment: .leading){
@@ -35,7 +36,10 @@ struct PickerView: View {
                        BreathingView()
                    }
         }
-        //.padding(.horizontal, 17)
+        .padding(.horizontal, 17)
+        .onAppear {
+            viewModel.selectedPratice = currentSelection
+        }
     }
 }
 

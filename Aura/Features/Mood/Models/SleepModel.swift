@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct SleepModel: Codable, Identifiable {
     var id: UUID?

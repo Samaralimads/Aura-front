@@ -9,57 +9,74 @@ import SwiftUI
 
 struct BreathingPlayerView: View {
     
-    @State var viewModel = BreathingPlayerViewModel(inhaleD: 4, holdD: 0, exhaleD: 4)
-    
+    @State var viewModel : BreathingPlayerViewModel
     @State private var timer : Int = 0
+    
     public var body: some View {
         
-        //Integration animation
+        //MARK: - INTÉGRATION ANIMATIONS
         ZStack{
-            WaveAnimationView()
-                .ignoresSafeArea()
-            VStack{
-                //conversion en minutes / secondes
-                let minutes : Int = viewModel.timeRemaining / 60
-                let seconds : Int = viewModel.timeRemaining % 60
-                
-                Text(String(format : "%02d:%02d", minutes, seconds))
-                    .foregroundColor(.white)
-                    .font(.custom("Lexend-Medium", size: 60))
-                    .padding(.bottom, 10)
-                Text(viewModel.cycles[viewModel.indexCycle])
-                    .foregroundColor(.white)
-                    .font(.custom("Lexend-Medium", size: 27))
-                
-                HStack (spacing: 25){
-                    Button(action: {
-                        viewModel.start() }){
-                            ZStack{
-                                Circle()
-                                    .frame(width: 60, height: 60)
-                                Image("Play")
-                                    .offset(x: 2)
-                            }
-                            .glassEffect(.regular.interactive())
-                        }
-                    Button(action: {
-                        viewModel.stop() }){
-                            ZStack{
-                                Circle()
-                                    .frame(width: 60, height: 60)
-                                Image("Pause")
-                            }
-                            .glassEffect(.regular.interactive())
-                        }
-                }
-                .padding(.top, 20)
+            if viewModel.indexOrder == 1 {
+                WaveEffectView(viewModel: viewModel)
+                    .ignoresSafeArea()
+            }
+            else if viewModel.indexOrder == 2 {
+                MontainAnimationView(viewModel: viewModel)
+                    .ignoresSafeArea()
+            }
+            else if viewModel.indexOrder == 3 {
+                SunAnimationView(viewModel: viewModel)
+                    .ignoresSafeArea()
+            }
+            else {
+                MoonAnimationView(viewModel: viewModel)
+                    .ignoresSafeArea()
             }
             
+        //MARK: - GESTION PLAYER ET FIN DU CYCLE
+            if !viewModel.isFinished {
+                PlayerControllerView(viewModel: viewModel)
+            } else {
+                VStack(spacing: 10){
+                    Text("Félicitations !")
+                        .foregroundColor(.white)
+                        .font(.custom("Lexend-Medium", size: 40))
+                        .padding(.bottom, 10)
+                    Text("Vous avez terminé votre séance \nde respiration.")
+                        .foregroundColor(.white)
+                        .font(.custom("Lexend-Regular", size: 20))
+                        .multilineTextAlignment(.center)
+                    
+                    NavigationLink {
+                         PickerView()
+                    } label: {
+                        Text("Valider")
+                            .font(.custom("Lexend-medium", size: 17))
+                            .foregroundStyle(.black)
+                            .frame(width: 349, height: 48)
+                            .cornerRadius(25)
+                            .glassEffect(.regular.interactive())
+                            .padding(.top, 40)
+                    }
+                    
+                }
+                .padding(.bottom, 150)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(17)
+            }
         }
     }
 }
+
 #Preview {
     BreathingPlayerView(
-        viewModel: BreathingPlayerViewModel(inhaleD: 4, holdD: 0, exhaleD: 4)
+        viewModel: BreathingPlayerViewModel(
+            inhaleD: 2,
+            holdD: 1,
+            exhaleD: 2,
+            nbOfCycles: 1,
+            indexOrder : 3,
+            audio: "night"
+        )
     )
 }
