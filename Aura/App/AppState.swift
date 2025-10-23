@@ -4,12 +4,22 @@
 //
 //  Created by Mehdi Legoullon on 20/10/2025.
 //
-
+import SwiftUI
 import Foundation
 import Observation
 
+enum HumeurRoute: Hashable {
+    case mood
+    case configureDay(moodID: UUID?, moodColorName: String?)
+}
+
 @Observable
 final class AppState {
+    var selectedTab: Int = 0
+    var humeurPath = NavigationPath() 
+    var refreshDaysTrigger = UUID()
+    
+    
     private(set) var isLoggedIn: Bool = UserDefaults.standard.string(forKey: "userToken") != nil
     private(set) var userProfile: UserProfileResponse?
     private(set) var isLoading: Bool = false
