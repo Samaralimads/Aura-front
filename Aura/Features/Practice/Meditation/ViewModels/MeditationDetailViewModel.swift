@@ -14,6 +14,7 @@ import Observation
 final class MeditationDetailViewModel {
     var remainingTime: Int
     var isPlaying: Bool = false
+    var isFinished: Bool = false // Indique si la méditation est terminée
 
     private var timer: Timer?
     private var audioPlayer: AVPlayer?
@@ -24,8 +25,12 @@ final class MeditationDetailViewModel {
         self.meditation = meditation
         self.remainingTime = meditation.duration * 60
     }
+
     // Timer
     func togglePlay() {
+        // Ne rien faire si la méditation est terminée
+        if isFinished { return }
+
         isPlaying.toggle()
         if isPlaying {
             startTimer()
@@ -43,6 +48,8 @@ final class MeditationDetailViewModel {
             } else {
                 stopTimer()
                 stopAudio()
+                isPlaying = false
+                isFinished = true // Marque la fin de la méditation
             }
         }
     }
@@ -51,6 +58,7 @@ final class MeditationDetailViewModel {
         timer?.invalidate()
         timer = nil
     }
+
     // Lecture audio depuis le backend
     private func playAudio() {
         let baseURL = "http://127.0.0.1:8080/"
@@ -77,6 +85,7 @@ final class MeditationDetailViewModel {
         let seconds = remainingTime % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
+
     // Couleur du Background
     func backgroundColor() -> Color {
         let name = meditation.image.lowercased()
@@ -87,6 +96,7 @@ final class MeditationDetailViewModel {
         if name.contains("violet") { return Color("violet-clair") }
         return Color("jaune-clair")
     }
+
     // Couleur du button
     func buttonColor() -> Color {
         let name = meditation.image.lowercased()
