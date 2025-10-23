@@ -15,6 +15,9 @@ enum HumeurRoute: Hashable {
 
 @Observable
 final class AppState {
+    var token: String? {
+        UserDefaults.standard.string(forKey: "userToken")
+    }
     var selectedTab: Int = 0
     var humeurPath = NavigationPath() 
     var refreshDaysTrigger = UUID()
