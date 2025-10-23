@@ -38,7 +38,6 @@ struct BadgeDetailsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 250, height: 250)
-                            .padding(.top, 30)
                     case .failure:
                         Image(systemName: "photo")
                             .resizable()
@@ -54,7 +53,6 @@ struct BadgeDetailsView: View {
             Text(badge.name)
                 .font(.title2)
                 .bold()
-                .padding(.top, 30)
             
             Text(badge.description)
                 .font(.body)

@@ -127,13 +127,20 @@ struct BadgeView: View {
         .task {
             await viewModel.fetchUserBadges()
         }
-        .fullScreenCover(item: $selectedBadge) { badge in
+        .sheet(item: $selectedBadge) { badge in
             NavigationStack {
-                BadgeDetailsView(
-                    badge: badge,
-                    isLocked: viewModel.lockedBadges.contains(where: { $0.id == badge.id })
-                )
-                .navigationTitle(badge.name)
+                VStack(spacing: 0) {
+                    Spacer(minLength: 20)
+                    BadgeDetailsView(
+                        badge: badge,
+                        isLocked: viewModel.lockedBadges.contains(where: { $0.id == badge.id })
+                    )
+                    .padding(.horizontal, 30)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    
+                    Spacer(minLength: 20)
+                }
+                .presentationDetents([.medium])
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
