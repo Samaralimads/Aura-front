@@ -6,47 +6,55 @@
 //
 
 import SwiftUI
+import Observation
 
 struct TabBar: View {
-    @State private var selection: Int = 0
-    
+    @Environment(AppState.self) private var appState
+
     var body: some View {
-        NavigationStack {
-            TabView(selection: $selection) {
-                
-                DashboardView()
-                    .tabItem {
-                        Image(selection == 0 ? "eye-light" : "eye-closed")
-                        Text("Accueil")
+        TabView(selection: Binding(
+            get: { appState.selectedTab },
+            set: { appState.selectedTab = $0 }
+        )) {
+            NavigationStack { DashboardView() }
+                .tabItem { Image(appState.selectedTab == 0 ? "eye-light" : "eye-closed"); Text("Accueil") }
+                .tag(0)
+
+            NavigationStack { PickerView() }
+                .tabItem { Image(appState.selectedTab == 1 ? "flower-lotus-fill" : "flower-lotus"); Text("Pratiques") }
+                .tag(1)
+
+            NavigationStack(path: Binding(
+                get: { appState.humeurPath },
+                set: { appState.humeurPath = $0 }
+            )) {
+                DayView(token: appState.token)
+
+                    .navigationDestination(for: HumeurRoute.self) { route in
+                        switch route {
+                        case .mood:
+                            MoodView()
+
+                        case .configureDay(let moodID, let moodColorName):
+                            DayConfigView(
+                                moodID: moodID,
+                                moodColorName: moodColorName,
+                                token: appState.token
+                            )
+                        }
                     }
-                    .tag(0)
-            
-                PickerView()
-                    .tabItem {
-                        Image(selection == 1 ? "flower-lotus-fill" : "flower-lotus")
-                        Text("Pratiques")
-                    }
-                    .tag(1)
-                
-                MoodView()
-                    .tabItem {
-                        Image(selection == 2 ? "calendar-heart-fill" : "calendar-heart")
-                        Text("Humeur")
-                    }
-                    .tag(2)
-                
-                ProfileView()
-                    .tabItem {
-                        Image(selection == 3 ? "user-fill" : "user")
-                        Text("Profil")
-                    }
-                    .tag(3)
             }
-            .tint(.black)
+            .tabItem { Image(appState.selectedTab == 2 ? "calendar-heart-fill" : "calendar-heart"); Text("Humeur") }
+            .tag(2)
+
+            NavigationStack { ProfileView() }
+                .tabItem { Image(appState.selectedTab == 3 ? "user-fill" : "user"); Text("Profil") }
+                .tag(3)
         }
+        .tint(.black)
     }
 }
-
 #Preview {
     TabBar()
+        .environment(AppState())
 }

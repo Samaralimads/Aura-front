@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct MoodView: View {
+    @Environment(AppState.self) private var appState
+    
     @State private var viewModel = MoodViewModel()
     @State private var sliderIndex: Double = 2
     
     let labels = ["Très Mal", "Mal", "Moyen", "Bien", "Très Bien"]
     
+    private var effectiveToken: String? { appState.token }
     
     private var currentMood: MoodModel? {
         let name = labels[Int(sliderIndex)]
@@ -64,20 +67,7 @@ struct MoodView: View {
             
             
             VStack{
-                //MARK: - Skip button
-                HStack {
-                    Spacer()
-                    NavigationLink {
-                        //TODO: - temporary, using it to test my protected route
-                        DayView(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwidXNlcklEIjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwiZXhwaXJhdGlvbiI6MTc2MTI5MzUwNi4zNDY5ODQ5fQ.ztk4M6w7mGe2XeOX-CbUCkBbTrLJOZ23LzERMTo_09g")
-                    } label: {
-                        Text("skip >")
-                            .font(.system(size: 17, weight: .medium))
-                            .foregroundStyle(.black)
-                    }
-                }
-                .padding(.bottom, 20)
-                
+
                 //MARK: - Title
                 Text("Comment allez-vous\naujourd’hui ?")
                     .font(.custom("Lexend-medium", size: 27))
@@ -112,32 +102,36 @@ struct MoodView: View {
 
                 
                 //MARK: - Button
-                NavigationLink {
-                    DayConfigView(moodID: currentMood?.id,
-                                  moodColorName: currentMood?.color,
-                                  //MARK: - temporary, using it to test my protected route
-                                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwidXNlcklEIjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwiZXhwaXJhdGlvbiI6MTc2MTI5MzUwNi4zNDY5ODQ5fQ.ztk4M6w7mGe2XeOX-CbUCkBbTrLJOZ23LzERMTo_09g"
-                    )
-                } label: {
-                    Text("Valider")
-                        .font(.custom("Lexend-medium", size: 17))
-                        .foregroundStyle(.black)
-                        .frame(width: 349, height: 48)
-                        .glassEffect(.regular.interactive())
-                        .cornerRadius(25)
-                }
-                .padding(.top, 40)
+                Button {
+                                    appState.humeurPath.append(
+                                        HumeurRoute.configureDay(
+                                            moodID: currentMood?.id,
+                                            moodColorName: currentMood?.color
+                                        )
+                                    )
+                                } label: {
+                                    Text("Valider")
+                                        .font(.custom("Lexend-medium", size: 17))
+                                        .foregroundStyle(.black)
+                                        .frame(width: 349, height: 48)
+                                        .glassEffect(.regular.interactive())
+                                        .cornerRadius(25)
+                                }
+                                .padding(.top, 40)
                 
             }
             .padding(24)
         }
         .task {
             await viewModel.fetchMoods()
-        }
+            
+        }.toolbar(.hidden, for: .tabBar)
+
     }
 }
 
 
 #Preview {
     MoodView()
+    .environment(AppState())
 }
