@@ -9,8 +9,10 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 final class SettingViewModel {
     private let profileViewModel: ProfileViewModel
+    private let authService = AuthService.shared
     
     var firstName: String {
         profileViewModel.userName
@@ -24,24 +26,38 @@ final class SettingViewModel {
         profileViewModel.avatarURL
     }
     
-    var isLoading: Bool {
-        profileViewModel.isLoading
-    }
-    
+    var isLoading: Bool = false
     var errorMessage: String?
+    var successMessage: String?
     
     init(profileViewModel: ProfileViewModel) {
         self.profileViewModel = profileViewModel
     }
     
-    @MainActor
     func refreshProfile() async {
         errorMessage = nil
+        await profileViewModel.loadUserProfile()
+    }
+    
+    func updateUserProfile(firstName: String, email: String, password: String?) async {
+        isLoading = true
+        errorMessage = nil
+        successMessage = nil
+        
         do {
-            try await profileViewModel.loadUserProfile()
+            let response = try await authService.update(
+                avatar: nil,
+                email: email,
+                firstName: firstName,
+                password: password?.isEmpty ?? true ? nil : password
+            )
+            successMessage = "Profil mis à jour avec succès !"
+            
+            await refreshProfile()
         } catch {
-            errorMessage = "Impossible de charger le profil : \(error.localizedDescription)"
-            print(error.localizedDescription)
+            print("Erreur complète : \(error)")
+            errorMessage = "Erreur : \(error.localizedDescription)"
         }
+        isLoading = false
     }
 }

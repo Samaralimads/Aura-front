@@ -93,7 +93,13 @@ struct SettingView: View {
             Spacer()
             
             Button(action: {
-                print("Sauvegarder les modifications")
+                Task {
+                    await viewModel.updateUserProfile(
+                        firstName: firstName,
+                        email: email,
+                        password: password.isEmpty ? nil : password
+                    )
+                }
             }) {
                 Text("Sauvegarder")
                     .font(.custom("Lexend-SemiBold", size: 17))
