@@ -10,29 +10,28 @@ import SwiftUI
 
 struct ProfileView: View {
     @State private var viewModel = ProfileViewModel()
+    @State private var badgeViewModel = BadgeViewModel()
     @State private var navigateToLogin = false
     @State private var isDarkModeOn = false
     @State private var isNotification = false
-
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
-                
-                Text("\(viewModel.userName)")
+                // Header
+                Text(viewModel.userName)
                     .font(.custom("Lexend-Bold", size: 36))
-                    .padding()
                 
                 Image("perso-violet")
+                    .resizable()
                     .scaledToFit()
                     .frame(width: 112, height: 112)
                 
+                // Badges section
                 HStack {
                     Text("Mes badges")
                         .font(.custom("Lexend-Bold", size: 22))
-                    
                     Spacer()
-                    
                     NavigationLink(destination: BadgeView()) {
                         Text("Tout voir")
                             .font(.custom("Lexend-Regular", size: 16))
@@ -41,94 +40,117 @@ struct ProfileView: View {
                     }
                 }
                 .padding(.horizontal)
-                .padding(.top)
                 
-                HStack(spacing: 12) {
-                    ForEach(0..<4, id: \.self) { _ in
-                        Image("med3")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 60, height: 60)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(12)
-                            .frame(width: 80, height: 110)
+                // Badges preview
+                HStack(spacing: 15) {
+                    if badgeViewModel.unlockedBadges.isEmpty {
+                        Text("Pas de badges")
+                            .font(.custom("Lexend-Bold", size: 18))
+                            .foregroundColor(.gray)
+                    } else {
+                        ForEach(badgeViewModel.unlockedBadges.prefix(3), id: \.id) { badge in
+                            VStack {
+                                if let url = badgeViewModel.getUnlockBadgeImageURL(badge.image) {
+                                    AsyncImage(url: url) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            ProgressView()
+                                                .frame(width: 60, height: 60)
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 110, height: 110)
+                                        case .failure:
+                                            Image(systemName: "photo")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 30, height: 30)
+                                                .foregroundColor(.gray)
+                                        @unknown default:
+                                            EmptyView()
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 .frame(height: 110)
-                .padding(.horizontal)
-            }
-            
-            VStack(spacing: 16) {
-
-                HStack {
-                    Text("Notification")
-                    Spacer()
-                    Toggle("", isOn: $isNotification)
-                        .tint(.violet)
-                }
-            
-                HStack {
-                    Text("Dark mode")
-                    Spacer()
-                    Toggle("", isOn: $isDarkModeOn)
-                        .tint(.violet)
-                }
-            
-                HStack {
-                    Text("FAQs")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                }
-            
-                HStack {
-                    Text("Réglages")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                }
-            
-                HStack {
-                    Text("Support technique")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.gray)
-                }
-            }
-            .padding()
-            .background(Color.grisClair)
-            .cornerRadius(20)
-            .frame(width: 360, height: 250)
-            
-            if viewModel.isLoading {
-                ProgressView()
-            } else {
-                Button(action: {
-                    Task {
-                        await viewModel.logout()
-                        navigateToLogin = true
+                
+                // Settings section
+                VStack(spacing: 16) {
+                    HStack {
+                        Text("Notification")
+                        Spacer()
+                        Toggle("", isOn: $isNotification)
+                            .tint(.violet)
                     }
-                }) {
-                    Text("Se déconnecter")
-                        .font(.custom("Lexend-Regular", size: 17))
-                        .frame(width: 360, height: 30)
-                        .padding()
-                        .background(Color.violet)
-                        .foregroundColor(.white)
-                        .cornerRadius(25)
-                        .bold()
+                    
+                    HStack {
+                        Text("Dark mode")
+                        Spacer()
+                        Toggle("", isOn: $isDarkModeOn)
+                            .tint(.violet)
+                    }
+                    
+                    HStack {
+                        Text("FAQs")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                    }
+                    
+                    HStack {
+                        Text("Réglages")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                    }
+                    
+                    HStack {
+                        Text("Support technique")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                    }
                 }
                 .padding()
+                .background(Color.grisClair)
+                .cornerRadius(20)
+                
+                // Logout button
+                if viewModel.isLoading {
+                    ProgressView()
+                } else {
+                    Button(action: {
+                        Task {
+                            await viewModel.logout()
+                            navigateToLogin = true
+                        }
+                    }) {
+                        Text("Se déconnecter")
+                            .font(.custom("Lexend-Regular", size: 17))
+                            .bold()
+                            .frame(width: 360, height: 50)
+                            .background(Color.violet)
+                            .foregroundColor(.white)
+                            .cornerRadius(25)
+                    }
+                }
+                
                 Spacer()
             }
-        }
-        .navigationDestination(isPresented: $navigateToLogin) {
-            LoginView()
+            .padding(.horizontal)
+            .task {
+                await badgeViewModel.fetchUserBadges()
+            }
+            .navigationDestination(isPresented: $navigateToLogin) {
+                LoginView()
+            }
         }
     }
 }
-
 
 #Preview {
     ProfileView()

@@ -38,11 +38,11 @@ class UserBreathingViewModel {
                 if (200...299).contains(httpResponse.statusCode) {
                     print("Success: userBreathing is created.")
                 } else {
-                    print("Error: \(httpResponse.statusCode)")
+                    print("Error status code: \(httpResponse.statusCode)")
                 }
             }
         } catch {
-            print("Error: \(error.localizedDescription)")
+            print("Error request userBreathing: \(error.localizedDescription)")
         }
     }
 }

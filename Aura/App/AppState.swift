@@ -4,12 +4,25 @@
 //
 //  Created by Mehdi Legoullon on 20/10/2025.
 //
-
+import SwiftUI
 import Foundation
 import Observation
 
+enum HumeurRoute: Hashable {
+    case mood
+    case configureDay(moodID: UUID?, moodColorName: String?)
+}
+
 @Observable
 final class AppState {
+    var token: String? {
+        UserDefaults.standard.string(forKey: "userToken")
+    }
+    var selectedTab: Int = 0
+    var humeurPath = NavigationPath() 
+    var refreshDaysTrigger = UUID()
+    
+    
     private(set) var isLoggedIn: Bool = UserDefaults.standard.string(forKey: "userToken") != nil
     private(set) var userProfile: UserProfileResponse?
     private(set) var isLoading: Bool = false
@@ -23,26 +36,6 @@ final class AppState {
         }
     }
     
-    func login(email: String, password: String) async throws {
-        isLoading = true
-        defer { isLoading = false }
-        do {
-            let response = try await authService.login(email: email, password: password)
-            UserDefaults.standard.set(response.token, forKey: "userToken")
-            isLoggedIn = true
-            await loadUserProfile()
-        } catch {
-            self.error = error
-            throw error
-        }
-    }
-    
-    func logout() {
-        UserDefaults.standard.removeObject(forKey: "userToken")
-        isLoggedIn = false
-        userProfile = nil
-    }
-    
     func loadUserProfile() async {
         guard isLoggedIn else { return }
         isLoading = true
@@ -52,9 +45,5 @@ final class AppState {
         } catch {
             self.error = error
         }
-    }
-    
-    var token: String? {
-        UserDefaults.standard.string(forKey: "userToken")
     }
 }

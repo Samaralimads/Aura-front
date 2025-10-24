@@ -8,16 +8,20 @@
 import SwiftUI
 
 struct DayView: View {
+    @Environment(AppState.self) private var appState
+    
     @State private var vm = DayViewModel()
     @State private var moodVM = MoodViewModel()
     @State private var month = Date()
     @State private var selectedDate: Date?
-    @State private var showDetail = false
-    @State private var goToMood = false
+//    @State private var showDetail = false
+//    @State private var goToMood = false
     @State private var detailDay: DayModel?
     
     var token: String? = nil
     var moods: [MoodModel]? = nil
+    
+    private var effectiveToken: String? { token ?? appState.token }
     
     var body: some View {
             VStack(alignment: .leading, spacing: 20) {
@@ -44,7 +48,7 @@ struct DayView: View {
                             detailDay = nil
                         }
                     },
-                    onAddTodayMood: { goToMood = true }
+                    onAddTodayMood: {  appState.humeurPath.append(HumeurRoute.mood) }
                 )
                 
                 
@@ -58,41 +62,50 @@ struct DayView: View {
                 
             }
             .padding(16)
-            .task(id: token) {
+            .task(id: effectiveToken) {
+                guard let token = effectiveToken?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !token.isEmpty else {
+                    print("No token available yet — skipping fetch")
+                    return
+                }
+                print("Token found:", token.prefix(12))
                 vm.authToken = token
+                // moods
                 if let provided = moods {
                     vm.useMoods(provided)
                 } else {
                     await moodVM.fetchMoods()
                     vm.useMoods(moodVM.moods)
                 }
-                if token != nil {
-                    await vm.fetchReasons()
-                    await vm.fetchSleeps()
-                    await vm.fetchDays()
-                }
-            }
-            .sheet(item: $detailDay) { day in
-                DayDetailSheet(
-                    day: day,
-                    iconURL: vm.moodIconURL(for: day),
-                    moods: vm.moods,
-                    reasons: vm.reasons,
-                    sleeps: vm.sleeps
-                    
-                )
-                .presentationDetents([.fraction(0.35), .medium])
-            }
-            .navigationDestination(isPresented: $goToMood) {
-                MoodView()
-            }
-        }
 
-    }
+                // protected data
+                await vm.fetchReasons()
+                await vm.fetchSleeps()
+                await vm.fetchDays()
+            }
+            .task(id: appState.refreshDaysTrigger) {
+                       guard let token = effectiveToken?.trimmingCharacters(in: .whitespacesAndNewlines),
+                             !token.isEmpty else { return }
+                       vm.authToken = token
+                       await vm.fetchDays()
+                   }
 
+                   .sheet(item: $detailDay) { day in
+                       DayDetailSheet(
+                           day: day,
+                           iconURL: vm.moodIconURL(for: day),
+                           moods: vm.moods,
+                           reasons: vm.reasons,
+                           sleeps: vm.sleeps
+                       )
+                       .presentationDetents([.fraction(0.35), .medium])
+                   }
+               }
+           }
 
 #Preview {
     NavigationStack {
-        DayView(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwidXNlcklEIjoiQjg4OTNCNTItMzZDQy00NjA3LTk3MjQtQzcxRjNCMTQ1QzNFIiwiZXhwaXJhdGlvbiI6MTc2MTI5MzUwNi4zNDY5ODQ5fQ.ztk4M6w7mGe2XeOX-CbUCkBbTrLJOZ23LzERMTo_09g")
+        DayView(token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySUQiOiI2QTIyQjEyRC05MTE2LTQ3OEYtQTU1Ni1FQzNCRUJCQjgxMkIiLCJzdWJqZWN0IjoiNkEyMkIxMkQtOTExNi00NzhGLUE1NTYtRUMzQkVCQkI4MTJCIiwiZXhwaXJhdGlvbiI6MTc2MTc0MjgwMS4wMzE5Nn0.UQP3ZRbtEKoYeG6bIB0vLN4MwtS9ALEQnxxl3x8f930")
+            .environment(AppState())
     }
 }

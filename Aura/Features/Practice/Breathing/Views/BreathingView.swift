@@ -11,7 +11,7 @@ struct BreathingView: View {
     
     @State var breathingviewModel = BreathingViewModel()
     @State var userBreathingModelView = UserBreathingViewModel()
-    private let authservice = AuthService.shared
+    let authService = AuthService.shared
     
     let columns: [GridItem] = [
         GridItem(.flexible(), spacing: 14),
@@ -31,6 +31,23 @@ struct BreathingView: View {
                             indexOrder: breathing.indexOrder,
                             audio : breathing.audio ?? ""
                         ))
+                        .onAppear {
+                            Task {
+                                do {
+                                    let userID = try await authService.getUserID()
+                                    if let uuid = UUID(uuidString: userID) {
+                                        await userBreathingModelView.sendUserBreathing(
+                                            userID: uuid,
+                                            breathingID: breathing.id
+                                        )
+                                    } else {
+                                        print("ID utilisateur invalide: (userID)")
+                                    }
+                                } catch {
+                                    print("Erreur lors de la récupération de l'ID utilisateur: (error)")
+                                }
+                            }
+                        }
                     } label: {
                         ZStack(alignment: .bottomLeading) {
                             AsyncImage(url: URL(string: "http://127.0.0.1:8080/\(breathing.image)")) { image in
