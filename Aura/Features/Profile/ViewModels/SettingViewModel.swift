@@ -22,6 +22,7 @@ final class SettingViewModel {
     var errorMessage: String?
     var successMessage: String?
     var avatar: String = ""
+    var shouldNavigateToLogin = false
     
     init(profileViewModel: ProfileViewModel, authService: AuthService = .shared) {
         self.profileViewModel = profileViewModel
@@ -29,6 +30,20 @@ final class SettingViewModel {
         self.firstName = profileViewModel.userName
         self.email = profileViewModel.userEmail
         self.avatar = profileViewModel.avatar
+    }
+    
+    var firstName: String {
+        get { profileViewModel.userName }
+        set { profileViewModel.userName = newValue }
+    }
+    
+    var email: String {
+        get { profileViewModel.userEmail }
+        set { profileViewModel.userEmail = newValue }
+    }
+    
+    var avatarURL: String {
+        profileViewModel.avatarURL
     }
     
     func refreshProfile() async {
@@ -75,22 +90,6 @@ final class SettingViewModel {
         }
     }
     
-    // MARK: - Properties liées à ProfileViewModel
-    var firstName: String {
-        get { profileViewModel.userName }
-        set { profileViewModel.userName = newValue }
-    }
-    
-    var email: String {
-        get { profileViewModel.userEmail }
-        set { profileViewModel.userEmail = newValue }
-    }
-    
-    var avatarURL: String {
-        profileViewModel.avatarURL
-    }
-    
-    // MARK: - URL Helpers
     func getAvatarImageURL(_ imagePath: String) -> URL? {
         let cleanedPath = imagePath
             .replacingOccurrences(of: "avatars/", with: "")
@@ -98,5 +97,19 @@ final class SettingViewModel {
         
         let urlString = "\(AuthService.baseURL)/avatars/\(cleanedPath)"
         return URL(string: urlString)
+    }
+    
+    func deleteAccount() async {
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            let userID = try await authService.getUserID()
+            try await authService.deleteAccount(userID: userID)
+            UserDefaults.standard.removeObject(forKey: "userToken")
+            shouldNavigateToLogin = true
+        } catch {
+            errorMessage = "Erreur lors de la suppression du compte : \(error.localizedDescription)"
+        }
     }
 }
