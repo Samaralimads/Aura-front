@@ -22,10 +22,9 @@ struct LoginView: View {
                 
                 VStack(spacing: 8) {
                     Text("Bon retour !")
-                        .font(.custom("Lexend-Bold", size: 36))
-                        .bold()
+                        .font(.custom("Lexend-Medium", size: 27))
                     Text("Connectez-vous")
-                        .font(.custom("Lexend-Bold", size: 36))
+                        .font(.custom("Lexend-Medium", size: 27))
                 }
                 .foregroundColor(.primary)
                 

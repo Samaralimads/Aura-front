@@ -20,7 +20,7 @@ struct ProfileView: View {
             VStack(alignment: .center, spacing: 20) {
                 
                 Text(viewModel.userName)
-                    .font(.custom("Lexend-Bold", size: 36))
+                    .font(.custom("Lexend-Bold", size: 27))
                 
                 AsyncImage(url: URL(string: viewModel.avatarURL)) { image in
                     image.resizable()
@@ -139,7 +139,6 @@ struct ProfileView: View {
                 
                 Spacer()
                 
-                // Logout button
                 if viewModel.isLoading {
                     ProgressView()
                 } else {

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct BadgeView: View {
     @State private var viewModel: BadgeViewModel
     @State private var selectedBadge: UserProfileResponse.Badge?
@@ -19,7 +18,6 @@ struct BadgeView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            // Section des badges débloqués
             if viewModel.unlockedBadges.isEmpty {
                 VStack(spacing: 16) {
                     Text("Pas de badge, commencez un exercice")
@@ -47,7 +45,9 @@ struct BadgeView: View {
                             isShowingBadgeDetails = true
                         } label: {
                             VStack(spacing: 8) {
-                                if let url = viewModel.getUnlockBadgeImageURL(badge.image) {
+                                if let url = viewModel.getUnlockBadgeImageURL(
+                                    badge.image
+                                ) {
                                     AsyncImage(url: url) { image in
                                         image
                                             .resizable()
@@ -64,7 +64,10 @@ struct BadgeView: View {
                                     .multilineTextAlignment(.center)
                                     .lineLimit(2)
                                     .frame(width: 120)
-                                    .fixedSize(horizontal: true, vertical: false)
+                                    .fixedSize(
+                                        horizontal: true,
+                                        vertical: false
+                                    )
                             }
                             .frame(width: 120)
                         }
@@ -74,7 +77,6 @@ struct BadgeView: View {
                 .padding(.horizontal)
             }
             
-            // Section des badges à débloquer
             VStack(alignment: .leading, spacing: 20) {
                 Text("À Débloquer")
                     .font(.custom("Lexend-Bold", size: 22))
@@ -92,7 +94,9 @@ struct BadgeView: View {
                             isShowingBadgeDetails = true
                         } label: {
                             VStack(spacing: 8) {
-                                if let url = viewModel.getLockBadgeImageURL(badge.image) {
+                                if let url = viewModel.getLockBadgeImageURL(
+                                    badge.image
+                                ) {
                                     AsyncImage(url: url) { image in
                                         image
                                             .resizable()
@@ -109,7 +113,10 @@ struct BadgeView: View {
                                     .multilineTextAlignment(.center)
                                     .lineLimit(2)
                                     .frame(width: 120)
-                                    .fixedSize(horizontal: true, vertical: false)
+                                    .fixedSize(
+                                        horizontal: true,
+                                        vertical: false
+                                    )
                             }
                             .frame(width: 120)
                         }
@@ -122,29 +129,44 @@ struct BadgeView: View {
             Spacer()
         }
         .padding(.vertical)
-        .navigationTitle("Mes Badges")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Mes Badges")
+                    .font(.custom("Lexend-Bold", size: 27))
+                    .foregroundColor(.primary)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
         .task {
             await viewModel.fetchUserBadges()
         }
         .sheet(item: $selectedBadge) { badge in
-            NavigationStack {
-                VStack(spacing: 0) {
-                    Spacer(minLength: 20)
-                    BadgeDetailsView(
-                        badge: badge,
-                        isLocked: viewModel.lockedBadges.contains(where: { $0.id == badge.id })
-                    )
-                    .padding(.horizontal, 30)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    
-                    Spacer(minLength: 20)
-                }
-                .presentationDetents([.medium])
-                .navigationBarTitleDisplayMode(.inline)
+            VStack(spacing: 0) {
+                Color.clear
+                    .padding(.top, 40)
+                
+                Capsule()
+                    .fill(Color.gray.opacity(0.7))
+                    .frame(width: 36, height: 4)
+                    .padding(.top, 8)
+                    .padding(.bottom, 12)
+                
+                BadgeDetailsView(
+                    badge: badge,
+                    isLocked: viewModel.lockedBadges
+                        .contains { $0.id == badge.id }
+                )
+                .padding(.horizontal, 30)
+                .frame(maxWidth: .infinity, alignment: .center)
+                
+                Spacer(minLength: 20)
             }
+            .background(Color.white)
+            .presentationDetents([.medium])
         }
     }
 }
+
 
 #Preview {
     BadgeView(viewModel: BadgeViewModel.preview())

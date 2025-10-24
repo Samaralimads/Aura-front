@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct BadgeDetailsView: View {
     let badge: UserProfileResponse.Badge
     let isLocked: Bool
@@ -17,16 +16,14 @@ struct BadgeDetailsView: View {
     init(badge: UserProfileResponse.Badge, isLocked: Bool) {
         self.badge = badge
         self.isLocked = isLocked
-        _viewModel = State(
-            initialValue: BadgeDetailsViewModel(
-                badge: badge,
-                isLocked: isLocked
-            )
-        )
+        _viewModel = State(initialValue: BadgeDetailsViewModel(badge: badge, isLocked: isLocked))
     }
     
     var body: some View {
         VStack(spacing: 20) {
+            Text("Détails du badge")
+                .font(.custom("Lexend-Medium", size: 18))
+
             if let url = viewModel.getBadgeFullPage(badge.image) {
                 AsyncImage(url: url) { phase in
                     switch phase {
@@ -62,29 +59,6 @@ struct BadgeDetailsView: View {
             Spacer()
         }
         .padding()
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("Détails du badge")
-                    .font(.custom("Lexend-Bold", size: 22))
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 24))
-                        .foregroundColor(.black)
-                        .background(
-                            Circle()
-                                .fill(Color.grisClair)
-                                .frame(width: 44, height: 44)
-                        )
-                }
-                .buttonStyle(.plain)
-            }
-
-        }
     }
 }
 
