@@ -4,35 +4,40 @@
 //
 //  Created by Mehdi Legoullon on 22/10/2025.
 //
-
 import SwiftUI
 
 struct SettingView: View {
-    @State private var viewModel: SettingViewModel
+    @Bindable var viewModel: SettingViewModel
     @State private var password: String = ""
-    @State private var firstName: String
-    @State private var email: String
     
     init(profileViewModel: ProfileViewModel) {
-        let settingViewModel = SettingViewModel(profileViewModel: profileViewModel)
-        _viewModel = State(initialValue: settingViewModel)
-        _firstName = State(initialValue: settingViewModel.firstName)
-        _email = State(initialValue: settingViewModel.email)
+        self.viewModel = SettingViewModel(profileViewModel: profileViewModel)
     }
     
     var body: some View {
         VStack(spacing: 0) {
-            AsyncImage(url: URL(string: viewModel.avatarURL)) { image in
-                image.resizable()
-            } placeholder: {
-                ProgressView()
+            // Avatar
+            if let avatarURL = URL(string: viewModel.avatarURL) {
+                AsyncImage(url: avatarURL) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
+                }
+                .scaledToFit()
+                .frame(width: 112, height: 112)
+                .padding(.top, 20)
+                
+            } else {
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 112, height: 112)
+                    .padding(.top, 20)
             }
-            .scaledToFit()
-            .frame(width: 112, height: 112)
-            .padding(.top, 20)
             
+            // Bouton pour modifier l'avatar
             Button(action: {
-                print("Modifier mon avatar")
+                viewModel.showAvatarSelection = true
             }) {
                 Text("Modifier mon avatar")
                     .font(.custom("Lexend-Regular", size: 17))
@@ -46,13 +51,17 @@ struct SettingView: View {
                     .fill(Color(.systemBackground))
                     .cornerRadius(0)
             )
+            .sheet(isPresented: $viewModel.showAvatarSelection) {
+                AvatarSelectionView(viewModel: viewModel)
+                    .presentationDetents([.medium, .large])
+            }
             
-            // Form
+            // Formulaire
             VStack(spacing: 16) {
                 fieldWithLabel(
                     label: "Prénom",
                     placeholder: "Saisir votre prénom",
-                    text: $firstName
+                    text: $viewModel.firstName
                 )
                 .textContentType(.givenName)
                 .autocapitalization(.words)
@@ -60,7 +69,7 @@ struct SettingView: View {
                 fieldWithLabel(
                     label: "Email",
                     placeholder: "Saisir votre email",
-                    text: $email
+                    text: $viewModel.email
                 )
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
@@ -73,30 +82,18 @@ struct SettingView: View {
                     isSecure: true
                 )
                 .textContentType(.newPassword)
-                
-                HStack {
-                    Button(action: {
-                        print("Supprimer mon compte")
-                    }) {
-                        Text("Supprimer mon compte ?")
-                            .font(.custom("Lexend-Regular", size: 17))
-                            .foregroundColor(.red)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, -4)
-                    }
-                }
             }
             .padding(.horizontal)
             .padding(.top, 30)
             
             Spacer()
             
+            // Bouton de sauvegarde
             Button(action: {
                 Task {
                     await viewModel.updateUserProfile(
-                        firstName: firstName,
-                        email: email,
+                        firstName: viewModel.firstName,
+                        email: viewModel.email,
                         password: password.isEmpty ? nil : password
                     )
                 }
@@ -146,7 +143,6 @@ struct SettingView: View {
         .padding(.leading, 4)
     }
 }
-
 
 #Preview {
     NavigationStack {

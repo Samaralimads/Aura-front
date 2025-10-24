@@ -18,10 +18,10 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
-
+                
                 Text(viewModel.userName)
                     .font(.custom("Lexend-Bold", size: 36))
-                                
+                
                 AsyncImage(url: URL(string: viewModel.avatarURL)) { image in
                     image.resizable()
                 } placeholder: {
@@ -30,7 +30,7 @@ struct ProfileView: View {
                 .scaledToFit()
                 .frame(width: 112, height: 112)
                 .clipShape(Circle())
-
+                
                 HStack {
                     Text("Mes badges")
                         .font(.custom("Lexend-Bold", size: 22))
@@ -120,7 +120,7 @@ struct ProfileView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-
+                    
                     
                     NavigationLink(destination: TechnicalSupportView()) {
                         HStack {
@@ -130,7 +130,7 @@ struct ProfileView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-
+                    
                 }
                 .padding()
                 .background(Color.grisClair)

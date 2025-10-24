@@ -8,11 +8,9 @@
 import Foundation
 import Observation
 
-
 @Observable
 final class ProfileViewModel {
     private let authService: AuthService
-    private let baseURL: String
     
     var userName: String = ""
     var userEmail: String = ""
@@ -22,15 +20,15 @@ final class ProfileViewModel {
     var isLoading: Bool = false
     var error: Error?
     
-    init(authService: AuthService = .shared, baseURL: String = "http://127.0.0.1:8080") {
+    init(authService: AuthService = .shared) {
         self.authService = authService
-        self.baseURL = baseURL
         Task { await loadUserProfile() }
     }
     
     var avatarURL: String {
         let cleanedAvatar = avatar.replacingOccurrences(of: "avatars/", with: "")
-        return "\(baseURL)/avatars/\(cleanedAvatar.isEmpty ? "default" : cleanedAvatar)"
+        let avatarName = cleanedAvatar.isEmpty ? "default" : cleanedAvatar
+        return "\(AuthService.baseURL)/avatars/\(avatarName)"
     }
     
     func loadUserProfile() async {
@@ -39,9 +37,8 @@ final class ProfileViewModel {
         
         do {
             let profile = try await authService.getUserProfile()
-            await updateProfile(profile: profile)
+            updateProfile(profile: profile)
         } catch {
-            print("Erreur lors de la récupération du profil : \(error.localizedDescription)")
             await MainActor.run {
                 self.error = error
                 self.avatar = "avatars/default.png"
@@ -61,13 +58,11 @@ final class ProfileViewModel {
         }
     }
     
-    private func updateProfile(profile: UserProfileResponse) async {
-        await MainActor.run {
-            self.userName = profile.firstName
-            self.userEmail = profile.email
-            self.avatar = profile.avatar
-            self.lockedBadges = profile.lockedBadges
-            self.unlockedBadges = profile.unlockedBadges
-        }
+    private func updateProfile(profile: UserProfileResponse) {
+        userName = profile.firstName
+        userEmail = profile.email
+        avatar = profile.avatar
+        lockedBadges = profile.lockedBadges
+        unlockedBadges = profile.unlockedBadges
     }
 }

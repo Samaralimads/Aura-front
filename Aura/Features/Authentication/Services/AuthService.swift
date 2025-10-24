@@ -9,11 +9,11 @@ import Foundation
 
 class AuthService {
     static let shared = AuthService()
-    private let baseURL = "http://127.0.0.1:8080/auth"
+    static let baseURL = "http://127.0.0.1:8080"
     
     // MARK: - Login
     func login(email: String, password: String) async throws -> UserLoginResponse {
-        let url = URL(string: "\(baseURL)/login")!
+        let url = URL(string: "\(AuthService.baseURL)/login")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -28,22 +28,21 @@ class AuthService {
     
     // MARK: - Logout
     func logout() async throws {
-        let url = URL(string: "\(baseURL)/logout")!
+        let url = URL(string: "\(AuthService.baseURL)/logout")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request
-            .setValue(
-                "Bearer \(UserDefaults.standard.string(forKey: "userToken") ?? "")",
-                forHTTPHeaderField: "Authorization"
-            )
+        request.setValue(
+            "Bearer \(UserDefaults.standard.string(forKey: "userToken") ?? "")",
+            forHTTPHeaderField: "Authorization"
+        )
         
         _ = try await URLSession.shared.data(for: request)
     }
     
     // MARK: - Register
     func register(firstName: String, email: String, password: String) async throws -> UserRegisterResponse {
-        let url = URL(string: "\(baseURL)/register")!
+        let url = URL(string: "\(AuthService.baseURL)/register")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -66,11 +65,11 @@ class AuthService {
     
     // MARK: - Get User Profile
     func getUserProfile() async throws -> UserProfileResponse {
-        guard let token = UserDefaults.standard.string(forKey: "userToken") else {
+        guard let token = UserDefaults.standard.string(forKey: "userToken"), !token.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
         
-        guard let url = URL(string: "http://127.0.0.1:8080/users/profile") else {
+        guard let url = URL(string: "\(AuthService.baseURL)/users/profile") else {
             throw URLError(.badURL)
         }
         
@@ -81,12 +80,44 @@ class AuthService {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+        
+        guard (200...299).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)
         }
         
         return try JSONDecoder().decode(UserProfileResponse.self, from: data)
+    }
+    
+    // MARK: - Update User Profile
+    func update(avatar: String?, email: String?, firstName: String?, password: String?) async throws -> UserUpdateResponse {
+        guard let url = URL(string: "\(AuthService.baseURL)/users/update") else {
+            throw URLError(.badURL)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        if let token = UserDefaults.standard.string(forKey: "userToken") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        } else {
+            throw URLError(.userAuthenticationRequired)
+        }
+        
+        var body: [String: Any] = [:]
+        if let avatar = avatar { body["avatar"] = avatar }
+        if let email = email { body["email"] = email }
+        if let firstName = firstName { body["firstName"] = firstName }
+        if let password = password { body["password"] = password }
+        
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
+        
+        return try JSONDecoder().decode(UserUpdateResponse.self, from: data)
     }
     
     // MARK: - Get UserID
@@ -94,44 +125,22 @@ class AuthService {
         let profile = try await getUserProfile()
         return profile.id
     }
-
-    // MARK: - Update User Profile
-    func update(avatar: String? = nil, email: String? = nil, firstName: String? = nil, password: String? = nil) async throws -> UserUpdateResponse {
-        guard let token = UserDefaults.standard.string(forKey: "userToken") else {
-            throw URLError(.userAuthenticationRequired)
-        }
-        
-        guard let url = URL(string: "http://127.0.0.1:8080/users/update") else {
+    
+    // MARK: - Get All Avatars
+    func fetchAvatars() async throws -> [Avatar] {
+        guard let url = URL(string: "\(AuthService.baseURL)/avatars") else {
             throw URLError(.badURL)
         }
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "PATCH"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(AvatarsListResponse.self, from: data)
         
-        let updateData = UserUpdateRequest(
-            avatar: avatar,
-            email: email,
-            firstName: firstName,
-            password: password
-        )
-        request.httpBody = try JSONEncoder().encode(updateData)
-        
-        let (data, urlResponse) = try await URLSession.shared.data(
-            for: request
-        )
-        
-        guard let httpResponse = urlResponse as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
+        return response.avatars.map { avatar in
+            var avatar = avatar
+            avatar.url = avatar.url
+                .replacingOccurrences(of: "avatars/", with: "")
+                .replacingOccurrences(of: "/", with: "")
+            return avatar
         }
-        
-        let decodedResponse = try JSONDecoder().decode(
-            UserUpdateResponse.self,
-            from: data
-        )
-        
-        return decodedResponse
     }
 }
