@@ -31,12 +31,6 @@ struct BreathingView: View {
                             indexOrder: breathing.indexOrder,
                             audio : breathing.audio ?? ""
                         ))
-                        .onAppear {
-                            Task {
-                                await userBreathingModelView.sendUserBreathing(
-                                    userId: authservice.getUserId(), breathingId: breathing.id)
-                            }
-                        }
                     } label: {
                         ZStack(alignment: .bottomLeading) {
                             AsyncImage(url: URL(string: "http://127.0.0.1:8080/\(breathing.image)")) { image in

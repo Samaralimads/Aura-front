@@ -37,7 +37,7 @@ struct challengeView: View {
                 //TACHE
                 ZStack(alignment: .leading){
                     Rectangle()
-                        .frame(width: .infinity , height: 35)
+                        .frame( height: 35)
                         .foregroundColor(.black.opacity(0.3))
                         .cornerRadius(25)
                     //POINT + TEXTE
