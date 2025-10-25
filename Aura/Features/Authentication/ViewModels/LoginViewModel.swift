@@ -4,6 +4,7 @@
 //
 //  Created by Mehdi Legoullon on 10/10/2025.
 //
+
 import Foundation
 import Observation
 
@@ -24,9 +25,19 @@ final class LoginViewModel {
         do {
             let response = try await authService.login(email: email, password: password)
             UserDefaults.standard.set(response.token, forKey: "userToken")
-            isLoggedIn = true
+            
+            if let token = UserDefaults.standard.string(forKey: "userToken"), !token.isEmpty {
+                isLoggedIn = true
+            } else {
+                errorMessage = "Erreur lors de la sauvegarde du token"
+            }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = "Erreur de connexion : \(error.localizedDescription)"
+            
+            if let urlError = error as? URLError {
+                print("Code d'erreur : \(urlError.errorCode)")
+                print("Description : \(urlError.localizedDescription)")
+            }
         }
         
         isLoading = false

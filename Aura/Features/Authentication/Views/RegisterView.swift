@@ -21,8 +21,7 @@ struct RegisterView: View {
                 
                 VStack(spacing: 8) {
                     Text("C'est parti !")
-                        .font(.custom("Lexend-Bold", size: 36))
-                        .bold()
+                        .font(.custom("Lexend-Medium", size: 27))
                 }
                 .foregroundColor(.primary)
                 
