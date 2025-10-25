@@ -9,9 +9,7 @@ import Foundation
 import Observation
 
 @Observable
-final class ProfileViewModel {
-    private let authService: AuthService
-    
+final class ProfileViewModel {    
     var userName: String = ""
     var userEmail: String = ""
     var avatar: String = ""
