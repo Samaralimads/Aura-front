@@ -14,7 +14,10 @@ struct AuraApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if authState.isLoggedIn {
+            if authState.isOnboardingNeeded {
+                OnBoardingView()
+                    .environment(authState)
+            } else if authState.isLoggedIn {
                 TabBar()
                     .environment(authState)
             } else {

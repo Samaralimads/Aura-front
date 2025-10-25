@@ -4,6 +4,7 @@
 //
 //  Created by Mehdi Legoullon on 10/10/2025.
 //
+
 import Foundation
 import Observation
 
@@ -16,15 +17,23 @@ final class LoginViewModel {
     var isLoggedIn = false
     
     private let authService = AuthService.shared
+    private let authState: AppState
+    
+    init(authState: AppState) {
+        self.authState = authState
+    }
     
     func login() async {
         isLoading = true
         errorMessage = nil
         
         do {
-            let response = try await authService.login(email: email, password: password)
+            let response = try await authService.login(
+                email: email,
+                password: password
+            )
             UserDefaults.standard.set(response.token, forKey: "userToken")
-            isLoggedIn = true
+            authState.setLoggedIn(true)
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -32,3 +41,4 @@ final class LoginViewModel {
         isLoading = false
     }
 }
+

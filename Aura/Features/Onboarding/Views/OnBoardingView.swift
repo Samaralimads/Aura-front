@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnBoardingView: View {
+    @Environment(AppState.self) private var authState
     @State private var viewModel = OnboardingViewModel()
     
     var body: some View {
@@ -17,9 +18,12 @@ struct OnBoardingView: View {
             
             VStack {
                 ProgressView(value: viewModel.progress)
-                    .progressViewStyle(LinearProgressViewStyle(tint: Color.black))
+                    .progressViewStyle(
+                        LinearProgressViewStyle(tint: Color.black)
+                    )
                     .padding(.horizontal)
                     .padding(.top, 20)
+                    .frame(width: 360)
                 
                 Spacer(minLength: 0)
                  
@@ -36,7 +40,7 @@ struct OnBoardingView: View {
                 
                 Button(action: {
                     if viewModel.isLastPage {
-                        print("Onboarding terminé !")
+                        authState.isOnboardingNeeded = false
                     } else {
                         withAnimation {
                             viewModel.nextPage()
@@ -88,4 +92,5 @@ struct OnboardingPageView: View {
 
 #Preview {
     OnBoardingView()
+        .environment(AppState())
 }

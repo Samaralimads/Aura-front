@@ -22,9 +22,11 @@ final class AppState {
     var selectedTab: Int = 0
     var humeurPath = NavigationPath() 
     var refreshDaysTrigger = UUID()
+    var isOnboardingNeeded: Bool = false
     
-    
-    private(set) var isLoggedIn: Bool = UserDefaults.standard.string(forKey: "userToken") != nil
+    private(set) var isLoggedIn: Bool = UserDefaults.standard.string(
+        forKey: "userToken"
+    ) != nil
     private(set) var userProfile: UserProfileResponse?
     private(set) var isLoading: Bool = false
     private(set) var error: Error?
@@ -46,5 +48,13 @@ final class AppState {
         } catch {
             self.error = error
         }
+    }
+    
+    func setLoggedIn(_ value: Bool) {
+        isLoggedIn = value
+    }
+    
+    func setOnboardingNeeded(_ value: Bool) {
+        isOnboardingNeeded = value
     }
 }

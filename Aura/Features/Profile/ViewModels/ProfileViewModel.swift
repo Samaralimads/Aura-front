@@ -8,7 +8,6 @@
 import Foundation
 import Observation
 
-
 @Observable
 final class ProfileViewModel {
     var userName: String = ""
@@ -19,8 +18,10 @@ final class ProfileViewModel {
     var isLoading: Bool = false
     
     private let authService = AuthService.shared
+    private let authState: AppState
     
-    init() {
+    init(authState: AppState) {
+        self.authState = authState
         Task { await loadUserProfile() }
     }
     
@@ -43,7 +44,10 @@ final class ProfileViewModel {
         isLoading = true
         do {
             try await authService.logout()
-            UserDefaults.standard.removeObject(forKey: "userToken")
+            UserDefaults.standard.removeObject(forKey: "userToken")            
+            authState.setLoggedIn(false)
+            authState.isOnboardingNeeded = false
+            authState.selectedTab = 0
         } catch {
             print("Erreur lors de la déconnexion : \(error)")
         }

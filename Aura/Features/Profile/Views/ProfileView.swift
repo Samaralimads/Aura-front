@@ -9,11 +9,18 @@ import SwiftUI
 
 
 struct ProfileView: View {
-    @State private var viewModel = ProfileViewModel()
+    @Environment(AppState.self) private var authState
+    @State private var viewModel: ProfileViewModel
     @State private var badgeViewModel = BadgeViewModel()
     @State private var navigateToLogin = false
     @State private var isDarkModeOn = false
     @State private var isNotification = false
+    
+    init() {
+        _viewModel = State(
+            initialValue: ProfileViewModel(authState: AppState())
+        )
+    }
     
     var body: some View {
         NavigationStack {
@@ -48,9 +55,14 @@ struct ProfileView: View {
                             .font(.custom("Lexend-Bold", size: 18))
                             .foregroundColor(.gray)
                     } else {
-                        ForEach(badgeViewModel.unlockedBadges.prefix(3), id: \.id) { badge in
+                        ForEach(
+                            badgeViewModel.unlockedBadges.prefix(3),
+                            id: \.id
+                        ) { badge in
                             VStack {
-                                if let url = badgeViewModel.getUnlockBadgeImageURL(badge.image) {
+                                if let url = badgeViewModel.getUnlockBadgeImageURL(
+                                    badge.image
+                                ) {
                                     AsyncImage(url: url) { phase in
                                         switch phase {
                                         case .empty:
@@ -149,9 +161,13 @@ struct ProfileView: View {
                 LoginView()
             }
         }
+        .onAppear {
+            viewModel = ProfileViewModel(authState: authState)
+        }
     }
 }
 
 #Preview {
     ProfileView()
+        .environment(AppState())
 }
