@@ -25,16 +25,19 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
-                // Header
+                
                 Text(viewModel.userName)
-                    .font(.custom("Lexend-Bold", size: 36))
+                    .font(.custom("Lexend-Bold", size: 27))
                 
-                Image("perso-violet")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 112, height: 112)
+                AsyncImage(url: URL(string: viewModel.avatarURL)) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
+                }
+                .scaledToFit()
+                .frame(width: 112, height: 112)
+                .clipShape(Circle())
                 
-                // Badges section
                 HStack {
                     Text("Mes badges")
                         .font(.custom("Lexend-Bold", size: 22))
@@ -47,6 +50,7 @@ struct ProfileView: View {
                     }
                 }
                 .padding(.horizontal)
+                .padding(.top, 20)
                 
                 // Badges preview
                 HStack(spacing: 15) {
@@ -106,32 +110,42 @@ struct ProfileView: View {
                             .tint(.violet)
                     }
                     
-                    HStack {
-                        Text("FAQs")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
+                    NavigationLink(destination: FAQView()) {
+                        HStack {
+                            Text("FAQs")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
                     }
                     
-                    HStack {
-                        Text("Réglages")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
+                    NavigationLink(destination: SettingView(profileViewModel: viewModel)) {
+                        HStack {
+                            Text("Réglages")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
                     }
                     
-                    HStack {
-                        Text("Support technique")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
+                    
+                    NavigationLink(destination: TechnicalSupportView()) {
+                        HStack {
+                            Text("Support technique")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
                     }
+                    
                 }
                 .padding()
                 .background(Color.grisClair)
                 .cornerRadius(20)
+                .padding(.top, 15)
                 
-                // Logout button
+                Spacer()
+                
                 if viewModel.isLoading {
                     ProgressView()
                 } else {
@@ -150,8 +164,6 @@ struct ProfileView: View {
                             .cornerRadius(25)
                     }
                 }
-                
-                Spacer()
             }
             .padding(.horizontal)
             .task {
@@ -165,7 +177,9 @@ struct ProfileView: View {
             viewModel = ProfileViewModel(authState: authState)
         }
     }
+    
 }
+
 
 #Preview {
     ProfileView()

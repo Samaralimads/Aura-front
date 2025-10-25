@@ -5,6 +5,7 @@
 //  Created by Mehdi Legoullon on 10/10/2025.
 //
 
+
 import Foundation
 import Observation
 
@@ -35,7 +36,12 @@ final class LoginViewModel {
             UserDefaults.standard.set(response.token, forKey: "userToken")
             authState.setLoggedIn(true)
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = "Erreur de connexion : \(error.localizedDescription)"
+            
+            if let urlError = error as? URLError {
+                print("Code d'erreur : \(urlError.errorCode)")
+                print("Description : \(urlError.localizedDescription)")
+            }
         }
         
         isLoading = false
