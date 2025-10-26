@@ -66,12 +66,20 @@ struct OnboardingPageView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 20) {
-                Image(page.imageName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 200)
-                    .padding()
-                    .padding(.top, geometry.size.height * 0.25)
+                ZStack(alignment: .center) {
+                    Image("background-perso")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 380)
+                        
+                    Image(page.imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                        .padding(.bottom, 40)
+                        
+                }
+                .padding(.top, 40)
                 
                 Text(page.title)
                     .font(.custom("Lexend-Medium", size: 27))
