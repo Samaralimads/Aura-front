@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SettingView: View {
+    @Environment(AppState.self) private var authState
     @Bindable var viewModel: SettingViewModel
     @State private var password: String = ""
     @State private var showDeleteConfirmation = false
@@ -110,7 +111,7 @@ struct SettingView: View {
                     }
                 }) {
                     Text("Sauvegarder")
-                        .font(.custom("Lexend-SemiBold", size: 17))
+                        .font(.custom("Lexend-Medium", size: 17))
                         .foregroundColor(.white)
                         .frame(width: 360, height: 50)
                         .background(Color.violet)
@@ -118,7 +119,10 @@ struct SettingView: View {
                 }
                 .padding(.bottom, 20)
             }
-            .alert("Supprimer le compte", isPresented: $showDeleteConfirmation) {
+            .alert(
+                "Supprimer le compte",
+                isPresented: $showDeleteConfirmation
+            ) {
                 Button("Confirmer", role: .destructive) {
                     Task {
                         await viewModel.deleteAccount()
@@ -126,7 +130,9 @@ struct SettingView: View {
                 }
                 Button("Annuler", role: .cancel) {}
             } message: {
-                Text("Cette action est irréversible. Tous vos données seront supprimées.")
+                Text(
+                    "Cette action est irréversible. Tous vos données seront supprimées."
+                )
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -174,7 +180,10 @@ struct SettingView: View {
 
 
 #Preview {
+    let appState = AppState()
+    let profileViewModel = ProfileViewModel(authState: appState)
     NavigationStack {
-        SettingView(profileViewModel: ProfileViewModel())
+        SettingView(profileViewModel: profileViewModel)
+            .environment(appState)
     }
 }

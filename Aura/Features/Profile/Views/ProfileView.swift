@@ -9,18 +9,27 @@ import SwiftUI
 
 
 struct ProfileView: View {
-    @State private var viewModel = ProfileViewModel()
+    @Environment(AppState.self) private var authState
+    @State private var viewModel: ProfileViewModel
     @State private var badgeViewModel = BadgeViewModel()
     @State private var navigateToLogin = false
     @State private var isDarkModeOn = false
     @State private var isNotification = false
+    @State private var showNotificationAlert = false
+    @State private var notificationAlertMessage = ""
+    
+    init() {
+        _viewModel = State(
+            initialValue: ProfileViewModel(authState: AppState())
+        )
+    }
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
-                
                 Text(viewModel.userName)
                     .font(.custom("Lexend-Bold", size: 27))
+                    .padding(.top, 20)
                 
                 AsyncImage(url: URL(string: viewModel.avatarURL)) { image in
                     image.resizable()
@@ -94,7 +103,12 @@ struct ProfileView: View {
                         Spacer()
                         Toggle("", isOn: $isNotification)
                             .tint(.violet)
+                            .onChange(of: isNotification) {
+                                notificationAlertMessage = isNotification ? " Notification Activées" : "Notification Désactivées"
+                                showNotificationAlert = true
+                            }
                     }
+
                     
                     HStack {
                         Text("Dark mode")
@@ -121,7 +135,6 @@ struct ProfileView: View {
                         }
                     }
                     
-                    
                     NavigationLink(destination: TechnicalSupportView()) {
                         HStack {
                             Text("Support technique")
@@ -130,7 +143,6 @@ struct ProfileView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                    
                 }
                 .padding()
                 .background(Color.grisClair)
@@ -149,8 +161,7 @@ struct ProfileView: View {
                         }
                     }) {
                         Text("Se déconnecter")
-                            .font(.custom("Lexend-Regular", size: 17))
-                            .bold()
+                            .font(.custom("Lexend-Medium", size: 17))
                             .frame(width: 360, height: 50)
                             .background(Color.violet)
                             .foregroundColor(.white)
@@ -159,6 +170,7 @@ struct ProfileView: View {
                 }
             }
             .padding(.horizontal)
+            .padding(.bottom, 20)
             .task {
                 await badgeViewModel.fetchUserBadges()
             }
@@ -166,11 +178,19 @@ struct ProfileView: View {
                 LoginView()
             }
         }
+        .onAppear {
+            viewModel = ProfileViewModel(authState: authState)
+        }
+        .alert("", isPresented: $showNotificationAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(notificationAlertMessage)
+        }
     }
-    
 }
 
 
 #Preview {
     ProfileView()
+        .environment(AppState())
 }

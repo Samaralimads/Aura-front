@@ -104,16 +104,27 @@ struct AvatarSelectionView: View {
 
 
 #Preview {
-    let profileViewModel = ProfileViewModel()
+    // 1. Crée un AppState d'exemple
+    let appState = AppState()
+    
+    // 2. Crée un ProfileViewModel avec cet AppState
+    let profileViewModel = ProfileViewModel(authState: appState)
+    
+    // 3. Crée un SettingViewModel avec le ProfileViewModel
     let viewModel = SettingViewModel(profileViewModel: profileViewModel)
+    
+    // 4. Remplis les données d'exemple
     viewModel.avatars = [
-        Avatar(id: 1, url: ""),
-        Avatar(id: 2, url: ""),
-        Avatar(id: 3, url: ""),
-        Avatar(id: 4, url: ""),
-        Avatar(id: 5, url: ""),
-        Avatar(id: 6, url: "")
+        Avatar(id: 1, url: "https://example.com/avatar1.png"),
+        Avatar(id: 2, url: "https://example.com/avatar2.png"),
+        Avatar(id: 3, url: "https://example.com/avatar3.png"),
+        Avatar(id: 4, url: "https://example.com/avatar4.png"),
+        Avatar(id: 5, url: "https://example.com/avatar5.png"),
+        Avatar(id: 6, url: "https://example.com/avatar6.png")
     ]
     viewModel.selectedAvatarURL = viewModel.avatars[0].url
+    
+    // 5. Retourne la vue avec l'environnement nécessaire
     return AvatarSelectionView(viewModel: viewModel)
+        .environment(appState)
 }

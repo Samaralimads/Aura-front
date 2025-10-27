@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var viewModel = LoginViewModel()
+    @Environment(AppState.self) private var authState
+    @State private var viewModel: LoginViewModel
+    
+    init() {
+        _viewModel = State(initialValue: LoginViewModel(authState: AppState()))
+    }
     
     var body: some View {
         NavigationStack {
@@ -76,7 +81,9 @@ struct LoginView: View {
                 }) {
                     if viewModel.isLoading {
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .progressViewStyle(
+                                CircularProgressViewStyle(tint: .white)
+                            )
                     } else {
                         Text("Se connecter")
                             .font(.custom("Lexend-Bold", size: 22))
@@ -106,19 +113,10 @@ struct LoginView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("jaune-clair"))
-            .alert("Erreur", isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { _ in viewModel.errorMessage = nil }
-            )) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text(viewModel.errorMessage ?? "")
-            }
-            .navigationDestination(isPresented: $viewModel.isLoggedIn) {
-                TabBar()
-                    .navigationBarBackButtonHidden(true)
-            }
             .navigationBarBackButtonHidden(true)
+        }
+        .onAppear {
+            viewModel = LoginViewModel(authState: authState)
         }
     }
 }
@@ -126,4 +124,5 @@ struct LoginView: View {
 
 #Preview {
     LoginView()
+        .environment(AppState())
 }
