@@ -111,7 +111,7 @@ struct SettingView: View {
                     }
                 }) {
                     Text("Sauvegarder")
-                        .font(.custom("Lexend-SemiBold", size: 17))
+                        .font(.custom("Lexend-Medium", size: 17))
                         .foregroundColor(.white)
                         .frame(width: 360, height: 50)
                         .background(Color.violet)

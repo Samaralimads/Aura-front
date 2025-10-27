@@ -156,8 +156,7 @@ struct ProfileView: View {
                         }
                     }) {
                         Text("Se déconnecter")
-                            .font(.custom("Lexend-Regular", size: 17))
-                            .bold()
+                            .font(.custom("Lexend-Medium", size: 17))
                             .frame(width: 360, height: 50)
                             .background(Color.violet)
                             .foregroundColor(.white)
@@ -166,6 +165,7 @@ struct ProfileView: View {
                 }
             }
             .padding(.horizontal)
+            .padding(.bottom, 20)
             .task {
                 await badgeViewModel.fetchUserBadges()
             }
