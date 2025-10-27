@@ -68,5 +68,6 @@ final class ProfileViewModel {
         avatar = profile.avatar
         lockedBadges = profile.lockedBadges
         unlockedBadges = profile.unlockedBadges
+        authState.updateUserName(profile.firstName)
     }
 }

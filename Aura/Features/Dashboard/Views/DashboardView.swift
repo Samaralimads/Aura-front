@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @State private var viewModel = ProfileViewModel()
+    @Environment(AppState.self) private var appState
+
     var body: some View {
         VStack(alignment: .leading){
-            Text("Salut \(viewModel.userName),")
+            Text("Salut \(appState.userName)")
                 .font(.custom("Lexend-Medium", size: 27))
                 .padding(.bottom, 20)
                 .padding(.top, 10)
@@ -79,4 +80,5 @@ struct DashboardView: View {
 
 #Preview {
     DashboardView()
+        .environment(AppState())
 }

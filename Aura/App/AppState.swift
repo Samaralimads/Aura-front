@@ -23,6 +23,7 @@ final class AppState {
     var humeurPath = NavigationPath() 
     var refreshDaysTrigger = UUID()
     var isOnboardingNeeded: Bool = false
+    var userName: String = ""
     
     private(set) var isLoggedIn: Bool = UserDefaults.standard.string(
         forKey: "userToken"
@@ -45,6 +46,9 @@ final class AppState {
         defer { isLoading = false }
         do {
             userProfile = try await authService.getUserProfile()
+            if let profile = userProfile {
+                userName = profile.firstName
+            }
         } catch {
             self.error = error
         }
@@ -56,5 +60,9 @@ final class AppState {
     
     func setOnboardingNeeded(_ value: Bool) {
         isOnboardingNeeded = value
+    }
+    
+    func updateUserName(_ name: String) {
+        userName = name
     }
 }

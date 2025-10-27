@@ -28,6 +28,7 @@ struct ProfileView: View {
                 
                 Text(viewModel.userName)
                     .font(.custom("Lexend-Bold", size: 27))
+                    .padding(.top, 20)
                 
                 AsyncImage(url: URL(string: viewModel.avatarURL)) { image in
                     image.resizable()
