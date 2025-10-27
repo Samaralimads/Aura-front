@@ -47,7 +47,9 @@ struct TabBar: View {
             .tabItem { Image(appState.selectedTab == 2 ? "calendar-heart-fill" : "calendar-heart"); Text("Humeur") }
             .tag(2)
 
-            NavigationStack { ProfileView() }
+            NavigationStack {
+                ProfileView(authState: appState)
+            }
                 .tabItem { Image(appState.selectedTab == 3 ? "user-fill" : "user"); Text("Profil") }
                 .tag(3)
         }

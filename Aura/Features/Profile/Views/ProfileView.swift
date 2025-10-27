@@ -4,12 +4,9 @@
 //
 //  Created by Samara Lima da Silva on 05/09/2025.
 //
-
 import SwiftUI
 
-
 struct ProfileView: View {
-    @Environment(AppState.self) private var authState
     @Environment(\.colorScheme) var colorScheme
     @State private var viewModel: ProfileViewModel
     @State private var badgeViewModel = BadgeViewModel()
@@ -19,10 +16,11 @@ struct ProfileView: View {
     @State private var showNotificationAlert = false
     @State private var notificationAlertMessage = ""
     
-    init() {
-        _viewModel = State(
-            initialValue: ProfileViewModel(authState: AppState())
-        )
+    private let authState: AppState
+    
+    init(authState: AppState) {
+        self.authState = authState
+        _viewModel = State(initialValue: ProfileViewModel(authState: authState))
     }
     
     var body: some View {
@@ -52,9 +50,8 @@ struct ProfileView: View {
                             .foregroundColor(.primary)
                     }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 5)
                 .padding(.top, 20)
-
                 
                 // Badges preview
                 HStack(spacing: 15) {
@@ -102,6 +99,7 @@ struct ProfileView: View {
                 VStack(spacing: 16) {
                     HStack {
                         Text("Notification")
+                            .foregroundColor(.black)
                         Spacer()
                         Toggle("", isOn: $isNotification)
                             .tint(.violet)
@@ -110,9 +108,9 @@ struct ProfileView: View {
                                 showNotificationAlert = true
                             }
                     }
-
                     HStack {
                         Text("Dark mode")
+                            .foregroundColor(.black)
                         Spacer()
                         Toggle("", isOn: $isDarkModeOn)
                             .tint(.violet)
@@ -122,7 +120,6 @@ struct ProfileView: View {
                                 }
                             }
                     }
-
                     NavigationLink(destination: FAQView()) {
                         HStack {
                             Text("FAQs")
@@ -132,7 +129,9 @@ struct ProfileView: View {
                         }
                     }
                     
-                    NavigationLink(destination: SettingView(profileViewModel: viewModel)) {
+                    NavigationLink(
+                        destination: SettingView(profileViewModel: viewModel)
+                    ) {
                         HStack {
                             Text("Réglages")
                             Spacer()
@@ -184,9 +183,6 @@ struct ProfileView: View {
                 LoginView()
             }
         }
-        .onAppear {
-            viewModel = ProfileViewModel(authState: authState)
-        }
         .alert("", isPresented: $showNotificationAlert) {
             Button("OK", role: .cancel) { }
         } message: {
@@ -197,6 +193,5 @@ struct ProfileView: View {
 
 
 #Preview {
-    ProfileView()
-        .environment(AppState())
+    ProfileView(authState: AppState())
 }
