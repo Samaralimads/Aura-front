@@ -24,6 +24,7 @@ final class AppState {
     var refreshDaysTrigger = UUID()
     var isOnboardingNeeded: Bool = false
     var userName: String = ""
+    var isDarkMode: Bool = false
     
     private(set) var isLoggedIn: Bool = UserDefaults.standard.string(
         forKey: "userToken"

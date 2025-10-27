@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(AppState.self) private var authState
+    @Environment(\.colorScheme) var colorScheme
     @State private var viewModel: ProfileViewModel
     @State private var badgeViewModel = BadgeViewModel()
     @State private var navigateToLogin = false
@@ -48,11 +49,12 @@ struct ProfileView: View {
                         Text("Tout voir")
                             .font(.custom("Lexend-Regular", size: 16))
                             .underline()
-                            .foregroundStyle(.black)
+                            .foregroundColor(.primary)
                     }
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
+
                 
                 // Badges preview
                 HStack(spacing: 15) {
@@ -109,14 +111,18 @@ struct ProfileView: View {
                             }
                     }
 
-                    
                     HStack {
                         Text("Dark mode")
                         Spacer()
                         Toggle("", isOn: $isDarkModeOn)
                             .tint(.violet)
+                            .onChange(of: isDarkModeOn) {
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                    windowScene.windows.first?.overrideUserInterfaceStyle = isDarkModeOn ? .dark : .light
+                                }
+                            }
                     }
-                    
+
                     NavigationLink(destination: FAQView()) {
                         HStack {
                             Text("FAQs")
