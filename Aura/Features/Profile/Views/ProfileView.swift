@@ -15,6 +15,8 @@ struct ProfileView: View {
     @State private var navigateToLogin = false
     @State private var isDarkModeOn = false
     @State private var isNotification = false
+    @State private var showNotificationAlert = false
+    @State private var notificationAlertMessage = ""
     
     init() {
         _viewModel = State(
@@ -25,7 +27,6 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .center, spacing: 20) {
-                
                 Text(viewModel.userName)
                     .font(.custom("Lexend-Bold", size: 27))
                     .padding(.top, 20)
@@ -102,7 +103,12 @@ struct ProfileView: View {
                         Spacer()
                         Toggle("", isOn: $isNotification)
                             .tint(.violet)
+                            .onChange(of: isNotification) {
+                                notificationAlertMessage = isNotification ? " Notification Activées" : "Notification Désactivées"
+                                showNotificationAlert = true
+                            }
                     }
+
                     
                     HStack {
                         Text("Dark mode")
@@ -129,7 +135,6 @@ struct ProfileView: View {
                         }
                     }
                     
-                    
                     NavigationLink(destination: TechnicalSupportView()) {
                         HStack {
                             Text("Support technique")
@@ -138,7 +143,6 @@ struct ProfileView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                    
                 }
                 .padding()
                 .background(Color.grisClair)
@@ -177,8 +181,12 @@ struct ProfileView: View {
         .onAppear {
             viewModel = ProfileViewModel(authState: authState)
         }
+        .alert("", isPresented: $showNotificationAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(notificationAlertMessage)
+        }
     }
-    
 }
 
 
