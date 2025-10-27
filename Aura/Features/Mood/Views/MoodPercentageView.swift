@@ -65,7 +65,7 @@ struct MoodPercentageView: View {
     }
 }
 
-// MARK: - Card (same style you had, just sized to fill page nicely)
+// MARK: - Card
 private struct HighlightCard: View {
     let slice: MoodPercentageView.Slice
     let baseURL: URL?
@@ -82,75 +82,112 @@ private struct HighlightCard: View {
     }
 
     var body: some View {
-        HStack(spacing: 16) {
-            // Image
-            if let url = moodImageURL {
-                AsyncImage(url: url) { img in
-                    img.resizable().scaledToFit()
-                } placeholder: {
-                    Color.white.opacity(0.1)
+        ZStack {
+                // background
+                bgColor
+                
+                // White circles
+                ZStack {
+                    Image("Vector24")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 314)
+                        .padding(.bottom, 60)
+                    Image("Vector25")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 340)
+                        .padding(.bottom, 60)
+                    Image("Vector26")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 270)
+                        .padding(.bottom, 60)
+                        .opacity(0.5)
                 }
-                .frame(width: 96, height: 96)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-            } else {
-                Image(slice.mood.image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 96, height: 96)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-            }
+                VStack {
+                    // Image
+                    if let url = moodImageURL {
+                        AsyncImage(url: url) { image in
+                            image.resizable()
+                                .scaledToFit()
+                                .frame(width: 139, height: 136)
+                                .padding(.top, 10)
+                        } placeholder: {
+                            ProgressView()
+                                .frame(height: 136)
+                        }
+                    }
 
-            // Texts
-            VStack(alignment: .leading, spacing: 6) {
-                Text(percentText)
-                    .font(.system(size: 50, weight: .bold))
-                HStack(spacing: 6) {
-                    Text(slice.mood.name)
-                        .font(.system(size: 17, weight: .bold))
-                    Text("ce mois-ci")
-                        .font(.system(size: 17))
-                        .foregroundStyle(.secondary)
+                    // Text
+                    Text(percentText)
+                        .font(.system(size: 50, weight: .bold))
+
+                    HStack {
+                        Text(slice.mood.name)
+                            .font(.system(size: 17, weight: .bold))
+                        Text("ce mois-ci")
+                            .font(.system(size: 17))
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .padding(.bottom, 40)
+                .padding(.top, 15)
+
             }
-            Spacer(minLength: 0)
+            .frame(minHeight: 260)
+            .frame(maxWidth: .infinity)
+            .clipShape(RoundedRectangle(cornerRadius: 30))
         }
-        .padding(18)
-        .frame(height: 350)
-        .frame( maxWidth: .infinity) // fill the page width
-        .background(bgColor)
-        .clipShape(RoundedRectangle(cornerRadius: 22))
-    }
 }
 
 // MARK: - Empty State
 private struct EmptyState: View {
-    private let mediumMoodURL = URL(string: "http://127.0.0.1:8080/mood/moyen.png")
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if let url = mediumMoodURL {
-                AsyncImage(url: url) { img in
-                    img.resizable()
+        ZStack {
+            Color(.bleu)
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                
+                // White circles
+                ZStack {
+                    Image("Vector24")
+                        .resizable()
                         .scaledToFit()
-                        .frame(width: 96, height: 96)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                } placeholder: {
-                    ProgressView()
-                        .frame(width: 96, height: 96)
+                        .frame(height: 314)
+                        .padding(.bottom, 60)
+                    Image("Vector25")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 340)
+                        .padding(.bottom, 60)
+                    Image("Vector26")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 270)
+                        .padding(.bottom, 60)
+                        .opacity(0.5)
                 }
+
+            VStack{
+                
+               // Image
+                    Image(.noMood)
+                            .resizable()
+                                .scaledToFit()
+                                .frame(width: 139, height: 136)
+                      
+
+                    // Text
+                    
+                    Text("Aucune humeur enregistrée \n ce mois-ci")
+                    .font(.system(size: 20, weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 10)
             }
-
-            Text("Aucune humeur enregistrée")
-                .font(.headline)
-            Text("Ajoutez vos humeurs pour voir les statistiques de ce mois.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                }
+        .frame(minHeight: 260)
+        .frame(maxWidth: .infinity)
+        .clipShape(RoundedRectangle(cornerRadius: 30))
+            }
         }
-        .padding(16)
-        .background(Color(.systemGray6))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
-}
-
-
 
