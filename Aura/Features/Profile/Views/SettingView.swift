@@ -79,7 +79,7 @@ struct SettingView: View {
 
                     )
                     .onAppear {
-                        localEmail = viewModel.email // ✅ Initialise avec la valeur actuelle
+                        localEmail = viewModel.email
                     }
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
@@ -175,7 +175,7 @@ struct SettingView: View {
             .onChange(of: viewModel.successMessage) {
                 guard let message = viewModel.successMessage, !message.isEmpty else { return }
                 toastViewModel.showToast(message: message, systemImage: "checkmark.circle.fill")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // ✅ Délai pour éviter les conflits
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     viewModel.successMessage = nil
                 }
             }
