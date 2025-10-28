@@ -17,7 +17,11 @@ struct DashboardView: View {
                 .padding(.bottom, 20)
                 .padding(.top, 10)
             
-           challengeView()
+            challengeView()
+            
+          
+            DayStreakView()
+            
             
             //MEDITATION
             HStack{
@@ -45,7 +49,7 @@ struct DashboardView: View {
                         }
                     }
                 }
-
+                
                 //RESPIRATION
                 NavigationLink{
                     PickerView(currentSelection: 1)
