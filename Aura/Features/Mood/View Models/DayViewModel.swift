@@ -81,4 +81,46 @@ final class DayViewModel {
         let cal = Calendar.current
         return days.first { cal.isDate($0.date, inSameDayAs: date) }
     }
+    
+//    func updateDay(
+//            dayID: UUID,
+//            moodID: UUID?,
+//            emotionID: UUID?,
+//            sleepID: UUID?,
+//            reasonID: UUID?,
+//            journalID: UUID?
+//        ) async throws -> DayModel {
+//           
+//            guard let token = authToken, !token.isEmpty else {
+//                   throw URLError(.userAuthenticationRequired)
+//               }
+//            
+//            guard let url = URL(string: "\(baseURL)/days/\(dayID)") else {
+//                throw URLError(.badURL)
+//            }
+//            
+//            var request = URLRequest(url: url)
+//            request.httpMethod = "PATCH"
+//            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+//            
+//            let body: [String: Any?] = [
+//                "moodID": moodID?.uuidString,
+//                "emotionID": emotionID?.uuidString,
+//                "sleepID": sleepID?.uuidString,
+//                "reasonID": reasonID?.uuidString,
+//                "journalID": journalID?.uuidString
+//            ].compactMapValues { $0 }
+//            
+//            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+//            
+//            let (data, response) = try await URLSession.shared.data(for: request)
+//            
+//            guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
+//                throw URLError(.badServerResponse)
+//            }
+//            
+//            let updatedDay = try JSONDecoder().decode(DayModel.self, from: data)
+//            return updatedDay
+//        }
 }

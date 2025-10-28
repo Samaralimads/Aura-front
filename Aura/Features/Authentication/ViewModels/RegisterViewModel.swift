@@ -18,15 +18,25 @@ final class RegisterViewModel {
     var isLoggedIn = false
     
     private let authService = AuthService.shared
+    private let authState: AppState
+    
+    init(authState: AppState) {
+        self.authState = authState
+    }
     
     func register() async {
         isLoading = true
         errorMessage = nil
         
         do {
-            let response = try await authService.register(firstName: firstName, email: email, password: password)
+            let response = try await authService.register(
+                firstName: firstName,
+                email: email,
+                password: password
+            )
             UserDefaults.standard.set(response.token, forKey: "userToken")
-            isLoggedIn = true
+            authState.setLoggedIn(true)
+            authState.isOnboardingNeeded = true
         } catch {
             errorMessage = error.localizedDescription
         }

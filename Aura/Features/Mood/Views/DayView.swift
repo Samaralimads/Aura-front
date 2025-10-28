@@ -14,8 +14,6 @@ struct DayView: View {
     @State private var moodVM = MoodViewModel()
     @State private var month = Date()
     @State private var selectedDate: Date?
-//    @State private var showDetail = false
-//    @State private var goToMood = false
     @State private var detailDay: DayModel?
     
     var token: String? = nil
@@ -24,9 +22,10 @@ struct DayView: View {
     private var effectiveToken: String? { token ?? appState.token }
     
     var body: some View {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 30) {
                 Text("Suivi d’humeur")
                     .font(.custom("Lexend-medium", size: 28))
+                    .padding(.top, 10)
                 //MARK: - Calendar view
                 
                 CalendarMonth(
@@ -57,10 +56,9 @@ struct DayView: View {
                     month: month,
                     days: vm.days,
                     moods: vm.moods
-                )
-                Spacer()
-                
+                )                
             }
+            .navigationBarBackButtonHidden(true)
             .padding(16)
             .task(id: effectiveToken) {
                 guard let token = effectiveToken?.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -99,6 +97,7 @@ struct DayView: View {
                            sleeps: vm.sleeps
                        )
                        .presentationDetents([.fraction(0.35), .medium])
+                       .presentationBackground(.white)
                    }
                }
            }

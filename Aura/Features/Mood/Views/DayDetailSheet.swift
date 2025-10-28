@@ -32,8 +32,7 @@ struct DayDetailSheet: View {
                             .scaledToFit()
                             .frame(height: 67)
                     } placeholder: {
-                        Circle()
-                            .stroke(style: StrokeStyle(lineWidth: 2, dash: [4]))
+                        ProgressView()
                             .frame(height: 67)
                     }
                 }

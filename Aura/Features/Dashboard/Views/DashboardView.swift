@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct DashboardView: View {
-    
+    @Environment(AppState.self) private var appState
+
     var body: some View {
         VStack(alignment: .leading){
-            Text("Salut Bidule,")
+            Text("Salut \(appState.userName)")
                 .font(.custom("Lexend-Medium", size: 27))
                 .padding(.bottom, 20)
                 .padding(.top, 10)
             
-           ChallengeView()
+            
+          ChallengeView()
+            DayStreakView()
+            
             
             //MEDITATION
             HStack(alignment: .top){
@@ -45,7 +49,7 @@ struct DashboardView: View {
                         }
                     }
                 }
-
+                
                 //RESPIRATION
                 NavigationLink{
                     PickerView(currentSelection: 1)
@@ -80,4 +84,5 @@ struct DashboardView: View {
 
 #Preview {
     DashboardView()
+        .environment(AppState())
 }
