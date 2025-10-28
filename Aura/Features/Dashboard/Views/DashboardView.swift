@@ -16,7 +16,7 @@ struct DashboardView: View {
                 .padding(.bottom, 20)
                 .padding(.top, 10)
             
-           challengeView()
+           ChallengeView()
             
             //MEDITATION
             HStack(alignment: .top){

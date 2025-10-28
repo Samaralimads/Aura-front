@@ -12,6 +12,7 @@ struct BreathingView: View {
     @State var breathingviewModel = BreathingViewModel()
     @State var userBreathingModelView = UserBreathingViewModel()
     let authService = AuthService.shared
+    @State private var fetchTask: Task<Void, Never>?
     
     let columns: [GridItem] = [
         GridItem(.flexible(), spacing: 14),
@@ -41,10 +42,10 @@ struct BreathingView: View {
                                             breathingID: breathing.id
                                         )
                                     } else {
-                                        print("ID utilisateur invalide: (userID)")
+                                        print("ID utilisateur invalide: \(userID)")
                                     }
                                 } catch {
-                                    print("Erreur lors de la récupération de l'ID utilisateur: (error)")
+                                    print("Erreur lors de la récupération de l'ID utilisateur: \(error)")
                                 }
                             }
                         }
@@ -77,8 +78,10 @@ struct BreathingView: View {
                     }
                 }
             }
-            .task {
-                await breathingviewModel.fetchBreathings() //charge les données du back
+            .onAppear {
+                fetchTask = Task {
+                    await breathingviewModel.fetchBreathings()
+                }
             }
         }
     }

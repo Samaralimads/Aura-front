@@ -16,7 +16,6 @@ final class BreathingViewModel {
             print("Error: URL not valid.")
             return
         }
-
         do {
             let (data, _) = try await URLSession.shared.data(from: url) //telecharge les données du backend
             let decoder = JSONDecoder()

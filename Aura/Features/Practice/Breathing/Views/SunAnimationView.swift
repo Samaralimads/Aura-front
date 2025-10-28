@@ -55,6 +55,7 @@ struct SunAnimationView: View {
                     .frame(width: 441, height: 166)
                     .offset(x: 0, y: 360)
             }
+            .toolbar(.hidden, for: .tabBar)
             .frame(width: geometry.size.width, height: geometry.size.height)
                 .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
             .onChange(of: viewModel.isPlaying) { oldStatus, newStatus in

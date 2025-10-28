@@ -54,6 +54,8 @@ struct WaveEffectView: View {
                 .frame(height: 95)
                 .offset(x: 80, y: -310)
         }
+        .toolbar(.hidden, for: .tabBar)
+        
         //Animation continue
         .onAppear {
             withAnimation(.linear(duration: 6).repeatForever(autoreverses: false)){

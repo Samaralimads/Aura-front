@@ -30,7 +30,10 @@ class UserBreathingViewModel {
             breathingID: breathingID,
             date: Date()
         )
-        request.httpBody = try? JSONEncoder().encode(newUserBreathing)
+        
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        request.httpBody = try? encoder.encode(newUserBreathing)
         
         do {
             let (_, Response) = try await URLSession.shared.data(for: request)
