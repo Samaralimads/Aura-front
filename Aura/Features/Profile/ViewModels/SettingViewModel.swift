@@ -20,7 +20,7 @@ final class SettingViewModel {
     var selectedAvatarURL: String?
     var isLoading = false
     var errorMessage: String?
-    var successMessage: String?
+    var successMessage: String? = nil
     var avatar: String = ""
     var shouldNavigateToLogin = false
     
@@ -63,6 +63,20 @@ final class SettingViewModel {
         errorMessage = nil
         successMessage = nil
         
+        let oldFirstName = self.firstName
+        let oldEmail = self.email
+        let oldAvatar = self.avatar
+        
+        let hasChanges = (oldFirstName != firstName) ||
+        (oldEmail != email) ||
+        (oldAvatar != avatar) ||
+        !(password?.isEmpty ?? true)
+        
+        guard hasChanges else {
+            isLoading = false
+            return
+        }
+        
         do {
             _ = try await authService.update(
                 avatar: avatar?.replacingOccurrences(of: "avatars/", with: ""),
@@ -71,10 +85,28 @@ final class SettingViewModel {
                 password: password?.isEmpty ?? true ? nil : password
             )
             
+            self.firstName = firstName
+            self.email = email
+            profileViewModel.userName = firstName
+            profileViewModel.userEmail = email
+            
             if let avatar = avatar {
                 self.avatar = avatar
                 profileViewModel.avatar = avatar
             }
+            
+            var modifiedFields: [String] = []
+            if oldFirstName != firstName { modifiedFields.append("prénom") }
+            if oldEmail != email { modifiedFields.append("email") }
+            if oldAvatar != avatar { modifiedFields.append("avatar") }
+            if !(password?.isEmpty ?? true) { modifiedFields.append("mot de passe") }
+            
+            if !modifiedFields.isEmpty {
+                successMessage = modifiedFields.count == 1 ?
+                "\(modifiedFields[0].capitalized) modifié" :
+                "\(modifiedFields.joined(separator: ", ")) modifiés"
+            }
+            
         } catch {
             errorMessage = "Erreur : \(error.localizedDescription)"
         }
