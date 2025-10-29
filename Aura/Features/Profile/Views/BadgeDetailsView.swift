@@ -10,67 +10,75 @@ import SwiftUI
 struct BadgeDetailsView: View {
     let badge: UserProfileResponse.Badge
     let isLocked: Bool
-    @State private var viewModel: BadgeDetailsViewModel
     @Environment(\.dismiss) private var dismiss
+    private let styleMapper = BadgeStyleMapper()
     
-    init(badge: UserProfileResponse.Badge, isLocked: Bool) {
-        self.badge = badge
-        self.isLocked = isLocked
-        _viewModel = State(initialValue: BadgeDetailsViewModel(badge: badge, isLocked: isLocked))
+    private var style: BadgeStyle {
+        styleMapper.style(for: badge.name)
     }
     
     var body: some View {
         VStack(spacing: 20) {
             Text("Détails du badge")
-                .font(.custom("Lexend-Medium", size: 18))
-
-            if let url = viewModel.getBadgeFullPage(badge.image) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: 150, height: 150)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 250, height: 250)
-                    case .failure:
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 250, height: 250)
-                            .foregroundColor(.gray)
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
-            }
+                .font(.custom("Lexend-Medium", size: 22))
+                .padding(.horizontal, 20)
             
-            Text(badge.name)
-                .font(.title2)
-                .bold()
+            ZStack {
+                RoundedRectangle(cornerRadius: 25)
+                    .fill(isLocked ? Color.gray.opacity(0.5) : style.backgroundColor)
+                    .frame(width: 180, height: 180)
+                
+                VStack(spacing: 12) {
+                    Circle()
+                        .fill(isLocked ? Color.gray.opacity(0.7) : style.iconBackgroundColor)
+                        .frame(width: 80, height: 80)
+                        .overlay(
+                            Image(isLocked ? "lock" : style.iconName)
+                                .resizable()
+                                .renderingMode(.template)
+                                .scaledToFit()
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(.white)
+                        )
+                        .padding(.top, 16)
+                    
+                    Text(badge.name)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(isLocked ? .gray : .white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .padding(.horizontal, 8)
+                    
+                    Spacer()
+                }
+                .frame(height: 150)
+            }
             
             Text(badge.description)
                 .font(.body)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 30)
+                .padding(.bottom, 20)
             
             Spacer()
         }
-        .padding()
+        .padding(.bottom, 120)
+        .navigationTitle("Badge")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 
 #Preview {
-    let testBadge = UserProfileResponse.Badge(
-        id: "1",
-        name: "Test Badge",
-        description: "This is a test badge description",
-        image: "http://127.0.0.1:8080/badges/leaf.png"
-    )
-    return NavigationStack {
-        BadgeDetailsView(badge: testBadge, isLocked: true)
+    NavigationStack {
+        BadgeDetailsView(
+            badge: UserProfileResponse.Badge(
+                id: "1",
+                name: "First Meditation",
+                description: "Vous avez complété votre première séance de méditation. Félicitations !",
+                image: "/Badges/leaf.png"
+            ),
+            isLocked: false
+        )
     }
 }

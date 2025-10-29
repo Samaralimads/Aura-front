@@ -69,17 +69,19 @@ struct OnboardingPageView: View {
                 ZStack(alignment: .center) {
                     Image("background-perso")
                         .resizable()
-                        .scaledToFit()
-                        .frame(height: 380)
-                        
+                        .scaledToFill()
+                        .frame(height: 350)
+                        .clipped()
+                    
                     Image(page.imageName)
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 200)
+                        .frame(height: page.id == 1 ? 150 : 200)
                         .padding(.bottom, 40)
                         
                 }
-                .padding(.top, 40)
+                .frame(height: 350)
+                .padding(.top, 50)
                 
                 Text(page.title)
                     .font(.custom("Lexend-Medium", size: 27))

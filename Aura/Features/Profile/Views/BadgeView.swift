@@ -13,118 +13,20 @@ struct BadgeView: View {
     @State private var isShowingBadgeDetails = false
     
     init(viewModel: BadgeViewModel = BadgeViewModel.preview()) {
-        _viewModel = State(initialValue: viewModel)
+        self._viewModel = State(initialValue: viewModel)
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
+
             if viewModel.unlockedBadges.isEmpty {
-                VStack(spacing: 16) {
-                    Text("Pas de badge, commencez un exercice")
-                        .font(.custom("Lexend-Bold", size: 22))
-                        .bold()
-                        .foregroundColor(.gray)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .padding(.vertical, 40)
+                emptyBadgesSection
             } else {
-                Text("Débloqués")
-                    .font(.custom("Lexend-Bold", size: 22))
-                    .bold()
-                    .padding(.horizontal)
                 
-                LazyVGrid(
-                    columns: [GridItem(.adaptive(minimum: 120), spacing: 5)],
-                    spacing: 15
-                ) {
-                    ForEach(viewModel.unlockedBadges) { badge in
-                        Button {
-                            selectedBadge = badge
-                            isShowingBadgeDetails = true
-                        } label: {
-                            VStack(spacing: 8) {
-                                if let url = viewModel.getUnlockBadgeImageURL(
-                                    badge.image
-                                ) {
-                                    AsyncImage(url: url) { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 100, height: 100)
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(width: 100, height: 100)
-                                    }
-                                }
-                                
-                                Text(badge.name)
-                                    .font(.caption)
-                                    .multilineTextAlignment(.center)
-                                    .lineLimit(2)
-                                    .frame(width: 120)
-                                    .fixedSize(
-                                        horizontal: true,
-                                        vertical: false
-                                    )
-                            }
-                            .frame(width: 120)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal)
+                badgeSection(title: "Débloqués", badges: viewModel.unlockedBadges, isLocked: false)
             }
             
-            VStack(alignment: .leading, spacing: 20) {
-                Text("À Débloquer")
-                    .font(.custom("Lexend-Bold", size: 22))
-                    .bold()
-                    .padding(.horizontal)
-                
-                LazyVGrid(
-                    columns: [GridItem(.adaptive(minimum: 120), spacing: 5)],
-                    spacing: 15
-                ) {
-                    ForEach(viewModel.lockedBadges) { badge in
-                        Button {
-                            print("Badge sélectionné: \(badge.name)")
-                            selectedBadge = badge
-                            isShowingBadgeDetails = true
-                        } label: {
-                            VStack(spacing: 8) {
-                                if let url = viewModel.getLockBadgeImageURL(
-                                    badge.image
-                                ) {
-                                    AsyncImage(url: url) { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 100, height: 100)
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(width: 100, height: 100)
-                                    }
-                                }
-                                
-                                Text(badge.name)
-                                    .font(.caption)
-                                    .multilineTextAlignment(.center)
-                                    .lineLimit(2)
-                                    .frame(width: 120)
-                                    .fixedSize(
-                                        horizontal: true,
-                                        vertical: false
-                                    )
-                            }
-                            .frame(width: 120)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal)
-            }
+            badgeSection(title: "À Débloquer", badges: viewModel.lockedBadges, isLocked: true)
             
             Spacer()
         }
@@ -141,33 +43,81 @@ struct BadgeView: View {
             await viewModel.fetchUserBadges()
         }
         .sheet(item: $selectedBadge) { badge in
-            VStack(spacing: 0) {
-                Color.clear
-                    .padding(.top, 40)
-                
-                Capsule()
-                    .fill(Color.gray.opacity(0.7))
-                    .frame(width: 36, height: 4)
-                    .padding(.top, 8)
-                    .padding(.bottom, 12)
-                
-                BadgeDetailsView(
-                    badge: badge,
-                    isLocked: viewModel.lockedBadges
-                        .contains { $0.id == badge.id }
-                )
-                .padding(.horizontal, 30)
-                .frame(maxWidth: .infinity, alignment: .center)
-                
-                Spacer(minLength: 20)
-            }
-            .background(Color.white)
-            .presentationDetents([.medium])
+            badgeDetailSheet(for: badge)
         }
+    }
+    
+    private var emptyBadgesSection: some View {
+        VStack(spacing: 16) {
+            Text("Pas de badge, commencez un exercice")
+                .font(.custom("Lexend-Bold", size: 22))
+                .bold()
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .padding(.vertical, 40)
+    }
+    
+
+    @ViewBuilder
+    private func badgeSection(title: String, badges: [UserProfileResponse.Badge], isLocked: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text(title)
+                .font(.custom("Lexend-Bold", size: 22))
+                .bold()
+                .padding(.horizontal)
+            
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 120), spacing: 5)],
+                spacing: 15
+            ) {
+                ForEach(badges) { badge in
+                    Button {
+                        selectedBadge = badge
+                        isShowingBadgeDetails = true
+                    } label: {
+                        AutonomeBadge(badge: badge, isLocked: isLocked)
+                            .frame(width: 110, height: 110)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    
+    @ViewBuilder
+    private func badgeDetailSheet(for badge: UserProfileResponse.Badge) -> some View {
+        VStack(spacing: 0) {
+            Color.clear
+                .padding(.top, 40)
+            
+            Capsule()
+                .fill(Color.gray.opacity(0.7))
+                .frame(width: 36, height: 4)
+                .padding(.top, 8)
+                .padding(.bottom, 12)
+            
+            BadgeDetailsView(
+                badge: badge,
+                isLocked: viewModel.lockedBadges.contains { $0.id == badge.id }
+            )
+            .padding(.horizontal, 30)
+            .frame(maxWidth: .infinity, alignment: .center)
+            
+            Spacer(minLength: 20)
+        }
+        .background(Color.white)
+        .presentationDetents([.medium])
     }
 }
 
 
 #Preview {
-    BadgeView(viewModel: BadgeViewModel.preview())
+    NavigationStack {
+        BadgeView(viewModel: BadgeViewModel.preview())
+    }
 }

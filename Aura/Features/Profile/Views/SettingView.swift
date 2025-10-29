@@ -12,6 +12,9 @@ struct SettingView: View {
     @Bindable var viewModel: SettingViewModel
     @State private var password: String = ""
     @State private var showDeleteConfirmation = false
+    @StateObject private var toastViewModel = ToastViewModel()
+    @State private var localFirstName: String = ""
+    @State private var localEmail: String = ""
     
     init(profileViewModel: ProfileViewModel) {
         self.viewModel = SettingViewModel(profileViewModel: profileViewModel)
@@ -61,16 +64,23 @@ struct SettingView: View {
                     fieldWithLabel(
                         label: "Prénom",
                         placeholder: "Saisir votre prénom",
-                        text: $viewModel.firstName
+                        text: $localFirstName
                     )
+                    .onAppear {
+                        localFirstName = viewModel.firstName
+                    }
                     .textContentType(.givenName)
                     .autocapitalization(.words)
                     
                     fieldWithLabel(
                         label: "Email",
                         placeholder: "Saisir votre email",
-                        text: $viewModel.email
+                        text: $localEmail
+
                     )
+                    .onAppear {
+                        localEmail = viewModel.email
+                    }
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
@@ -104,9 +114,10 @@ struct SettingView: View {
                 Button(action: {
                     Task {
                         await viewModel.updateUserProfile(
-                            firstName: viewModel.firstName,
-                            email: viewModel.email,
-                            password: password.isEmpty ? nil : password
+                            firstName: localFirstName,
+                            email: localEmail,
+                            password: password.isEmpty ? nil : password,
+                            avatar: viewModel.avatar
                         )
                     }
                 }) {
@@ -116,6 +127,12 @@ struct SettingView: View {
                         .frame(width: 360, height: 50)
                         .background(Color.violet)
                         .cornerRadius(25)
+                }
+                .disabled(viewModel.isLoading)
+                .overlay {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    }
                 }
                 .padding(.bottom, 20)
             }
@@ -134,6 +151,14 @@ struct SettingView: View {
                     "Cette action est irréversible. Tous vos données seront supprimées."
                 )
             }
+            .alert("Erreur", isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )) {
+                Button("OK") {}
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("Réglages")
@@ -147,8 +172,28 @@ struct SettingView: View {
                 LoginView()
                     .navigationBarBackButtonHidden(true)
             }
+            .onChange(of: viewModel.successMessage) {
+                guard let message = viewModel.successMessage, !message.isEmpty else { return }
+                toastViewModel.showToast(message: message, systemImage: "checkmark.circle.fill")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    viewModel.successMessage = nil
+                }
+            }
+
+        }
+            .onChange(of: viewModel.errorMessage) {
+                if let message = viewModel.errorMessage, !message.isEmpty {
+                    toastViewModel.showToast(
+                        message: message,
+                        systemImage: "xmark.circle.fill"
+                    )
+                    viewModel.errorMessage = nil
+                }
+            }
+            .showToast(viewModel: toastViewModel)
         }
     }
+    
     
     @ViewBuilder
     private func fieldWithLabel(label: String, placeholder: String, text: Binding<String>, isSecure: Bool = false) -> some View {
@@ -176,13 +221,18 @@ struct SettingView: View {
         }
         .padding(.leading, 4)
     }
-}
+
 
 
 #Preview {
     let appState = AppState()
     let profileViewModel = ProfileViewModel(authState: appState)
-    NavigationStack {
+    
+    profileViewModel.userName = "John"
+    profileViewModel.userEmail = "john@example.com"
+    profileViewModel.avatar = "https://example.com/avatar.png"
+    
+    return NavigationStack {
         SettingView(profileViewModel: profileViewModel)
             .environment(appState)
     }

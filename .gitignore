@@ -6,3 +6,4 @@
 *.xcuserdata/
 **/xcuserdata/
 .DS_Store
+Aura.xcodeproj/project.pbxproj
