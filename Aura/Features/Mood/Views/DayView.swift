@@ -58,6 +58,7 @@ struct DayView: View {
                     moods: vm.moods
                 )                
             }
+            .navigationBarBackButtonHidden(true)
             .padding(16)
             .task(id: effectiveToken) {
                 guard let token = effectiveToken?.trimmingCharacters(in: .whitespacesAndNewlines),
