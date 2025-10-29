@@ -36,7 +36,6 @@ struct AutonomeBadge: View {
                     )
                     .padding(.top, 8)
                 
-                // Nom du badge
                 Text(badge.name)
                     .font(.system(size: 12, weight: .bold))
                     .foregroundColor(isLocked ? .gray : .white)
