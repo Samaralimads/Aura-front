@@ -145,6 +145,7 @@ struct RegisterView: View {
         .onAppear {
             viewModel = RegisterViewModel(authState: authState)
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

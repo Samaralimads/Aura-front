@@ -118,6 +118,7 @@ struct LoginView: View {
         .onAppear {
             viewModel = LoginViewModel(authState: authState)
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
