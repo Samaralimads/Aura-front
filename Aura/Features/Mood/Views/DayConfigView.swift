@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DayConfigView: View {
+    @Environment(AppState.self) private var appState
+    
     @State private var viewModel = DayConfigViewModel()
     
     @State private var selectedEmotionID: UUID?
@@ -15,17 +17,23 @@ struct DayConfigView: View {
     @State private var selectedSleepID: UUID?
     @State private var noteText: String = ""
     
-    @State private var goToDay = false
-    
     let moodID: UUID?
     let moodColorName: String?
-    let token: String?
+    let tokenOverride: String?
     
-    init(moodID: UUID? = nil, moodColorName: String? = nil, token: String? = nil) {
+    
+    init(
+        moodID: UUID? = nil,
+        moodColorName: String? = nil,
+        token: String? = nil
+    ) {
         self.moodID = moodID
         self.moodColorName = moodColorName
-        self.token = token
+        self.tokenOverride = token
     }
+    
+    private var effectiveToken: String? { tokenOverride ?? appState.token }
+    
     
     private var backgroundColor: Color {
         MoodColors.fromAsset(name: moodColorName)
@@ -57,7 +65,10 @@ struct DayConfigView: View {
                                         reasonID: nil,
                                         noteText: ""
                                     )
-                                    goToDay = true
+                                    await MainActor.run {
+                                        appState.humeurPath = .init()
+                                        appState.refreshDaysTrigger = UUID()
+                                    }
                                 } catch {
                                     print("Skip-create failed:", error.localizedDescription)
                                 }
@@ -149,7 +160,7 @@ struct DayConfigView: View {
                     // MARK: - Note
                     Text("Journal")
                         .font(.custom("Lexend-medium", size: 20))
-
+                    
                     TextField("Ajouter une note", text: $noteText, axis: .vertical)
                         .lineLimit(20)
                         .padding(14)
@@ -159,6 +170,10 @@ struct DayConfigView: View {
                     // MARK: - Valider
                     Button {
                         Task {
+                            guard let token = viewModel.authToken, !token.isEmpty else {
+                                print("No token — aborting day creation")
+                                return
+                            }
                             do {
                                 _ = try await viewModel.createDay(
                                     date: Date(),
@@ -168,7 +183,10 @@ struct DayConfigView: View {
                                     reasonID: selectedReasonID,
                                     noteText: noteText
                                 )
-                                goToDay = true
+                                await MainActor.run {
+                                    appState.humeurPath = .init()
+                                    appState.refreshDaysTrigger = UUID()
+                                }
                             } catch {
                                 print("Create day failed:", error.localizedDescription)
                             }
@@ -186,18 +204,19 @@ struct DayConfigView: View {
                 .padding(16)
             }
         }
-        .navigationDestination(isPresented: $goToDay) {
-            DayView(token: token)
-        }
-        .task {
-            viewModel.authToken = token   
+        .task(id: effectiveToken) {
+            viewModel.authToken = effectiveToken
             await viewModel.fetchAll()
-        }
+            
+        }.toolbar(.hidden, for: .tabBar)
     }
 }
 
+
+
 #Preview {
     DayConfigView(moodID: nil, moodColorName: nil)
+        .environment(AppState())
 }
 
 

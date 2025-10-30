@@ -68,6 +68,7 @@ struct MontainAnimationView: View {
                     .ignoresSafeArea(edges: .bottom)
                 
             }
+            .toolbar(.hidden, for: .tabBar)
             .onChange(of: viewModel.isPlaying) { oldStatus, newStatus in
                 if viewModel.isPlaying {
                     StartSunsetAnim()

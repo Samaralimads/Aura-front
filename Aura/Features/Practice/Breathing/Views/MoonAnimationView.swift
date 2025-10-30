@@ -61,6 +61,7 @@ struct MoonAnimationView: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
     
     //MARK: - MOON ANIM

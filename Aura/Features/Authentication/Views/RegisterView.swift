@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct RegisterView: View {
-    @State private var viewModel = RegisterViewModel()
+    @Environment(AppState.self) private var authState
+    @State private var viewModel: RegisterViewModel
+    
+    init() {
+        _viewModel = State(
+            initialValue: RegisterViewModel(authState: AppState())
+        )
+    }
     
     var body: some View {
         NavigationStack {
@@ -21,8 +28,7 @@ struct RegisterView: View {
                 
                 VStack(spacing: 8) {
                     Text("C'est parti !")
-                        .font(.custom("Lexend-Bold", size: 36))
-                        .bold()
+                        .font(.custom("Lexend-Medium", size: 27))
                 }
                 .foregroundColor(.primary)
                 
@@ -76,7 +82,9 @@ struct RegisterView: View {
                 }) {
                     if viewModel.isLoading {
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .progressViewStyle(
+                                CircularProgressViewStyle(tint: .white)
+                            )
                     } else {
                         Text("Créer un compte")
                             .font(.custom("Lexend-Bold", size: 22))
@@ -133,26 +141,16 @@ struct RegisterView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("jaune-clair"))
             .navigationBarBackButtonHidden(true)
-            .alert("Erreur", isPresented: Binding(
-                get: { viewModel.errorMessage != nil },
-                set: { _ in viewModel.errorMessage = nil }
-            )) {
-                Button("OK", role: .cancel) { }
-            } message: {
-                Text(viewModel.errorMessage ?? "")
-            }
-            .navigationDestination(isPresented: Binding(
-                get: { viewModel.isLoggedIn },
-                set: { _ in }
-            )) {
-                TabBar()
-                    .navigationBarBackButtonHidden(true)
-            }
         }
+        .onAppear {
+            viewModel = RegisterViewModel(authState: authState)
+        }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
 
 #Preview {
     RegisterView()
+        .environment(AppState())
 }

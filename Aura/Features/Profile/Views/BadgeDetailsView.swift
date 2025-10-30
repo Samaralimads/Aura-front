@@ -7,87 +7,79 @@
 
 import SwiftUI
 
-
 struct BadgeDetailsView: View {
     let badge: UserProfileResponse.Badge
     let isLocked: Bool
-    @State private var viewModel: BadgeDetailsViewModel
     @Environment(\.dismiss) private var dismiss
+    private let styleMapper = BadgeStyleMapper()
     
-    init(badge: UserProfileResponse.Badge, isLocked: Bool) {
-        self.badge = badge
-        self.isLocked = isLocked
-        _viewModel = State(
-            initialValue: BadgeDetailsViewModel(
-                badge: badge,
-                isLocked: isLocked
-            )
-        )
+    private var style: BadgeStyle {
+        styleMapper.style(for: badge.name)
     }
     
     var body: some View {
         VStack(spacing: 20) {
-            HStack {
-                Spacer()
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 30))
-                        .foregroundColor(.gray)
+            Text("Détails du badge")
+                .font(.custom("Lexend-Medium", size: 22))
+                .padding(.horizontal, 20)
+                .padding(.bottom, 30)
+            
+            ZStack {
+                RoundedRectangle(cornerRadius: 25)
+                    .fill(isLocked ? Color.gray.opacity(0.5) : style.backgroundColor)
+                    .frame(width: 220, height: 220)
+                
+                VStack(spacing: 12) {
+                    Circle()
+                        .fill(isLocked ? Color.gray.opacity(0.7) : style.iconBackgroundColor)
+                        .frame(width: 100, height: 100)
+                        .overlay(
+                            Image(isLocked ? "lock" : style.iconName)
+                                .resizable()
+                                .renderingMode(.template)
+                                .scaledToFit()
+                                .frame(width: 60, height: 60)
+                                .foregroundColor(.white)
+                        )
+                        .padding(.top, 16)
+                    
+                    Text(badge.name)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(isLocked ? .gray : .white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .padding(.horizontal, 8)
+                    
+                    Spacer()
                 }
-                .padding(.trailing, 24)
-                .padding(.top, 16)
+                .frame(height: 180)
             }
-            
-            if let url = viewModel.getBadgeFullPage(badge.image) {
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(width: 150, height: 150)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 150, height: 150)
-                    case .failure:
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.gray)
-                    @unknown default:
-                        EmptyView()
-                    }
-                }
-            }
-            
-            Text(badge.name)
-                .font(.title2)
-                .bold()
-            
+            .padding(.top, 30)
+
             Text(badge.description)
                 .font(.body)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 30)
+                .padding(.bottom, 20)
             
             Spacer()
         }
-        .padding()
-        .navigationTitle(badge.name)
+        .navigationTitle("Badge")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
+
 #Preview {
-    let testBadge = UserProfileResponse.Badge(
-        id: "1",
-        name: "Test Badge",
-        description: "This is a test badge description",
-        image: "http://127.0.0.1:8080/badges/leaf.png"
-    )
-    return NavigationStack {
-        BadgeDetailsView(badge: testBadge, isLocked: true)
+    NavigationStack {
+        BadgeDetailsView(
+            badge: UserProfileResponse.Badge(
+                id: "1",
+                name: "First Meditation",
+                description: "Vous avez complété votre première séance de méditation. Félicitations !",
+                image: "/Badges/leaf.png"
+            ),
+            isLocked: false
+        )
     }
 }

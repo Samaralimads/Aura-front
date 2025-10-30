@@ -35,13 +35,12 @@ class BadgeViewModel {
         isLoading = false
     }
     
-    func getUnlockBadgeImageURL(_ imageName: String) -> URL? {
-        let cleanedImageName = imageName.replacingOccurrences(
-            of: "/Badges/",
-            with: ""
-        )
-        return URL(string: "\(baseURL)/Badges/\(cleanedImageName)")
+    func getUnlockBadgeIconName(_ badge: UserProfileResponse.Badge) -> String {
+        let mapper = BadgeStyleMapper()
+        let style = mapper.style(for: badge.name)
+        return style.iconName
     }
+
     
     func getLockBadgeImageURL(_ imageName: String) -> URL? {
         return URL(string: lockURL)
@@ -69,13 +68,13 @@ class BadgeViewModel {
                 id: "3",
                 name: "Advanced Meditation",
                 description: "Completed an advanced meditation session.",
-                image: "/Badges/lotus.png"
+                image: "/Badges/lock.png"
             ),
             UserProfileResponse.Badge(
                 id: "4",
                 name: "Advanced Challenge",
                 description: "Completed an advanced challenge.",
-                image: "/Badges/mental.png"
+                image: "/Badges/lock.png"
             )
         ]
         return viewModel

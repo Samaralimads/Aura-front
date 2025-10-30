@@ -17,7 +17,7 @@ final class DayConfigViewModel {
     var authToken: String?
     
     
-    // MARK: - Decoded data from my db goes here
+    // MARK: - Decoded data from my db
     var moods: [MoodModel] = []
     var emotions: [EmotionModel] = []
     var sleeps: [SleepModel] = []
@@ -163,9 +163,10 @@ extension DayConfigViewModel {
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
 
-        if let token = authToken, !token.isEmpty {
-            req.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
+        guard let token = authToken, !token.isEmpty else {
+               throw URLError(.userAuthenticationRequired)
+           }
+           req.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601   
