@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MeditationDetailView: View {
 
-    @Environment(\.dismiss) private var dismiss // Permet de revenir à la vue précédente
+    @Environment(\.dismiss) private var dismiss
     @State private var viewModel: MeditationDetailViewModel
     @State private var floatUp: Bool = false
     @State private var shadowScale: CGFloat = 1.0
@@ -28,41 +28,28 @@ struct MeditationDetailView: View {
                 .position(x: 320, y: 150)
             Image("shape2")
                 .position(x: 70, y: 500)
+          // Animation des points
+          FloatingDots(base: .white.opacity(0.55), count: 20)
 
             VStack(spacing: 32) {
                 Spacer()
 
-                // Si la méditation est terminée → message + bouton retour
+                // Si la méditation est terminée redirection vers la page MeditationFinishedView
                 if viewModel.isFinished {
-                    VStack(spacing: 20) {
-
-                      Spacer()
-                        Text("Méditation terminée")
-                            .font(.custom("Lexend-Medium", size: 32))
-                            .multilineTextAlignment(.center)
-
-                        Text("Prenez un moment pour savourer ce calme intérieur.")
-                            .font(.custom("Lexend-Regular", size: 18))
-                            .multilineTextAlignment(.center)
-                        Spacer()
-
-                        // Bouton retour
-                        Button(action: {
+                    MeditationFinishedView(
+                        buttonColor: viewModel.buttonColor(),
+                        emoteImageName: viewModel.meditation.image,
+                        onDismiss: {
+                            viewModel.stopAll()
                             dismiss()
-                        }) {
-                            Text("Retour aux méditations")
-                                .font(.custom("Lexend-Medium", size: 18))
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(viewModel.buttonColor())
-                                .cornerRadius(16)
-                                .padding(.horizontal, 50)
+                        },
+                        onRestart: {
+                            viewModel.restartMeditation()
                         }
-                        .buttonStyle(.plain)
-                    }
+                    )
                     .transition(.opacity)
-                    .animation(.easeInOut, value: viewModel.isFinished)
+                    .animation(.easeInOut(duration: 0.8), value: viewModel.isFinished)
+
                 } else {
                     // Timer
                     Text(viewModel.formatTime())
@@ -132,6 +119,8 @@ struct MeditationDetailView: View {
                     // Titre de l'exercice
                     Text(viewModel.meditation.title)
                         .font(.custom("Lexend-Medium", size: 27))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding()
 
                     // Bouton Play/Pause
@@ -156,6 +145,9 @@ struct MeditationDetailView: View {
             }
             .padding()
         }
+        .onDisappear {
+            viewModel.stopAll()
+        }
     }
 }
 
@@ -163,8 +155,8 @@ struct MeditationDetailView: View {
     MeditationDetailView(
         meditation: Meditation(
             id: UUID(),
-            title: "Méditation Name",
-            duration: 0,
+            title: "Meditation theme",
+            duration: 1,
             theme: "",
             image: "jaune-emote1",
             audio: "audio-medi1.mp3",

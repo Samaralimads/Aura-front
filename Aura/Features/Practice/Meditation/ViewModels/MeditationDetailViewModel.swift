@@ -14,10 +14,11 @@ import Observation
 final class MeditationDetailViewModel {
     var remainingTime: Int
     var isPlaying: Bool = false
-    var isFinished: Bool = false // Indique si la méditation est terminée
+    var isFinished: Bool = false
 
     private var timer: Timer?
     private var audioPlayer: AVPlayer?
+    private var backgroundPlayer: AVAudioPlayer?
     let meditation: Meditation
 
     // Init
@@ -28,7 +29,7 @@ final class MeditationDetailViewModel {
 
     // Timer
     func togglePlay() {
-        // Ne rien faire si la méditation est terminée
+
         if isFinished { return }
 
         isPlaying.toggle()
@@ -49,7 +50,7 @@ final class MeditationDetailViewModel {
                 stopTimer()
                 stopAudio()
                 isPlaying = false
-                isFinished = true // Marque la fin de la méditation
+                isFinished = true
             }
         }
     }
@@ -59,8 +60,9 @@ final class MeditationDetailViewModel {
         timer = nil
     }
 
-    // Lecture audio depuis le backend
+    // Lecture audio depuis le backend + musique d'ambiance locale
     private func playAudio() {
+        // audio backend
         let baseURL = "http://127.0.0.1:8080/"
         let audioPath = "meditation/audio/" + meditation.audio
         guard let url = URL(string: baseURL + audioPath) else { return }
@@ -68,16 +70,53 @@ final class MeditationDetailViewModel {
         let playerItem = AVPlayerItem(url: url)
         audioPlayer = AVPlayer(playerItem: playerItem)
         audioPlayer?.play()
+
+        // audio background assets
+        playBackgroundMusic()
+    }
+
+    // fonction pour la musique d’ambiance
+    private func playBackgroundMusic() {
+        guard let url = Bundle.main.url(forResource: "ambient", withExtension: "mp3") else {
+            print("Impossible de trouver ambiant.mp3 dans le bundle")
+            return
+        }
+
+        do {
+            backgroundPlayer = try AVAudioPlayer(contentsOf: url)
+            backgroundPlayer?.volume = 0.2
+            backgroundPlayer?.numberOfLoops = -1
+            backgroundPlayer?.prepareToPlay()
+            backgroundPlayer?.play()
+        } catch {
+            print("Erreur lors du chargement de la musique d’ambiance : \(error)")
+        }
     }
 
     private func pauseAudio() {
         audioPlayer?.pause()
+        backgroundPlayer?.pause()
     }
 
     private func stopAudio() {
         audioPlayer?.pause()
         audioPlayer?.seek(to: .zero)
         audioPlayer = nil
+
+        backgroundPlayer?.stop()
+        backgroundPlayer = nil
+    }
+
+    func stopAll() {
+        stopTimer()
+        stopAudio()
+        isPlaying = false
+    }
+
+    func restartMeditation() {
+        stopAll()
+        isFinished = false
+        remainingTime = meditation.duration * 60
     }
 
     func formatTime() -> String {

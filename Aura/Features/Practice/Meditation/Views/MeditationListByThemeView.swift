@@ -35,3 +35,7 @@ struct MeditationListByThemeView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
+#Preview {
+  MeditationListByThemeView(theme: "Test", meditations: [])
+}
