@@ -60,39 +60,12 @@ struct ProfileView: View {
                             .font(.custom("Lexend-Bold", size: 18))
                             .foregroundColor(.gray)
                     } else {
-                        ForEach(
-                            badgeViewModel.unlockedBadges.prefix(3),
-                            id: \.id
-                        ) { badge in
-                            VStack {
-                                if let url = badgeViewModel.getUnlockBadgeImageURL(
-                                    badge.image
-                                ) {
-                                    AsyncImage(url: url) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            ProgressView()
-                                                .frame(width: 60, height: 60)
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 110, height: 110)
-                                        case .failure:
-                                            Image(systemName: "photo")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 30, height: 30)
-                                                .foregroundColor(.gray)
-                                        @unknown default:
-                                            EmptyView()
-                                        }
-                                    }
-                                }
-                            }
+                        ForEach(badgeViewModel.unlockedBadges.prefix(3), id: \.id) { badge in
+                            AutonomeBadge(badge: badge, isLocked: false)
                         }
                     }
                 }
+
                 .frame(height: 110)
                 
                 // Settings section
