@@ -26,18 +26,18 @@ struct BadgeDetailsView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 25)
                     .fill(isLocked ? Color.gray.opacity(0.5) : style.backgroundColor)
-                    .frame(width: 180, height: 180)
+                    .frame(width: 220, height: 220)
                 
                 VStack(spacing: 12) {
                     Circle()
                         .fill(isLocked ? Color.gray.opacity(0.7) : style.iconBackgroundColor)
-                        .frame(width: 80, height: 80)
+                        .frame(width: 100, height: 100)
                         .overlay(
                             Image(isLocked ? "lock" : style.iconName)
                                 .resizable()
                                 .renderingMode(.template)
                                 .scaledToFit()
-                                .frame(width: 40, height: 40)
+                                .frame(width: 60, height: 60)
                                 .foregroundColor(.white)
                         )
                         .padding(.top, 16)
@@ -51,7 +51,7 @@ struct BadgeDetailsView: View {
                     
                     Spacer()
                 }
-                .frame(height: 150)
+                .frame(height: 180)
             }
             
             Text(badge.description)
@@ -62,7 +62,7 @@ struct BadgeDetailsView: View {
             
             Spacer()
         }
-        .padding(.bottom, 120)
+        .padding(.bottom, 80)
         .navigationTitle("Badge")
         .navigationBarTitleDisplayMode(.inline)
     }
