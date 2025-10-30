@@ -14,7 +14,6 @@ struct MeditationView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    //  Boucle sur les thème de méditations ( je les ai ajouté manuellement dans dans le MeditationViewModel)
                     ForEach(viewModel.themeOrder, id: \.self) { theme in
                         if let meditations = viewModel.groupedByTheme()[theme] {
                             VStack(alignment: .leading, spacing: 12) {
