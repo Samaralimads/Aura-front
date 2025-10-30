@@ -69,13 +69,13 @@ class BadgeViewModel {
                 id: "3",
                 name: "Advanced Meditation",
                 description: "Completed an advanced meditation session.",
-                image: "/Badges/lotus.png"
+                image: "/Badges/lock.png"
             ),
             UserProfileResponse.Badge(
                 id: "4",
                 name: "Advanced Challenge",
                 description: "Completed an advanced challenge.",
-                image: "/Badges/mental.png"
+                image: "/Badges/lock.png"
             )
         ]
         return viewModel
