@@ -22,6 +22,7 @@ struct BadgeDetailsView: View {
             Text("Détails du badge")
                 .font(.custom("Lexend-Medium", size: 22))
                 .padding(.horizontal, 20)
+                .padding(.bottom, 30)
             
             ZStack {
                 RoundedRectangle(cornerRadius: 25)
@@ -53,7 +54,8 @@ struct BadgeDetailsView: View {
                 }
                 .frame(height: 180)
             }
-            
+            .padding(.top, 30)
+
             Text(badge.description)
                 .font(.body)
                 .multilineTextAlignment(.center)
@@ -62,7 +64,6 @@ struct BadgeDetailsView: View {
             
             Spacer()
         }
-        .padding(.bottom, 80)
         .navigationTitle("Badge")
         .navigationBarTitleDisplayMode(.inline)
     }

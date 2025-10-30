@@ -35,13 +35,12 @@ class BadgeViewModel {
         isLoading = false
     }
     
-    func getUnlockBadgeImageURL(_ imageName: String) -> URL? {
-        let cleanedImageName = imageName.replacingOccurrences(
-            of: "/Badges/",
-            with: ""
-        )
-        return URL(string: "\(baseURL)/Badges/\(cleanedImageName)")
+    func getUnlockBadgeIconName(_ badge: UserProfileResponse.Badge) -> String {
+        let mapper = BadgeStyleMapper()
+        let style = mapper.style(for: badge.name)
+        return style.iconName
     }
+
     
     func getLockBadgeImageURL(_ imageName: String) -> URL? {
         return URL(string: lockURL)
