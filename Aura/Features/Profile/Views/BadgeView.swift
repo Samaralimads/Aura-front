@@ -118,6 +118,6 @@ struct BadgeView: View {
 
 #Preview {
     NavigationStack {
-        BadgeView(viewModel: BadgeViewModel.preview())
+        BadgeView(viewModel: BadgeViewModel())
     }
 }

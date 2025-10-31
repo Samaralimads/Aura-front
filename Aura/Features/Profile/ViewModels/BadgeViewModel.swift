@@ -8,45 +8,58 @@
 import Foundation
 import Observation
 
-
 @Observable
 class BadgeViewModel {
     var unlockedBadges: [UserProfileResponse.Badge] = []
     var lockedBadges: [UserProfileResponse.Badge] = []
-    var isLoading = false
-    var error: Error?
-    let lockURL = "http://127.0.0.1:8080/Badges/lock.png"
-    
     private let baseURL = "http://127.0.0.1:8080"
-    private let authService = AuthService()
+    private var isFetching = false
     
     func fetchUserBadges() async {
-        isLoading = true
-        error = nil
+        guard !isFetching else { return }
+        isFetching = true
+        defer { isFetching = false }
         
         do {
-            let profile = try await authService.getUserProfile()
+            let profile = try await AuthService.shared.getUserProfile()
             unlockedBadges = profile.unlockedBadges
             lockedBadges = profile.lockedBadges
         } catch {
-            self.error = error
+            print("Erreur : \(error)")
+        }
+    }
+    
+    func isBadgeUnlocked(_ badgeId: String) -> Bool {
+        return unlockedBadges.contains { $0.id == badgeId }
+    }
+    
+    func unlockBadge(badgeId: String, email: String) async {
+        await fetchUserBadges()
+        
+        if unlockedBadges.contains(where: { $0.id == badgeId }) {
+            return
         }
         
-        isLoading = false
-    }
-    
-    func getUnlockBadgeIconName(_ badge: UserProfileResponse.Badge) -> String {
-        let mapper = BadgeStyleMapper()
-        let style = mapper.style(for: badge.name)
-        return style.iconName
+        guard let url = URL(string: "\(baseURL)/badges/unlock") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        if let token = AuthService.shared.getToken() {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
+        let body: [String: Any] = ["badgeID": badgeId]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        do {
+            let (_, _) = try await URLSession.shared.data(for: request)
+            await fetchUserBadges()
+        } catch {
+            print("⚠️ Erreur réseau : \(error.localizedDescription)")
+        }
     }
 
-    
-    func getLockBadgeImageURL(_ imageName: String) -> URL? {
-        return URL(string: lockURL)
-    }
-    
-    // MARK: - Preview Data
     static func preview() -> BadgeViewModel {
         let viewModel = BadgeViewModel()
         viewModel.unlockedBadges = [

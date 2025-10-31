@@ -174,4 +174,9 @@ class AuthService {
         _ = try await URLSession.shared.data(for: request)
         UserDefaults.standard.removeObject(forKey: "userToken")
     }
+    
+    // MARK: - Get Token
+    func getToken() -> String? {
+        return UserDefaults.standard.string(forKey: "userToken")
+    }
 }
