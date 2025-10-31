@@ -69,7 +69,7 @@ struct SunAnimationView: View {
         }
     }
     
-    // MARK: - ANIME CLOUDS V2 TASK
+    // MARK: - ANIME CLOUDS
     private func startCloudAnim(screenWidth: CGFloat) {
         cloudTask = Task {
             while viewModel.isPlaying {
@@ -79,6 +79,7 @@ struct SunAnimationView: View {
                     clouds[1].x = screenWidth
                     clouds[2].x = -screenWidth
                 }
+                //HOLD + EXHALE
                 try? await Task.sleep(for: .seconds(viewModel.holdD + viewModel.inhaleD))
                 withAnimation(.easeOut(duration: Double(viewModel.exhaleD))){
                     clouds = cloudsArray

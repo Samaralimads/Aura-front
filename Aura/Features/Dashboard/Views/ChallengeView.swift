@@ -13,6 +13,8 @@ struct ChallengeView: View {
     @State var completedCount : Int = 0
     @State var completedTasks : [String : Bool] = [:]
     @State var finishedTask: Bool = false
+    let authService = AuthService.shared
+    
     
     var body: some View {
         ZStack (alignment: .topLeading){
@@ -29,9 +31,9 @@ struct ChallengeView: View {
                         .font(.custom("Lexend-Medium", size: 24))
                         .foregroundColor(.white)
                     
-                    HStack(alignment: .top, spacing: 16){
+                    HStack(alignment: .top){
                         
-                        VStack (alignment: .leading, spacing: 12){
+                        VStack (alignment: .leading, spacing: 14){
                             Text(challenge.description)
                                 .foregroundColor(.white)
                                 .font(.system(size: 15))
@@ -50,7 +52,8 @@ struct ChallengeView: View {
                                 image
                                     .resizable()
                                     .frame(width: 160, height: 115)
-                                    .offset(x: 0, y: -20)
+                                    .padding(.top, -15)
+                                    .padding(.bottom, 10)
                             } placeholder: {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
@@ -75,9 +78,43 @@ struct ChallengeView: View {
                                     } else {
                                         completedTasks[task.title] = true
                                         completedCount += 1
-                                    }
+                                        //FONCTION QUI REMPLI TABLE userTask
+                                        Task {
+                                            do {
+                                                let id = try await authService.getUserID()
+                                                if let userID = UUID(uuidString: id),
+                                                   let taskID = task.id {
+                                                    await viewModel.sendUserTask(
+                                                        userID: userID,
+                                                        taskID: taskID
+                                                    )
+                                                } else {
+                                                    print("ID utilisateur invalide: \(id)")
+                                                }
+                                            } catch {
+                                                print("Erreur lors de la récupération de l'ID utilisateur: \(error)")
+                                            }
+                                        }
+
                                     if completedCount == viewModel.tasks.count {
                                         finishedTask = true
+                                        //FONCTION QUI REMPLI TABLE userChallenge
+                                        Task {
+                                            do {
+                                                let id = try await authService.getUserID()
+                                                if let userID = UUID(uuidString: id),
+                                                let challengeID = viewModel.currentChallenge?.id{
+                                                    await viewModel.sendUserChallenge(
+                                                        userID: userID,
+                                                        challengeID: challengeID)
+                                                } else {
+                                                    print("ID utilisateur invalide: \(id)")
+                                                }
+                                            } catch {
+                                                print("Erreur ID utilisateur: \(error)")
+                                            }
+                                        }
+                                    }
                                     }
                                 }){
                                     if completedTasks[task.title] == true {
@@ -97,18 +134,17 @@ struct ChallengeView: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Spacer()
                             }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical,10)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical,5)
                         }
                     }
                     
                     .alert("Félicitations !", isPresented: $finishedTask) {
                         Button("OK", role: .cancel) { }
                     } message: {
-                        Image("perso-rouge")
                         Text("Vous avez terminé ce défi !")
                     }                }
-                .padding(20)
+                .padding(17)
             } else {
                 VStack(alignment: .center) {
                     ProgressView()

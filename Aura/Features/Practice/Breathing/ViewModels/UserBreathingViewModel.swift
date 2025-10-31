@@ -7,12 +7,10 @@
 
 import SwiftUI
 
-//Objet userBreathing
-struct UserBreathingDTO: Codable {
-    let userID: UUID
-    let breathingID: UUID
-    let date: Date
-}
+
+// MARK: - A supprimer
+
+
 
 @Observable
 class UserBreathingViewModel {

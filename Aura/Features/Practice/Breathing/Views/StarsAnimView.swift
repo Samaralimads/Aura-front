@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StarsAnimView: View {
     
-    //Remplissage du tableau d'étoiles ramdom
+    //Remplissage du tableau d'étoiles random
     @State private var stars: [Star] = (0..<70).map { _ in
         Star(
             scale: 4,
@@ -69,7 +69,7 @@ struct StarsAnimView: View {
         }
     }
     
-    // Animation de l’étoile filante
+    //MARK: - SHOOTING STAR ANIM FUNCTION
     func animateShootingStar() {
         let screen = UIScreen.main.bounds
         

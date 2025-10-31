@@ -11,14 +11,15 @@ struct DashboardView: View {
     @Environment(AppState.self) private var appState
 
     var body: some View {
-        VStack(alignment: .leading){
-            Text("Salut \(appState.userName)")
+        VStack(alignment: .leading, spacing: 14){
+            Text("Salut \(appState.userName),")
                 .font(.custom("Lexend-Medium", size: 27))
-                .padding(.bottom, 20)
-                .padding(.top, 10)
+                .padding(.top, 70)
             
             
-          ChallengeView()
+            ChallengeView()
+            Text("Comment te sens-tu cette semaine ?")
+                .font(.custom("Lexend-Regular", size: 17))
             DayStreakView()
             
             

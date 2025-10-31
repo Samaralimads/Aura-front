@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct BreathingPlayerView: View {
+    
+    @State var viewModel : BreathingPlayerViewModel
+    @State private var timer : Int = 0
+    @Environment(\.dismiss) var dismiss
     @State private var badgeViewModel = BadgeViewModel()
     private let currentBadgeId = "55555555-5555-5555-5555-555555555555"
     private let userEmail = "mehdi@simplon.com"
-    @State var viewModel: BreathingPlayerViewModel
-    @State private var timer: Int = 0
+
+
     
     public var body: some View {
         ZStack {
@@ -45,8 +49,8 @@ struct BreathingPlayerView: View {
                         .font(.custom("Lexend-Regular", size: 20))
                         .multilineTextAlignment(.center)
                     
-                    NavigationLink {
-                        PickerView()
+                    Button{
+                        dismiss()
                     } label: {
                         Text("Valider")
                             .font(.custom("Lexend-medium", size: 17))
