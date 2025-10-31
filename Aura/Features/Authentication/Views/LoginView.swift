@@ -22,8 +22,8 @@ struct LoginView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 120, height: 120)
-                    .padding(.top, 60)
                     .padding(.bottom, 20)
+                    .padding(.top, 20)
                 
                 VStack(spacing: 8) {
                     Text("Bon retour !")
@@ -69,12 +69,12 @@ struct LoginView: View {
                         print("Mot de passe oublié ?")
                     }) {
                         Text("Mot de passe oublié ?")
-                            .font(.caption)
+                            .font(.custom("Lexend-Regular", size: 17))
                             .foregroundColor(.black)
                     }
                     Spacer()
                 }
-                .padding(.top, 8)
+                .padding(.top, 20)
                 
                 Button(action: {
                     Task { await viewModel.login() }
@@ -86,7 +86,7 @@ struct LoginView: View {
                             )
                     } else {
                         Text("Se connecter")
-                            .font(.custom("Lexend-Bold", size: 22))
+                            .font(.custom("Lexend-Medium", size: 22))
                             .foregroundColor(.white)
                     }
                 }
@@ -109,7 +109,6 @@ struct LoginView: View {
                             .foregroundColor(.black)
                     }
                 }
-                .padding(.bottom, 30)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("jaune-clair"))

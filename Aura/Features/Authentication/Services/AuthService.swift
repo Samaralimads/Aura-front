@@ -13,7 +13,7 @@ class AuthService {
     
     // MARK: - Login
     func login(email: String, password: String) async throws -> UserLoginResponse {
-        guard let url = URL(string: "http://127.0.0.1:8080/auth/login") else {
+        guard let url = URL(string: "\(AuthService.baseURL)/auth/login") else {
             throw URLError(.badURL)
         }
         
