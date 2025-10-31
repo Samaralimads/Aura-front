@@ -9,7 +9,6 @@ import AVFoundation
 
 class MusicManager {
     
-    //private var player: AVAudioPlayer?
     private var player: AVPlayer?
     
     //MARK: FONCTION PLAY MUSIC
