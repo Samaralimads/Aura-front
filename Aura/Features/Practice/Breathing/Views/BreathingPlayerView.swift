@@ -11,6 +11,7 @@ struct BreathingPlayerView: View {
     
     @State var viewModel : BreathingPlayerViewModel
     @State private var timer : Int = 0
+    @Environment(\.dismiss) var dismiss
     
     public var body: some View {
         
@@ -47,8 +48,8 @@ struct BreathingPlayerView: View {
                         .font(.custom("Lexend-Regular", size: 20))
                         .multilineTextAlignment(.center)
                     
-                    NavigationLink {
-                         PickerView()
+                    Button{
+                        dismiss()
                     } label: {
                         Text("Valider")
                             .font(.custom("Lexend-medium", size: 17))

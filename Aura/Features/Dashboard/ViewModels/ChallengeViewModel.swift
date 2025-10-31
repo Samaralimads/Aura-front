@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+struct UserTaskDTO : Codable{
+    let userID : UUID
+    let taskID : UUID
+}
+
+struct UserChallengeDTO : Codable{
+    let userID : UUID
+    let challengeID : UUID
+}
+
 @Observable
 class ChallengeViewModel {
     
@@ -74,6 +84,58 @@ class ChallengeViewModel {
         }
         catch {
             print("Invalid data task:\(error)")
+        }
+    }
+    
+    // MARK: - SEND DATA
+    
+    private let baseURL = "http://127.0.0.1:8080"
+
+    func sendUserTask(userID : UUID, taskID : UUID) async {
+        guard let url = URL(string: "\(baseURL)/userTasks") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let newUserTask = UserTaskDTO(userID: userID, taskID: taskID)
+        request.httpBody = try? JSONEncoder().encode(newUserTask)
+        
+        do {
+            let( _, response) = try await URLSession.shared.data(for: request)
+            if let response = response as? HTTPURLResponse {
+                if (200...299).contains(response.statusCode) {
+                    print("Succes: UserTask created")
+                } else {
+                    print("Error: UserTask not created \(response.statusCode)")
+                }
+            }
+        } catch {
+            print("Error request UserTask table : \(error.localizedDescription)")
+        }
+    }
+    
+    func sendUserChallenge(userID : UUID, challengeID : UUID) async {
+        guard let url = URL(string: "\(baseURL)/userChallenges") else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let newUserChallenge = UserChallengeDTO(userID: userID, challengeID: challengeID)
+        request.httpBody = try? JSONEncoder().encode(newUserChallenge)
+        
+        do {
+            let( _, response) = try await URLSession.shared.data(for: request)
+            if let response = response as? HTTPURLResponse {
+                if (200...299).contains(response.statusCode) {
+                    print("Succes: UserTask created")
+                } else {
+                    print("Error: UserTask not created \(response.statusCode)")
+                }
+            }
+        } catch {
+            print("Error request UserTask table : \(error.localizedDescription)")
         }
     }
 }

@@ -11,9 +11,8 @@ struct Wave : Shape {
     var amplitude: CGFloat //hauteur de la vague
     var frequency: CGFloat //nombre de vagues sur la largeur
     var phase: CGFloat //animation : décalage horizontal de l’onde
-    var variationAmplitude: Bool = false // Permet d'activer/desactiver variation amplitude des vagues
     
-    // On indique à SwiftUI que "phase" est animable
+    //Pour rendre phase animable
       var animatableData: CGFloat {
           get { phase }
           set { phase = newValue }
