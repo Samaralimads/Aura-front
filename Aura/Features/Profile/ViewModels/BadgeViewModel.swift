@@ -59,39 +59,6 @@ class BadgeViewModel {
             print("⚠️ Erreur réseau : \(error.localizedDescription)")
         }
     }
-
-    static func preview() -> BadgeViewModel {
-        let viewModel = BadgeViewModel()
-        viewModel.unlockedBadges = [
-            UserProfileResponse.Badge(
-                id: "1",
-                name: "First Meditation",
-                description: "Completed your first meditation session.",
-                image: "/Badges/leaf.png"
-            ),
-            UserProfileResponse.Badge(
-                id: "2",
-                name: "First Challenge",
-                description: "Completed your first challenge.",
-                image: "/Badges/wind.png"
-            )
-        ]
-        viewModel.lockedBadges = [
-            UserProfileResponse.Badge(
-                id: "3",
-                name: "Advanced Meditation",
-                description: "Completed an advanced meditation session.",
-                image: "/Badges/lock.png"
-            ),
-            UserProfileResponse.Badge(
-                id: "4",
-                name: "Advanced Challenge",
-                description: "Completed an advanced challenge.",
-                image: "/Badges/lock.png"
-            )
-        ]
-        return viewModel
-    }
     
     func getBadgeName(by id: String) -> String? {
         unlockedBadges.first { $0.id == id }?.name
