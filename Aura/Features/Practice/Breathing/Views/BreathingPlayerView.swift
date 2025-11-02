@@ -13,10 +13,8 @@ struct BreathingPlayerView: View {
     @State private var timer : Int = 0
     @Environment(\.dismiss) var dismiss
     @State private var badgeViewModel = BadgeViewModel()
-    private let currentBadgeId = "55555555-5555-5555-5555-555555555555"
-    private let userEmail = "mehdi@simplon.com"
-
-
+    @State private var toastViewModel = ToastViewModel()
+    private let currentBadgeId = "44444444-4444-4444-4444-444444444444"
     
     public var body: some View {
         ZStack {
@@ -66,15 +64,22 @@ struct BreathingPlayerView: View {
                 .padding(17)
             }
         }
+        .showToast(viewModel: toastViewModel)
         .onChange(of: viewModel.isFinished) { _, newValue in
             if newValue {
                 Task {
                     await badgeViewModel.fetchUserBadges()
                     if !badgeViewModel.unlockedBadges.contains(where: { $0.id == currentBadgeId }) {
                         await badgeViewModel.unlockBadge(
-                            badgeId: currentBadgeId,
-                            email: userEmail
+                            badgeId: currentBadgeId
                         )
+
+                        if let badgeName = badgeViewModel.getBadgeName(by: currentBadgeId) {
+                            toastViewModel.showToast(
+                                message: "Badge \(badgeName) débloqué !",
+                                systemImage: "checkmark.circle.fill"
+                            )
+                        }
                     }
                 }
             }

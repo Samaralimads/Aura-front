@@ -33,7 +33,7 @@ class BadgeViewModel {
         return unlockedBadges.contains { $0.id == badgeId }
     }
     
-    func unlockBadge(badgeId: String, email: String) async {
+    func unlockBadge(badgeId: String) async {
         await fetchUserBadges()
         
         if unlockedBadges.contains(where: { $0.id == badgeId }) {
@@ -91,5 +91,9 @@ class BadgeViewModel {
             )
         ]
         return viewModel
+    }
+    
+    func getBadgeName(by id: String) -> String? {
+        unlockedBadges.first { $0.id == id }?.name
     }
 }
