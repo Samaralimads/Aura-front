@@ -13,7 +13,7 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14){
-                Text("Salut \(appState.userName),")
+                Text("Salut \(appState.userName)")
                     .font(.custom("Lexend-Medium", size: 27))
                     .padding(.top, 30)
                 

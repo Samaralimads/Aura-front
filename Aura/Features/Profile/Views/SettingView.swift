@@ -57,7 +57,8 @@ struct SettingView: View {
                 )
                 .sheet(isPresented: $viewModel.showAvatarSelection) {
                     AvatarSelectionView(viewModel: viewModel)
-                        .presentationDetents([.medium, .large])
+                        .presentationDetents([.height(400)])
+                        .presentationBackground(.white)
                 }
                 
                 VStack(spacing: 16) {

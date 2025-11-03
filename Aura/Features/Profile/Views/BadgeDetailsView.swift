@@ -45,7 +45,7 @@ struct BadgeDetailsView: View {
                     
                     Text(badge.name)
                         .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(isLocked ? .gray : .white)
+                        .foregroundColor(.white)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                         .padding(.horizontal, 8)
@@ -66,6 +66,7 @@ struct BadgeDetailsView: View {
         }
         .navigationTitle("Badge")
         .navigationBarTitleDisplayMode(.inline)
+        .presentationBackground(.white)
     }
 }
 

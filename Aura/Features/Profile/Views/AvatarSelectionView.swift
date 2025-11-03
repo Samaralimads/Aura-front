@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct AvatarSelectionView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var viewModel: SettingViewModel
@@ -14,6 +15,14 @@ struct AvatarSelectionView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
+                Capsule()
+                    .fill(Color.gray.opacity(0.7))
+                    .frame(width: 36, height: 4)
+                    .padding(.top, 50)
+                    
+                Text("Choisir un avatar")
+                    .font(.custom("Lexend-Medium", size: 18))
+                
                 Grid(horizontalSpacing: 16, verticalSpacing: 20) {
                     GridRow {
                         ForEach(viewModel.avatars.prefix(3)) { avatar in
@@ -56,12 +65,7 @@ struct AvatarSelectionView: View {
                 .disabled(viewModel.selectedAvatarURL == nil)
                 .padding(.bottom, 30)
             }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Choisir un avatar")
-                        .font(.custom("Lexend-Medium", size: 18))
-                }
-            }
+            .toolbar(.hidden)
             .navigationBarTitleDisplayMode(.inline)
             .task {
                 await viewModel.loadAvatars()
@@ -93,7 +97,7 @@ struct AvatarSelectionView: View {
             .overlay(
                 Circle()
                     .stroke(
-                        viewModel.selectedAvatarURL == avatar.url ? Color.violet : Color.clear,
+                        viewModel.selectedAvatarURL == avatar.url ? Color.gray : Color.clear,
                         lineWidth: 3
                     )
             )
@@ -101,7 +105,6 @@ struct AvatarSelectionView: View {
         .buttonStyle(.plain)
     }
 }
-
 
 #Preview {
     let appState = AppState()
