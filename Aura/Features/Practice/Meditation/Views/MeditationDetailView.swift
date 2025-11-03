@@ -28,8 +28,6 @@ struct MeditationDetailView: View {
                 .position(x: 320, y: 150)
             Image("shape2")
                 .position(x: 70, y: 500)
-          // Animation des points
-          FloatingDots(base: .white.opacity(0.55), count: 20)
 
             VStack(spacing: 32) {
                 Spacer()
@@ -148,6 +146,7 @@ struct MeditationDetailView: View {
         .onDisappear {
             viewModel.stopAll()
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

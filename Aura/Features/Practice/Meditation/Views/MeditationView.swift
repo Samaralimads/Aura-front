@@ -42,7 +42,7 @@ struct MeditationView: View {
                                             .buttonStyle(.plain)
                                         }
                                     }
-                                    .padding(.horizontal)
+                                    .padding(.leading, 25)
                                 }
                             }
                         }

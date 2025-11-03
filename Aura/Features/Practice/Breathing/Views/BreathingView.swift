@@ -76,6 +76,7 @@ struct BreathingView: View {
                     }
                 }
             }
+            .padding(.horizontal, 17)
             .onAppear {
                 Task {
                     await breathingviewModel.fetchBreathings()
