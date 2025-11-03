@@ -87,6 +87,7 @@ struct MontainAnimationView: View {
         }
     }
     
+    //MARK: - SUNSET ANIM FUNCTION
     func StartSunsetAnim() {
         sunsetTask = Task {
             while viewModel.isPlaying {

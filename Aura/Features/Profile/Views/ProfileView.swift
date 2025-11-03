@@ -43,7 +43,7 @@ struct ProfileView: View {
                     Text("Mes badges")
                         .font(.custom("Lexend-Bold", size: 22))
                     Spacer()
-                    NavigationLink(destination: BadgeView()) {
+                    NavigationLink(destination: BadgeView(viewModel: BadgeViewModel())) {
                         Text("Tout voir")
                             .font(.custom("Lexend-Regular", size: 16))
                             .underline()
@@ -65,7 +65,9 @@ struct ProfileView: View {
                         }
                     }
                 }
-
+                .task {
+                    await badgeViewModel.fetchUserBadges()
+                }
                 .frame(height: 110)
                 
                 // Settings section
@@ -149,9 +151,6 @@ struct ProfileView: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 20)
-            .task {
-                await badgeViewModel.fetchUserBadges()
-            }
             .navigationDestination(isPresented: $navigateToLogin) {
                 LoginView()
             }

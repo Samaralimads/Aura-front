@@ -64,7 +64,7 @@ struct MoonAnimationView: View {
         .toolbar(.hidden, for: .tabBar)
     }
     
-    //MARK: - MOON ANIM
+    //MARK: - MOON ANIM FUNCTION
     func moonAnimStart() {
         
         moonTask?.cancel()

@@ -41,6 +41,7 @@ struct PickerView: View {
         .onAppear {
             viewModel.selectedPratice = currentSelection
         }
+        //.padding(.horizontal, 17)
     }
 }
 

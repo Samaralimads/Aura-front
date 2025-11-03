@@ -77,7 +77,7 @@ struct WaveEffectView: View {
         }
     }
     
-    //MARK: - ANIM WAVES
+    //MARK: - ANIM WAVES FUNCTION
     func startWaveAnim(){
         waveTask = Task {
             while viewModel.isPlaying {

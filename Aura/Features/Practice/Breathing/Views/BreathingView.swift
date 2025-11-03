@@ -10,9 +10,7 @@ import SwiftUI
 struct BreathingView: View {
     
     @State var breathingviewModel = BreathingViewModel()
-    @State var userBreathingModelView = UserBreathingViewModel()
     let authService = AuthService.shared
-    @State private var fetchTask: Task<Void, Never>?
     
     let columns: [GridItem] = [
         GridItem(.flexible(), spacing: 14),
@@ -37,7 +35,7 @@ struct BreathingView: View {
                                 do {
                                     let userID = try await authService.getUserID()
                                     if let uuid = UUID(uuidString: userID) {
-                                        await userBreathingModelView.sendUserBreathing(
+                                        await breathingviewModel.sendUserBreathing(
                                             userID: uuid,
                                             breathingID: breathing.id
                                         )
@@ -45,7 +43,7 @@ struct BreathingView: View {
                                         print("ID utilisateur invalide: \(userID)")
                                     }
                                 } catch {
-                                    print("Erreur lors de la récupération de l'ID utilisateur: \(error)")
+                                    print("Erreur ID utilisateur: \(error)")
                                 }
                             }
                         }
@@ -78,8 +76,9 @@ struct BreathingView: View {
                     }
                 }
             }
+            .padding(.horizontal, 17)
             .onAppear {
-                fetchTask = Task {
+                Task {
                     await breathingviewModel.fetchBreathings()
                 }
             }
