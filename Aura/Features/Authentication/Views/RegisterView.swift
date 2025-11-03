@@ -25,6 +25,7 @@ struct RegisterView: View {
                     .scaledToFit()
                     .frame(width: 120, height: 120)
                     .padding(.bottom, 20)
+                    .padding(.top, 20)
                 
                 VStack(spacing: 8) {
                     Text("C'est parti !")
@@ -87,7 +88,7 @@ struct RegisterView: View {
                             )
                     } else {
                         Text("Créer un compte")
-                            .font(.custom("Lexend-Bold", size: 22))
+                            .font(.custom("Lexend-Medium", size: 22))
                             .foregroundColor(.white)
                     }
                 }
@@ -95,7 +96,7 @@ struct RegisterView: View {
                 .background(Color.black)
                 .cornerRadius(25)
                 .disabled(viewModel.isLoading)
-                .padding(.top, 30)
+                .padding(.top, 50)
                 .padding(.bottom, 20)
                 
                 HStack(spacing: 8) {
@@ -125,6 +126,8 @@ struct RegisterView: View {
                             .frame(width: 105, height: 50)
                     }
                     .padding(.bottom, 30)
+                    
+                    Spacer()
                     
                     NavigationLink(destination: LoginView()) {
                         VStack(spacing: 4) {

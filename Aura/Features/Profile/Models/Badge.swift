@@ -14,3 +14,9 @@ struct Badge: Codable, Identifiable {
     let description: String
     let image: String
 }
+
+
+struct ErrorResponse: Codable {
+    let error: Bool
+    let reason: String
+    }

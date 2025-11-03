@@ -8,13 +8,9 @@
 import SwiftUI
 
 struct BadgeView: View {
-    @State private var viewModel: BadgeViewModel
+    @State var viewModel: BadgeViewModel
     @State private var selectedBadge: UserProfileResponse.Badge?
     @State private var isShowingBadgeDetails = false
-    
-    init(viewModel: BadgeViewModel = BadgeViewModel.preview()) {
-        self._viewModel = State(initialValue: viewModel)
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -118,6 +114,6 @@ struct BadgeView: View {
 
 #Preview {
     NavigationStack {
-        BadgeView(viewModel: BadgeViewModel.preview())
+        BadgeView(viewModel: BadgeViewModel())
     }
 }
