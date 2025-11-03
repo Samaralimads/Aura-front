@@ -148,6 +148,7 @@ struct MeditationDetailView: View {
         .onDisappear {
             viewModel.stopAll()
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

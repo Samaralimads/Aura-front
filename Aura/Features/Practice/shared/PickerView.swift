@@ -35,8 +35,9 @@ struct PickerView: View {
                    } else {
                        BreathingView()
                    }
+
+          Spacer()
         }
-        .padding(.horizontal, 17)
         .onAppear {
             viewModel.selectedPratice = currentSelection
         }
