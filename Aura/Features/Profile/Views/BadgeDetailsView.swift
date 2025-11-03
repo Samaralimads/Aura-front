@@ -66,6 +66,7 @@ struct BadgeDetailsView: View {
         }
         .navigationTitle("Badge")
         .navigationBarTitleDisplayMode(.inline)
+        .presentationBackground(.white)
     }
 }
 
