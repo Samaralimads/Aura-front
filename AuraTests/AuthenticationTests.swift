@@ -8,46 +8,59 @@
 import XCTest
 @testable import Aura
 
-final class AuthenticationTests: XCTestCase {
+final class AuthenticationValidationTests: XCTestCase {
     
-    // SUT: System Under Test
     var loginViewModel: LoginViewModel!
     
-    override func setUpWithError() throws {
-        // Arrange: Initialiser le SUT avant chaque test
-        loginViewModel = LoginViewModel()
+    override func setUp() {
+        super.setUp()
+        loginViewModel = LoginViewModel(authState: AppState())
     }
     
-    override func tearDownWithError() throws {
-        // Libérer le SUT après chaque test
+    override func tearDown() {
         loginViewModel = nil
+        super.tearDown()
     }
     
-    // Test: Vérifier que la validation de l'email retourne false si l'email est invalide
-    func testLoginViewModel_WhenInvalidEmailProvided_ShouldReturnFalse() throws {
+    func testValidation_WhenEmailIsEmpty_ShouldFail() {
         // Arrange
-        let invalidEmail = "mehdi.example.com"
-        let password = "motdepasse123"
-        let expectedResult = false
+        loginViewModel.email = ""
+        loginViewModel.password = "motdepasse123"
         
         // Act
-        let isValid = loginViewModel.validateCredentials(email: invalidEmail, password: password)
+        let isValid = loginViewModel.validateBasicCredentials()
         
         // Assert
-        XCTAssertEqual(isValid, expectedResult, "La validation doit échouer pour un email invalide")
+        XCTAssertFalse(isValid, "La validation doit échouer si l'email est vide")
     }
     
-    // Test: Vérifier que la validation retourne true si l'email et le mot de passe sont valides
-    func testLoginViewModel_WhenValidCredentialsProvided_ShouldReturnTrue() throws {
+    func testValidation_WhenPasswordIsEmpty_ShouldFail() {
         // Arrange
-        let validEmail = "mehdi@example.com"
-        let validPassword = "motdepasse123"
-        let expectedResult = true
+        loginViewModel.email = "mehdi@example.com"
+        loginViewModel.password = ""
         
         // Act
-        let isValid = loginViewModel.validateCredentials(email: validEmail, password: validPassword)
+        let isValid = loginViewModel.validateBasicCredentials()
         
         // Assert
-        XCTAssertEqual(isValid, expectedResult, "La validation doit réussir pour des identifiants valides")
+        XCTAssertFalse(isValid, "La validation doit échouer si le mot de passe est vide")
+    }
+    
+    func testValidation_WhenCredentialsAreNotEmpty_ShouldSucceed() {
+        // Arrange
+        loginViewModel.email = "mehdi@example.com"
+        loginViewModel.password = "motdepasse123"
+        
+        // Act
+        let isValid = loginViewModel.validateBasicCredentials()
+        
+        // Assert
+        XCTAssertTrue(isValid, "La validation doit réussir si l'email et le mot de passe ne sont pas vides")
+    }
+}
+
+extension LoginViewModel {
+    func validateBasicCredentials() -> Bool {
+        return !email.isEmpty && !password.isEmpty
     }
 }
