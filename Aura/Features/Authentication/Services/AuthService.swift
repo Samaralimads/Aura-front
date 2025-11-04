@@ -76,10 +76,20 @@ class AuthService {
         request.httpBody = try JSONEncoder().encode(registerData)
         
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
-            throw URLError(.badServerResponse)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.unknownError
         }
+        
+        guard (200...299).contains(httpResponse.statusCode) else {
+            do {
+                let errorResponse = try JSONDecoder().decode(APIErrorResponse.self, from: data)
+                throw APIError.serverError(errorResponse.reason)
+            } catch {
+                throw error
+            }
+        }
+        
         return try JSONDecoder().decode(UserRegisterResponse.self, from: data)
     }
     

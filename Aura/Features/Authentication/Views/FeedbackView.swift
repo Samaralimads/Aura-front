@@ -14,13 +14,14 @@ struct FeedbackView: View {
     var body: some View {
         Text(message)
             .padding()
+            .frame(height: 30)
             .background(isError ? Color.red : Color.green)
             .foregroundColor(.white)
             .cornerRadius(8)
-            .padding(.horizontal)
+            .padding(.top, 10)
     }
 }
 
 #Preview {
-    FeedbackView(message: "Ceci est un message de feedback", isError: false)
+    FeedbackView(message: "Ceci est un message de feedback", isError: true)
 }

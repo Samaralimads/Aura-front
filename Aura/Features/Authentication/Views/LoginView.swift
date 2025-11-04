@@ -65,10 +65,7 @@ struct LoginView: View {
                 .padding(.top, 40)
                 
                 if let errorMessage = viewModel.errorMessage, showErrorAlert {
-                    Text(errorMessage)
-                        .font(.custom("Lexend-Regular", size: 14))
-                        .foregroundColor(.red)
-                        .padding(.top, 10)
+                    FeedbackView(message: errorMessage, isError: true)
                 }
                 
                 HStack {
