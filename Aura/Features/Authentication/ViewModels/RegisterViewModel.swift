@@ -28,6 +28,12 @@ final class RegisterViewModel {
         isLoading = true
         errorMessage = nil
         
+        guard !email.isEmpty, !password.isEmpty, !firstName.isEmpty else {
+            errorMessage = "Veuillez remplir tous les champs."
+            isLoading = false
+            return
+        }
+        
         do {
             let response = try await authService.register(
                 firstName: firstName,

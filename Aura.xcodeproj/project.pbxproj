@@ -6,7 +6,18 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		91564BC92EB9FB2B0072E160 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BD94B3172E69CC3000FAC43F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BD94B31E2E69CC3000FAC43F;
+			remoteInfo = Aura;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		91564BC52EB9FB2B0072E160 /* AuraTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD94B31F2E69CC3000FAC43F /* Aura.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aura.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -21,6 +32,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		91564BC62EB9FB2B0072E160 /* AuraTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AuraTests;
+			sourceTree = "<group>";
+		};
 		BD94B3212E69CC3000FAC43F /* Aura */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -32,6 +48,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		91564BC22EB9FB2B0072E160 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BD94B31C2E69CC3000FAC43F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				BD94B3212E69CC3000FAC43F /* Aura */,
+				91564BC62EB9FB2B0072E160 /* AuraTests */,
 				BD94B3202E69CC3000FAC43F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				BD94B31F2E69CC3000FAC43F /* Aura.app */,
+				91564BC52EB9FB2B0072E160 /* AuraTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,6 +86,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		91564BC42EB9FB2B0072E160 /* AuraTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91564BCD2EB9FB2B0072E160 /* Build configuration list for PBXNativeTarget "AuraTests" */;
+			buildPhases = (
+				91564BC12EB9FB2B0072E160 /* Sources */,
+				91564BC22EB9FB2B0072E160 /* Frameworks */,
+				91564BC32EB9FB2B0072E160 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				91564BCA2EB9FB2B0072E160 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				91564BC62EB9FB2B0072E160 /* AuraTests */,
+			);
+			name = AuraTests;
+			packageProductDependencies = (
+			);
+			productName = AuraTests;
+			productReference = 91564BC52EB9FB2B0072E160 /* AuraTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		BD94B31E2E69CC3000FAC43F /* Aura */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BD94B32A2E69CC3100FAC43F /* Build configuration list for PBXNativeTarget "Aura" */;
@@ -90,9 +138,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
+					91564BC42EB9FB2B0072E160 = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = BD94B31E2E69CC3000FAC43F;
+					};
 					BD94B31E2E69CC3000FAC43F = {
 						CreatedOnToolsVersion = 16.4;
 					};
@@ -115,11 +167,19 @@
 			projectRoot = "";
 			targets = (
 				BD94B31E2E69CC3000FAC43F /* Aura */,
+				91564BC42EB9FB2B0072E160 /* AuraTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		91564BC32EB9FB2B0072E160 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BD94B31D2E69CC3000FAC43F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -130,6 +190,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		91564BC12EB9FB2B0072E160 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BD94B31B2E69CC3000FAC43F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -139,7 +206,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		91564BCA2EB9FB2B0072E160 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BD94B31E2E69CC3000FAC43F /* Aura */;
+			targetProxy = 91564BC92EB9FB2B0072E160 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		91564BCB2EB9FB2B0072E160 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 894F4YRNCY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.AuraTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aura.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Aura";
+			};
+			name = Debug;
+		};
+		91564BCC2EB9FB2B0072E160 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 894F4YRNCY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.AuraTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aura.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Aura";
+			};
+			name = Release;
+		};
 		BD94B3282E69CC3100FAC43F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -326,6 +445,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		91564BCD2EB9FB2B0072E160 /* Build configuration list for PBXNativeTarget "AuraTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91564BCB2EB9FB2B0072E160 /* Debug */,
+				91564BCC2EB9FB2B0072E160 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		BD94B31A2E69CC3000FAC43F /* Build configuration list for PBXProject "Aura" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
