@@ -141,14 +141,14 @@ private struct HighlightCard: View {
         }
 }
 
-// MARK: - Empty State
+          // MARK: - Empty State
 private struct EmptyState: View {
     var body: some View {
         ZStack {
             Color(.bleu)
                     .clipShape(RoundedRectangle(cornerRadius: 22))
                 
-                // White circles
+            // MARK:   - White circles
                 ZStack {
                     Image("Vector24")
                         .resizable()

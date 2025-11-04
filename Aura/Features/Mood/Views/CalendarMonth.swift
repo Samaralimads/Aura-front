@@ -96,6 +96,7 @@ struct CalendarMonth: View {
     }
 }
 
+// MARK: - DayCell
 private struct DayCell: View {
     let date: Date
     let day: DayModel?

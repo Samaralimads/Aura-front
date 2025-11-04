@@ -48,12 +48,13 @@ struct DayConfigView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
+                        // MARK: - Header
                         Text("Aujourd’hui")
                             .font(.custom("Lexend-medium", size: 27))
                             .foregroundStyle(.black)
                         
                         Spacer()
-                        
+                        // MARK: - Skip button
                         Button {
                             Task {
                                 do {

@@ -23,7 +23,7 @@ final class DayConfigViewModel {
     var sleeps: [SleepModel] = []
     var reasons: [ReasonModel] = []
     var journals: [JournalModel] = []
-
+    
     
     // MARK: - Hide "Void"
     
@@ -31,7 +31,7 @@ final class DayConfigViewModel {
     var displayReasons:  [ReasonModel]  { reasons.filter  { $0.name != "Void" } }
     var displaySleeps:   [SleepModel]   { sleeps.filter   { $0.name != "Void" } }
     var displayMoods:    [MoodModel]    { moods.filter    { $0.name != "Void" } }
-
+    
     func emotions(for moodID: UUID?) -> [EmotionModel] {
         let nonVoid = emotions.filter { $0.name.trimmingCharacters(in: .whitespacesAndNewlines) != "Void" }
         guard let moodID else { return nonVoid }
@@ -39,56 +39,32 @@ final class DayConfigViewModel {
     }
     
     // MARK: - Fetching functions
-
-    func fetchMoods() async {
-        guard let url = URL(string: "\(baseURL)/moods") else { print("Bad URL"); return }
+    
+    private func fetch<T: Decodable>(_ endpoint: String, as type: T.Type) async -> T? {
+        guard let url = URL(string: "\(baseURL)/\(endpoint)") else {
+            print("Bad URL for \(endpoint)")
+            return nil
+        }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            moods = try JSONDecoder().decode([MoodModel].self, from: data)
+            return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            print("Error fetching/decoding moods: \(error)")
+            print("Error fetching \(endpoint):", error)
+            return nil
         }
     }
     
-    func fetchEmotions() async {
-        guard let url = URL(string: "\(baseURL)/emotions") else { print("Bad URL"); return }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            emotions = try JSONDecoder().decode([EmotionModel].self, from: data)
-        } catch {
-            print("Error fetching/decoding emotions: \(error)")
-        }
-    }
     
-    func fetchSleeps() async {
-        guard let url = URL(string: "\(baseURL)/sleeps") else { print("Bad URL"); return }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            sleeps = try JSONDecoder().decode([SleepModel].self, from: data)
-        } catch {
-            print("Error fetching/decoding sleeps: \(error)")
-        }
-    }
+    func fetchMoods() async { moods = await fetch("moods", as: [MoodModel].self) ?? [] }
     
-    func fetchReasons() async {
-        guard let url = URL(string: "\(baseURL)/reasons") else { print("Bad URL"); return }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            reasons = try JSONDecoder().decode([ReasonModel].self, from: data)
-        } catch {
-            print("Error fetching/decoding reasons: \(error)")
-        }
-    }
+    func fetchEmotions() async { emotions = await fetch("emotions", as: [EmotionModel].self) ?? [] }
     
-    func fetchJournals() async {
-        guard let url = URL(string: "\(baseURL)/journals") else { print("Bad URL"); return }
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            journals = try JSONDecoder().decode([JournalModel].self, from: data)
-        } catch {
-            print("Error fetching/decoding journals: \(error)")
-        }
-    }
+    func fetchSleeps() async { sleeps = await fetch("sleeps", as: [SleepModel].self) ?? [] }
+    
+    func fetchReasons() async { reasons = await fetch("reasons", as: [ReasonModel].self) ?? [] }
+    
+    func fetchJournals() async { journals = await fetch("journals", as: [JournalModel].self) ?? [] }
+    
     
     func fetchAll() async {
         await fetchMoods()
@@ -146,7 +122,7 @@ extension DayConfigViewModel {
         return created.id
     }
     
-
+    
     func createDay(
         date: Date = Date(),
         moodID: UUID?,
@@ -162,14 +138,14 @@ extension DayConfigViewModel {
         req.httpMethod = "POST"
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-
+        
         guard let token = authToken, !token.isEmpty else {
-               throw URLError(.userAuthenticationRequired)
-           }
-           req.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            throw URLError(.userAuthenticationRequired)
+        }
+        req.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601   
+        encoder.dateEncodingStrategy = .iso8601
         req.httpBody = try encoder.encode(DayCreateDTO(
             date: date,
             moodID: moodID,
