@@ -10,6 +10,8 @@ import SwiftUI
 struct LoginView: View {
     @Environment(AppState.self) private var authState
     @State private var viewModel: LoginViewModel
+    @State private var showErrorAlert = false
+    @State private var showResetPasswordAlert = false
     
     init() {
         _viewModel = State(initialValue: LoginViewModel(authState: AppState()))
@@ -63,10 +65,14 @@ struct LoginView: View {
                 }
                 .padding(.top, 40)
                 
+                if let errorMessage = viewModel.errorMessage, showErrorAlert {
+                    FeedbackView(message: errorMessage, isError: true)
+                }
+                
                 HStack {
                     Spacer()
                     Button(action: {
-                        print("Mot de passe oublié ?")
+                        showResetPasswordAlert = true
                     }) {
                         Text("Mot de passe oublié ?")
                             .font(.custom("Lexend-Regular", size: 17))
@@ -76,8 +82,22 @@ struct LoginView: View {
                 }
                 .padding(.top, 20)
                 
+                .alert("Email envoyé", isPresented: $showResetPasswordAlert) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    Text("Un email pour réinitialiser votre mot de passe a été envoyé.")
+                }
+                
                 Button(action: {
-                    Task { await viewModel.login() }
+                    Task {
+                        await viewModel.login()
+                        if viewModel.errorMessage != nil {
+                            showErrorAlert = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                showErrorAlert = false
+                            }
+                        }
+                    }
                 }) {
                     if viewModel.isLoading {
                         ProgressView()
@@ -120,7 +140,6 @@ struct LoginView: View {
         .toolbar(.hidden, for: .tabBar)
     }
 }
-
 
 #Preview {
     LoginView()

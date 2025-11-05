@@ -10,6 +10,7 @@ import SwiftUI
 struct RegisterView: View {
     @Environment(AppState.self) private var authState
     @State private var viewModel: RegisterViewModel
+    @State private var showErrorAlert = false
     
     init() {
         _viewModel = State(
@@ -76,9 +77,19 @@ struct RegisterView: View {
                 }
                 .padding(.top, 20)
                 
+                if let errorMessage = viewModel.errorMessage, showErrorAlert {
+                    FeedbackView(message: errorMessage, isError: true)
+                }
+                
                 Button(action: {
                     Task {
                         await viewModel.register()
+                        if viewModel.errorMessage != nil {
+                            showErrorAlert = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                showErrorAlert = false
+                            }
+                        }
                     }
                 }) {
                     if viewModel.isLoading {
@@ -151,7 +162,6 @@ struct RegisterView: View {
         .toolbar(.hidden, for: .tabBar)
     }
 }
-
 
 #Preview {
     RegisterView()

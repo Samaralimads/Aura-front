@@ -15,7 +15,7 @@ enum MoodColors {
         else { return fallbackColor }
         return fromAsset(name: mood.color)
     }
-
+    
     static func color(forName name: String?, in moods: [MoodModel]) -> Color {
         guard
             let name,
@@ -26,12 +26,12 @@ enum MoodColors {
         else { return fallbackColor }
         return fromAsset(name: mood.color)
     }
-
+    
     static func fromAsset(name: String?) -> Color {
         guard let name, !name.isEmpty else { return fallbackColor }
         return Color(name)
     }
-
+    
     private static var fallbackColor: Color {
         Color.gray
     }

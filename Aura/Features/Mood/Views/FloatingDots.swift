@@ -11,13 +11,13 @@ struct FloatingDots: View {
     let base: Color
     let count: Int
     @State private var toggles: [Bool]
-
+    
     init(base: Color, count: Int) {
         self.base = base
         self.count = count
         self._toggles = State(initialValue: Array(repeating: false, count: count))
     }
-
+    
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -25,7 +25,7 @@ struct FloatingDots: View {
                     let size = CGFloat(Int.random(in: 5...10))
                     let x = CGFloat.random(in: 0...500)
                     let y = CGFloat.random(in: 300...600)
-
+                    
                     Circle()
                         .fill(base)
                         .frame(width: size, height: size)
@@ -33,8 +33,8 @@ struct FloatingDots: View {
                         .offset(y: toggles[i] ? -10 : 10)
                         .animation(
                             .easeInOut(duration: Double.random(in: 9.0...10.0))
-                                .repeatForever(autoreverses: true)
-                                .delay(Double(i) * 0.05),
+                            .repeatForever(autoreverses: true)
+                            .delay(Double(i) * 0.05),
                             value: toggles[i]
                         )
                 }
@@ -48,7 +48,6 @@ struct FloatingDots: View {
         .ignoresSafeArea()
         .allowsHitTesting(false)
         .blendMode(.plusLighter)
-//        .background(.blue)
     }
 }
 
