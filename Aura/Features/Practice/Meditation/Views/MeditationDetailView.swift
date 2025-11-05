@@ -14,6 +14,10 @@ struct MeditationDetailView: View {
     @State private var floatUp: Bool = false
     @State private var shadowScale: CGFloat = 1.0
 
+    // Ajout : accès aux services
+    let authService = AuthService.shared
+    @State private var meditationViewModel = MeditationViewModel()
+
     init(meditation: Meditation) {
         _viewModel = State(initialValue: MeditationDetailViewModel(meditation: meditation))
     }
@@ -142,6 +146,25 @@ struct MeditationDetailView: View {
                 Spacer()
             }
             .padding()
+        }
+        .onAppear {
+            // Envoi au backend lorsque la vue de la méditation s'affiche
+            Task {
+                do {
+                    let userID = try await authService.getUserID()
+                    if let uuid = UUID(uuidString: userID) {
+                        await meditationViewModel.sendUserMeditation(
+                            userID: uuid,
+                            meditationID: viewModel.meditation.id
+                        )
+                        print("Méditation envoyée avec succès : \(viewModel.meditation.id)")
+                    } else {
+                        print("ID utilisateur invalide : \(userID)")
+                    }
+                } catch {
+                    print("Erreur lors de l'envoi de la méditation : \(error)")
+                }
+            }
         }
         .onDisappear {
             viewModel.stopAll()
