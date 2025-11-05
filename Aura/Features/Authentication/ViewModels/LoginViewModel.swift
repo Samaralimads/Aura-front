@@ -39,7 +39,10 @@ final class LoginViewModel {
                 password: password
             )
             UserDefaults.standard.set(response.token, forKey: "userToken")
-            authState.setLoggedIn(true)
+            await MainActor.run {
+                authState.setLoggedIn(true)
+                authState.selectedTab = 0
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
