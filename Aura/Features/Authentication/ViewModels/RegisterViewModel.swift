@@ -41,8 +41,11 @@ final class RegisterViewModel {
                 password: password
             )
             UserDefaults.standard.set(response.token, forKey: "userToken")
-            authState.setLoggedIn(true)
-            authState.isOnboardingNeeded = true
+            await MainActor.run {
+                authState.setLoggedIn(true)
+                authState.isOnboardingNeeded = true
+                authState.selectedTab = 0
+            }
         } catch {
             errorMessage = error.localizedDescription
         }
