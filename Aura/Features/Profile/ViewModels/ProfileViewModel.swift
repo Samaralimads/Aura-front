@@ -54,9 +54,11 @@ final class ProfileViewModel {
         do {
             try await authService.logout()
             UserDefaults.standard.removeObject(forKey: "userToken")            
-            authState.setLoggedIn(false)
-            authState.isOnboardingNeeded = false
-            authState.selectedTab = 0
+            await MainActor.run {
+                authState.setLoggedIn(false)
+                authState.isOnboardingNeeded = false
+                authState.selectedTab = 0
+            }
         } catch {
             print("Erreur lors de la déconnexion : \(error.localizedDescription)")
         }
