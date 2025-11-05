@@ -49,7 +49,7 @@ struct BreathingView: View {
                         }
                     } label: {
                         ZStack(alignment: .bottomLeading) {
-                            AsyncImage(url: URL(string: "http://127.0.0.1:8080/\(breathing.image)")) { image in
+                            AsyncImage(url: AppConfig.apiBaseURL.appendingPathComponent(breathing.image)) { image in
                                 image
                                     .resizable()
                                     .scaledToFill()

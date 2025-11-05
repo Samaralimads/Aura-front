@@ -12,7 +12,6 @@ import Observation
 class BadgeViewModel {
     var unlockedBadges: [UserProfileResponse.Badge] = []
     var lockedBadges: [UserProfileResponse.Badge] = []
-    private let baseURL = "http://127.0.0.1:8080"
     private var isFetching = false
     
     func fetchUserBadges() async {
@@ -40,7 +39,7 @@ class BadgeViewModel {
             return
         }
         
-        guard let url = URL(string: "\(baseURL)/badges/unlock") else { return }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("badges").appendingPathComponent("unlock")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

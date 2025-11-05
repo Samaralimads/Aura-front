@@ -13,9 +13,7 @@ import SwiftUI
 
 final class DayConfigViewModel {
     
-    private let baseURL = "http://127.0.0.1:8080"
     var authToken: String?
-    
     
     // MARK: - Decoded data from my db
     var moods: [MoodModel] = []
@@ -24,9 +22,7 @@ final class DayConfigViewModel {
     var reasons: [ReasonModel] = []
     var journals: [JournalModel] = []
     
-    
     // MARK: - Hide "Void"
-    
     var displayEmotions: [EmotionModel] { emotions.filter { $0.name != "Void" } }
     var displayReasons:  [ReasonModel]  { reasons.filter  { $0.name != "Void" } }
     var displaySleeps:   [SleepModel]   { sleeps.filter   { $0.name != "Void" } }
@@ -39,12 +35,9 @@ final class DayConfigViewModel {
     }
     
     // MARK: - Fetching functions
-    
     private func fetch<T: Decodable>(_ endpoint: String, as type: T.Type) async -> T? {
-        guard let url = URL(string: "\(baseURL)/\(endpoint)") else {
-            print("Bad URL for \(endpoint)")
-            return nil
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent(endpoint)
+        
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             return try JSONDecoder().decode(T.self, from: data)
@@ -108,7 +101,7 @@ extension DayConfigViewModel {
     }
     
     private func createJournal(field: String) async throws -> UUID {
-        guard let url = URL(string: "\(baseURL)/journals") else { throw URLError(.badURL) }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/journals")
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -131,9 +124,9 @@ extension DayConfigViewModel {
         reasonID: UUID?,
         noteText: String
     ) async throws -> DayResponseDTO {
-        let journalID = try await journalID(forNote: noteText)
         
-        guard let url = URL(string: "\(baseURL)/days") else { throw URLError(.badURL) }
+        let journalID = try await journalID(forNote: noteText)
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/days")
         var req = URLRequest(url: url)
         req.httpMethod = "POST"
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -142,6 +135,7 @@ extension DayConfigViewModel {
         guard let token = authToken, !token.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
+        
         req.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let encoder = JSONEncoder()

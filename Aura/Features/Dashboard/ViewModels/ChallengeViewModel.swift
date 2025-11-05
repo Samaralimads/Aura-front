@@ -28,10 +28,9 @@ class ChallengeViewModel {
     // MARK: - Fetch Data
     //Fonction pour recuperer tous les challenges
     func fetchChallenges() async {
-        guard let url = URL(string:"http://127.0.0.1:8080/challenges") else {
-            print("ERROR: url not valid")
-            return
-        }
+
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/challenges")
+
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             
@@ -48,10 +47,9 @@ class ChallengeViewModel {
     
     //Fonction pour récuperer challenge du mois en cours /Pas tellement utilise ici!
     func fetchCurrentChallenge() async {
-        guard let url = URL(string:"http://127.0.0.1:8080/challenges/current") else {
-            print("ERROR: url not valid")
-            return
-        }
+        
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/challenges/current")
+
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             
@@ -69,11 +67,8 @@ class ChallengeViewModel {
     //fonction pour recuperer tache via challenge ID
     func fetchTasks(id: UUID) async {
         
-        guard let url = URL(string:"http://127.0.0.1:8080/tasks/challenge/\(id)")
-        else {
-            print("ERROR: url not valid")
-            return
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("tasks/challenge/\(id)")
+
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             
@@ -88,11 +83,8 @@ class ChallengeViewModel {
     }
     
     // MARK: - SEND DATA
-    
-    private let baseURL = "http://127.0.0.1:8080"
-
     func sendUserTask(userID : UUID, taskID : UUID) async {
-        guard let url = URL(string: "\(baseURL)/userTasks") else { return }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/userTasks")
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -116,7 +108,7 @@ class ChallengeViewModel {
     }
     
     func sendUserChallenge(userID : UUID, challengeID : UUID) async {
-        guard let url = URL(string: "\(baseURL)/userChallenges") else { return }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/userChallenges")
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

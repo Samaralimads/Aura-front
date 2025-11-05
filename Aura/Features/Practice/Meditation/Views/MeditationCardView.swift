@@ -13,7 +13,7 @@ struct MeditationCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             // Miniature
-            AsyncImage(url: URL(string: "http://127.0.0.1:8080/meditation/thumbnail/\(meditation.thumbnail).png")) { image in
+            AsyncImage(url: URL(string: "\(AppConfig.baseURL)/meditation/thumbnail/\(meditation.thumbnail).png")) { image in
                 image
                     .resizable()
                     .scaledToFill()

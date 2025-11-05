@@ -48,7 +48,7 @@ struct ChallengeView: View {
                                 .cornerRadius(25)
                         }
                         VStack{
-                            AsyncImage(url: URL(string:"http://127.0.0.1:8080/challenge/\(challenge.image)")) { image in
+                            AsyncImage(url: AppConfig.apiBaseURL.appendingPathComponent("challenge/\(challenge.image)")) { image in
                                 image
                                     .resizable()
                                     .frame(width: 160, height: 115)

@@ -11,8 +11,6 @@ struct MoodPercentageView: View {
     let month: Date
     let days: [DayModel]
     let moods: [MoodModel]
-    let baseURL: URL? = URL(string: "http://127.0.0.1:8080")
-
     @State private var selection = 0
 
     // MARK: - Derived data
@@ -46,7 +44,7 @@ struct MoodPercentageView: View {
         } else {
             TabView(selection: $selection) {
                 ForEach(distribution.indices, id: \.self) { idx in
-                    HighlightCard(slice: distribution[idx], baseURL: baseURL)
+                    HighlightCard(slice: distribution[idx], baseURL: AppConfig.apiBaseURL)
                         .tag(idx)
                 }
             }
@@ -190,4 +188,3 @@ private struct EmptyState: View {
         .clipShape(RoundedRectangle(cornerRadius: 30))
             }
         }
-

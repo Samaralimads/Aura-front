@@ -63,9 +63,8 @@ final class MeditationDetailViewModel {
     // Lecture audio depuis le backend + musique d'ambiance locale
     private func playAudio() {
         // audio backend
-        let baseURL = "http://127.0.0.1:8080/"
         let audioPath = "meditation/audio/" + meditation.audio
-        guard let url = URL(string: baseURL + audioPath) else { return }
+        let url = AppConfig.apiBaseURL.appendingPathComponent(audioPath)
 
         let playerItem = AVPlayerItem(url: url)
         audioPlayer = AVPlayer(playerItem: playerItem)

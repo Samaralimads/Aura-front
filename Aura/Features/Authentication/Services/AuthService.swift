@@ -9,13 +9,10 @@ import Foundation
 
 class AuthService {
     static let shared = AuthService()
-    static let baseURL = "http://127.0.0.1:8080"
     
     // MARK: - Login
     func login(email: String, password: String) async throws -> UserLoginResponse {
-        guard let url = URL(string: "\(AuthService.baseURL)/auth/login") else {
-            throw APIError.unknownError
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/auth/login")
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -48,7 +45,7 @@ class AuthService {
 
     // MARK: - Logout
     func logout() async throws {
-        let url = URL(string: "\(AuthService.baseURL)/logout")!
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/logout")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -62,7 +59,7 @@ class AuthService {
     
     // MARK: - Register
     func register(firstName: String, email: String, password: String) async throws -> UserRegisterResponse {
-        let url = URL(string: "\(AuthService.baseURL)/auth/register")!
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/auth/register")
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -92,16 +89,14 @@ class AuthService {
         
         return try JSONDecoder().decode(UserRegisterResponse.self, from: data)
     }
-    
+
     // MARK: - Get User Profile
     func getUserProfile() async throws -> UserProfileResponse {
         guard let token = UserDefaults.standard.string(forKey: "userToken"), !token.isEmpty else {
             throw URLError(.userAuthenticationRequired)
         }
         
-        guard let url = URL(string: "\(AuthService.baseURL)/users/profile") else {
-            throw URLError(.badURL)
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/users/profile")
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -123,19 +118,16 @@ class AuthService {
     
     // MARK: - Update User Profile
     func update(avatar: String?, email: String?, firstName: String?, password: String?) async throws -> UserUpdateResponse {
-        guard let url = URL(string: "\(AuthService.baseURL)/users/update") else {
-            throw URLError(.badURL)
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/users/update")
         
         var request = URLRequest(url: url)
         request.httpMethod = "PATCH"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        if let token = UserDefaults.standard.string(forKey: "userToken") {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        } else {
+        guard let token = UserDefaults.standard.string(forKey: "userToken") else {
             throw URLError(.userAuthenticationRequired)
         }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         var body: [String: Any] = [:]
         if let avatar = avatar { body["avatar"] = avatar }
@@ -149,7 +141,7 @@ class AuthService {
         
         return try JSONDecoder().decode(UserUpdateResponse.self, from: data)
     }
-    
+
     // MARK: - Get UserID
     func getUserID() async throws -> String {
         let profile = try await getUserProfile()
@@ -158,9 +150,7 @@ class AuthService {
     
     // MARK: - Get All Avatars
     func fetchAvatars() async throws -> [Avatar] {
-        guard let url = URL(string: "\(AuthService.baseURL)/avatars") else {
-            throw URLError(.badURL)
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/avatars")
         
         let (data, _) = try await URLSession.shared.data(from: url)
         let response = try JSONDecoder().decode(AvatarsListResponse.self, from: data)
@@ -176,9 +166,7 @@ class AuthService {
     
     // MARK: - Delete Account
     func deleteAccount(userID: String) async throws {
-        guard let url = URL(string: "\(AuthService.baseURL)/users/\(userID)") else {
-            throw URLError(.badURL)
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/users/\(userID)")
         
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"

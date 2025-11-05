@@ -11,7 +11,6 @@ import SwiftUI
 @Observable
 @MainActor
 final class DayViewModel {
-    private let baseURL = URL(string: "http://127.0.0.1:8080")!
     var authToken: String?
     
     var days: [DayModel] = []
@@ -30,7 +29,7 @@ final class DayViewModel {
     // MARK: - Fetch Helpers
     private func fetch<T: Decodable>(_ endpoint: String) async -> T? {
         do {
-            let url = baseURL.appending(path: endpoint)
+            let url = AppConfig.apiBaseURL.appendingPathComponent(endpoint)
             let (data, _) = try await URLSession.shared.data(from: url)
             return try decoder.decode(T.self, from: data)
         } catch {
@@ -48,7 +47,8 @@ final class DayViewModel {
         }
         
         do {
-            var req = URLRequest(url: baseURL.appending(path: "days"))
+            var req = URLRequest(url: AppConfig.apiBaseURL.appendingPathComponent("days"))
+            
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             let (data, resp) = try await URLSession.shared.data(for: req)
             
@@ -72,7 +72,7 @@ final class DayViewModel {
         let map = Dictionary(uniqueKeysWithValues: moods.map { ($0.name.lowercased(), $0) })
         let key = day.mood.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard let model = map[key] else { return nil }
-        return baseURL.appending(path: "mood").appending(path: model.image)
+        return AppConfig.apiBaseURL.appendingPathComponent("mood").appendingPathComponent(model.image)
     }
     
     func day(for date: Date) -> DayModel? {
