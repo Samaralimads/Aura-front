@@ -61,7 +61,7 @@ struct MeditationDetailView: View {
                     Spacer()
 
                     // Emote animé
-                    AsyncImage(url: URL(string: "http://127.0.0.1:8080/meditation/emote/\(viewModel.meditation.image).png")) { image in
+                    AsyncImage(url: URL(string: "\(AppConfig.baseURL)/meditation/emote/\(viewModel.meditation.image).png")) { image in
                         image
                             .resizable()
                             .scaledToFit()

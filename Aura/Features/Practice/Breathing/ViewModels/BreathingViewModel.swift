@@ -18,10 +18,8 @@ final class BreathingViewModel {
     var breathings: [Breathing] = []
 
     func fetchBreathings() async {
-        guard let url = URL(string: "http://127.0.0.1:8080/breathings") else {
-            print("Error: URL not valid.")
-            return
-        }
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/breathings")
+
         do {
             let (data, _) = try await URLSession.shared.data(from: url) //telecharge les données du backend
             let decoder = JSONDecoder()
@@ -34,11 +32,8 @@ final class BreathingViewModel {
     }
     
     // MARK: - SEND DATA
-
-    private let baseURL = "http://127.0.0.1:8080"
-    
     func sendUserBreathing(userID: UUID, breathingID: UUID) async {
-        guard let url = URL(string: "\(baseURL)/userBreathings") else {return}
+        let url = AppConfig.apiBaseURL.appendingPathComponent("/userBreathings")
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

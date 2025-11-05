@@ -29,7 +29,7 @@ final class ProfileViewModel {
     var avatarURL: String {
         let cleanedAvatar = avatar.replacingOccurrences(of: "avatars/", with: "")
         let avatarName = cleanedAvatar.isEmpty ? "default" : cleanedAvatar
-        return "\(AuthService.baseURL)/avatars/\(avatarName)"
+        return AppConfig.apiBaseURL.appendingPathComponent("avatars").appendingPathComponent(avatarName).absoluteString
     }
     
     func loadUserProfile() async {

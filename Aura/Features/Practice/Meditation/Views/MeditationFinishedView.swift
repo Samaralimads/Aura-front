@@ -24,7 +24,7 @@ struct MeditationFinishedView: View {
             Spacer()
 
             // Emote (image) — ajouté
-            AsyncImage(url: URL(string: "http://127.0.0.1:8080/meditation/emote/\(emoteImageName).png")) { phase in
+            AsyncImage(url: URL(string: "\(AppConfig.baseURL)/meditation/emote/\(emoteImageName).png")) { phase in
                 switch phase {
                 case .empty:
                     Color.clear

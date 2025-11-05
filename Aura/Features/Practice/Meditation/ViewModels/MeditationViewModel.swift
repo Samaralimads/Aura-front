@@ -37,7 +37,7 @@ final class MeditationViewModel {
         errorMessage = nil
         defer { isLoading = false }
 
-        guard let url = URL(string: "http://127.0.0.1:8080/meditations") else {
+        guard let url = URL(string: "\(AppConfig.baseURL)/meditations") else {
             errorMessage = "URL non valide"
             print("Error: URL not valid.")
             return

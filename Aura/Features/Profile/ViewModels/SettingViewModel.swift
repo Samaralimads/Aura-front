@@ -127,7 +127,7 @@ final class SettingViewModel {
             .replacingOccurrences(of: "avatars/", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         
-        let urlString = "\(AuthService.baseURL)/avatars/\(cleanedPath)"
+        let urlString = "\(AppConfig.baseURL)/avatars/\(cleanedPath)"
         return URL(string: urlString)
     }
     

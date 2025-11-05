@@ -28,7 +28,7 @@ struct MoodView: View {
     
     private var imageURL: URL? {
         if let imageName = currentMood?.image {
-            return URL(string: "http://127.0.0.1:8080/mood/\(imageName)")
+            return AppConfig.apiBaseURL.appendingPathComponent("mood").appendingPathComponent(imageName)
         }
         return nil
     }
